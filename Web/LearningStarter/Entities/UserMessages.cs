@@ -27,8 +27,15 @@ public class UserMessagesGetDto
 public class UserMessagesCreateDto
 {
     public string Content { get; set; }
-  
+ 
+}
 
+public class UserMessagesUpdateDto
+{
+    public string Content { get; set; }
+    public Group Group { get; set; }
+    public User Sender { get; set; }
+    public int Id { get; set; }
 }
 
 public class UserMessagesEntityTypeConfiguration : IEntityTypeConfiguration<UserMessages>
