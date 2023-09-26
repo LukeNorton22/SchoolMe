@@ -11,7 +11,7 @@ public class Group
     public string Name { get; set; }    
     public string Description { get; set; } 
     public List<User> Users { get; set; }
-    public List<UserMessages> Messages { get; set; }
+    
 
 }
 
@@ -19,6 +19,7 @@ public class GroupCreateDto
 {
     public string Name { get; set; }
     public string Description { get; set; }
+
 }
 
 public class GroupUpdateDto

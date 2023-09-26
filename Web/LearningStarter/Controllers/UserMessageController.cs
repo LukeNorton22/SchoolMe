@@ -46,6 +46,7 @@ namespace LearningStarter.Controllers
             var messageToCreate = new UserMessages
             {
                 Content = createDto.Content,
+                
             };
 
             _dataContext.Set<UserMessages>().Add(messageToCreate);

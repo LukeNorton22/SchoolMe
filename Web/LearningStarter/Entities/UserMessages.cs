@@ -27,6 +27,7 @@ public class UserMessagesGetDto
 public class UserMessagesCreateDto
 {
     public string Content { get; set; }
+  
 
 }
 
