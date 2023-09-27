@@ -31,7 +31,6 @@ public class GroupController : ControllerBase
                 Id = product.Id,
                 Name = product.Name,
                 Description = product.Description,
-                Users = product.Users
 
             })
             .ToList();
@@ -45,6 +44,16 @@ public class GroupController : ControllerBase
     public IActionResult Create([FromBody] GroupCreateDto createDto)
     {
         var response = new Response();
+
+        if (string.IsNullOrEmpty(createDto.Name))
+        {
+            response.AddError(nameof(createDto.Name), "Group name can't be empty");
+        }
+
+        if (response.HasErrors)
+        {
+            return BadRequest(response);
+        }
 
         var groupToCreate = new Group
         {
@@ -60,12 +69,73 @@ public class GroupController : ControllerBase
             Id = groupToCreate.Id,
             Name = groupToCreate.Name,
             Description = groupToCreate.Description,
-            Users = groupToCreate.Users
         };
 
         response.Data = groupToReturn;
 
         return Created("", response);
     }
+
+    [HttpPut("{id}")]
+    public IActionResult Update([FromBody] GroupUpdateDto updateDto, int id)
+    {
+        var response = new Response();
+
+        var groupToUpdate = _dataContext.Set<Group>()
+            .FirstOrDefault(group => group.Id == id);
+
+        if (groupToUpdate == null)
+        {
+            response.AddError("id", "Group not found");
+        }
+
+        if (response.HasErrors)
+        {
+            return BadRequest(response);
+        } 
+
+        groupToUpdate.Name = updateDto.Name;
+        groupToUpdate.Description = updateDto.Description;
+
+        _dataContext.SaveChanges();
+
+        var groupToReturn = new GroupGetDto
+        {
+            Id = groupToUpdate.Id,
+            Name = groupToUpdate.Name,
+            Description = groupToUpdate.Description,
+        };
+
+        response.Data = groupToReturn;
+        return Ok(response);
+    }
+
+    [HttpDelete("{id}")]
+    public IActionResult Delete(int id)
+    {
+        var response = new Response();
+
+        var groupToDelete = _dataContext.Set<Group>()
+            .FirstOrDefault(group => group.Id == id);
+
+        if(groupToDelete == null)
+        {
+            response.AddError("id", "Group not found");
+        }
+
+        if (response.HasErrors)
+        {
+            return BadRequest(response);
+        }
+
+        _dataContext.Set<Group>().Remove(groupToDelete);
+        _dataContext.SaveChanges();
+        response.Data = true;
+
+        return Ok(response);
+
+    }
+
+    
 
 }
