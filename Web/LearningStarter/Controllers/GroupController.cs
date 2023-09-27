@@ -26,14 +26,34 @@ public class GroupController : ControllerBase
         var response = new Response();
         var data = _dataContext
             .Set<Group>()
-            .Select(product => new GroupGetDto
+            .Select(group => new GroupGetDto
             {
-                Id = product.Id,
-                Name = product.Name,
-                Description = product.Description,
+                Id = group.Id,
+                Name = group.Name,
+                Description = group.Description,
 
             })
             .ToList();
+
+        response.Data = data;
+
+        return Ok(response);
+    }
+
+    [HttpGet ("{id}")]
+    public IActionResult GetById(int id)
+    {
+        var response = new Response();
+        var data = _dataContext
+            .Set<Group>()
+            .Select(group => new GroupGetDto
+            {
+                Id = group.Id,
+                Name = group.Name,
+                Description = group.Description,
+
+            })
+            .FirstOrDefault(group  => group.Id == id);
 
         response.Data = data;
 
