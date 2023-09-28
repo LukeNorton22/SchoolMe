@@ -33,7 +33,7 @@ public class FlashCardsController : ControllerBase
         response.Data = data;
         return Ok(response);
     }
-    [HttpGet("(id")]
+    [HttpGet("({id}")]
     public IActionResult GetById(int id)
     {
         var response = new Response();
