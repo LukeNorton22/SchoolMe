@@ -34,6 +34,7 @@ public class AssignmentGradeUpdateDto
 {
     public string AssignmentName { get; set; }
     public double Grade { get; set; }
+
 }
 
 public class AssignmentGradeEntityTypeConfiguration : IEntityTypeConfiguration<AssignmentGrade>

@@ -109,7 +109,7 @@ public class AssignmentGradeController : ControllerBase
 
         AssignmentGradeToUpdate.AssignmentName = updateDto.AssignmentName;
         AssignmentGradeToUpdate.Grade = updateDto.Grade;
-
+        
 
         _dataContext.SaveChanges();
 
@@ -118,7 +118,7 @@ public class AssignmentGradeController : ControllerBase
             Id = AssignmentGradeToUpdate.Id,
             AssignmentName = AssignmentGradeToUpdate.AssignmentName,
             Grade = AssignmentGradeToUpdate.Grade,
-            AverageGrade = AssignmentGradeToUpdate.AverageGrade
+            
         };
 
         response.Data = AssignmentGradeToReturn;
