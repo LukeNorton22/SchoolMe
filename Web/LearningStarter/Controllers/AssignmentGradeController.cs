@@ -26,12 +26,12 @@ public class AssignmentGradeController : ControllerBase
         var response = new Response();
         var data = _dataContext
             .Set<AssignmentGrade>()
-            .Select(product => new AssignmentGradeGetDto
+            .Select(AssignmentGrade => new AssignmentGradeGetDto
             {
-                Id = product.Id,
-                Name = product.Name,
-                Grade = product.Grade,
-                AverageGrade = product.AverageGrade
+                Id = AssignmentGrade.Id,
+                AssignmentName = AssignmentGrade.AssignmentName,
+                Grade = AssignmentGrade.Grade,
+                AverageGrade = AssignmentGrade.AverageGrade
 
             })
             .ToList();
@@ -48,7 +48,7 @@ public class AssignmentGradeController : ControllerBase
 
         var AssignmentGradeToCreate = new AssignmentGrade
         {
-            Name = createDto.Name,
+            AssignmentName = createDto.AssignmentName,
             Grade = createDto.Grade,
             AverageGrade = createDto.AverageGrade
         };
@@ -58,7 +58,7 @@ public class AssignmentGradeController : ControllerBase
 
         var AssignmentGradeToReturn = new AssignmentGradeGetDto
         {
-           Name = createDto.Name,
+           AssignmentName = createDto.AssignmentName,
            Grade = createDto.Grade,
            AverageGrade = createDto.AverageGrade
         };
@@ -67,5 +67,89 @@ public class AssignmentGradeController : ControllerBase
 
         return Created("", response);
     }
+
+    [HttpGet("{id}")]
+    public IActionResult GetById(int id)
+    {
+        var response = new Response();
+        var data = _dataContext
+            .Set<AssignmentGrade>()
+            .Select(assignmentGrade => new AssignmentGradeGetDto
+            {
+                Id = assignmentGrade.Id, 
+                AssignmentName = assignmentGrade.AssignmentName,
+                Grade = assignmentGrade.Grade,
+                AverageGrade = assignmentGrade.AverageGrade
+
+            })
+            .FirstOrDefault(group => group.Id == id);
+
+        response.Data = data;
+
+        return Ok(response);
+    }
+
+    [HttpPut("{id}")]
+    public IActionResult Update([FromBody] AssignmentGradeUpdateDto updateDto, int id)
+    {
+        var response = new Response();
+
+        var AssignmentGradeToUpdate = _dataContext.Set<AssignmentGrade>()
+            .FirstOrDefault(assignmentGrade => assignmentGrade.Id == id);
+
+        if (AssignmentGradeToUpdate == null)
+        {
+            response.AddError("id", "Assignment not found");
+        }
+
+        if (response.HasErrors)
+        {
+            return BadRequest(response);
+        }
+
+        AssignmentGradeToUpdate.AssignmentName = updateDto.AssignmentName;
+        AssignmentGradeToUpdate.Grade = updateDto.Grade;
+
+
+        _dataContext.SaveChanges();
+
+        var AssignmentGradeToReturn = new AssignmentGradeGetDto
+        {
+            Id = AssignmentGradeToUpdate.Id,
+            AssignmentName = AssignmentGradeToUpdate.AssignmentName,
+            Grade = AssignmentGradeToUpdate.Grade,
+            AverageGrade = AssignmentGradeToUpdate.AverageGrade
+        };
+
+        response.Data = AssignmentGradeToReturn;
+        return Ok(response);
+    }
+
+    [HttpDelete("{id}")]
+    public IActionResult Delete(int id)
+    {
+        var response = new Response();
+
+        var AssignmentGradeToDelete = _dataContext.Set<AssignmentGrade>()
+            .FirstOrDefault(assignmentGrade => assignmentGrade.Id == id);
+
+        if (AssignmentGradeToDelete == null)
+        {
+            response.AddError("id", "Assignment not found");
+        }
+
+        if (response.HasErrors)
+        {
+            return BadRequest(response);
+        }
+
+        _dataContext.Set<AssignmentGrade>().Remove(AssignmentGradeToDelete);
+        _dataContext.SaveChanges();
+        response.Data = true;
+
+        return Ok(response);
+
+    }
+
 
 }

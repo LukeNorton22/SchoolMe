@@ -11,31 +11,33 @@ public class UserMessages
 {
     public int Id { get; set; }
     public string Content { get; set; }
-    public Group Group { get; set; }
-    public User Sender {  get; set; }
+    public string ImageUrl { get; set; }
+    public DateTime CreatedAt { get; set; } 
+
 }
 
 public class UserMessagesGetDto
 {
     public int Id { get; set; }
     public string Content { get; set; }
-    public Group Group { get; set; }
-    public User Sender { get; set; }
+    public string ImageUrl { get; set; }
+    public DateTime CreatedAt { get; set; }
 
 }
 
 public class UserMessagesCreateDto
 {
     public string Content { get; set; }
- 
+    public string ImageUrl { get; set; }
+
 }
 
 public class UserMessagesUpdateDto
 {
+   
     public string Content { get; set; }
-    public Group Group { get; set; }
-    public User Sender { get; set; }
-    public int Id { get; set; }
+    public string ImageUrl { get; set; }
+
 }
 
 public class UserMessagesEntityTypeConfiguration : IEntityTypeConfiguration<UserMessages>

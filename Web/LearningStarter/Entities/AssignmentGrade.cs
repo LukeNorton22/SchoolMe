@@ -8,7 +8,7 @@ namespace LearningStarter.Entities;
 public class AssignmentGrade 
 {
     public int Id { get; set; }
-    public string Name { get; set; }
+    public string AssignmentName { get; set; }
     public double Grade { get; set; }
     public double AverageGrade { get; set; }
 
@@ -16,7 +16,7 @@ public class AssignmentGrade
 
 public class AssignmentGradeCreateDto
 {
-    public string Name { get; set; }
+    public string AssignmentName { get; set; }
     public double Grade { get; set; }
     public double AverageGrade { get; set; }
 
@@ -25,18 +25,15 @@ public class AssignmentGradeCreateDto
 public class AssignmentGradeGetDto
 {
     public int Id { get; set; }
-    public string Name { get; set; }
+    public string AssignmentName { get; set; }
     public double Grade { get; set; }
     public double AverageGrade { get; set; }
 }
 
 public class AssignmentGradeUpdateDto
 {
-    public string Id { get; set; }
-    public string Name { get; set; }
+    public string AssignmentName { get; set; }
     public double Grade { get; set; }
-    public double AverageGrade { get; set;}
-
 }
 
 public class AssignmentGradeEntityTypeConfiguration : IEntityTypeConfiguration<AssignmentGrade>
