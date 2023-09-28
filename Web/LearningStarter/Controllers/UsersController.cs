@@ -124,7 +124,7 @@ public class UsersController : ControllerBase
 
     [HttpPut("{id}")]
     public IActionResult Edit(
-        [FromRoute] int id, 
+        [FromRoute] int id,
         [FromBody] UserUpdateDto userUpdateDto)
     {
         var response = new Response();
@@ -134,7 +134,7 @@ public class UsersController : ControllerBase
             response.AddError("id", "There was a problem editing the user.");
             return NotFound(response);
         }
-        
+
         var userToEdit = _context.Users.FirstOrDefault(x => x.Id == id);
 
         if (userToEdit == null)
@@ -185,7 +185,7 @@ public class UsersController : ControllerBase
         response.Data = userGetDto;
         return Ok(response);
     }
-
+    
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
@@ -204,4 +204,5 @@ public class UsersController : ControllerBase
 
         return Ok(response);
     }
+    
 }
