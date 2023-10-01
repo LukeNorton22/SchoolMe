@@ -5,6 +5,7 @@ namespace LearningStarter.Entities
 {
     public class GroupUser
     {
+        public int Id { get; set; }
         public int GroupId { get; set; }
         public Group Group { get; set; }
 
@@ -12,7 +13,7 @@ namespace LearningStarter.Entities
         public User User { get; set; }
 
 
-            }
+    }
 
     public class GroupUserGetDto
     {
@@ -35,4 +36,5 @@ namespace LearningStarter.Entities
                 .WithMany();
         }
     }
+}
 
