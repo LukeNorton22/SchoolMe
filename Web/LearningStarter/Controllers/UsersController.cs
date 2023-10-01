@@ -104,7 +104,8 @@ public class UsersController : ControllerBase
             LastName = userCreateDto.LastName,
             UserName = userCreateDto.UserName,
         };
-
+        _context.Set<User>().Add(userToCreate);
+        _context.SaveChanges();
         _userManager.CreateAsync(userToCreate, userCreateDto.Password);
         _userManager.AddToRoleAsync(userToCreate, "Admin");
         _context.SaveChanges();

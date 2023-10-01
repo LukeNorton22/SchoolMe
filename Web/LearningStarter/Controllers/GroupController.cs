@@ -117,13 +117,13 @@ public class GroupController : ControllerBase
     }
 
     [HttpPost("{groupId}/user/{userId}")]
-    public IActionResult AddUserToGroup(int groupId, int UserId)
+    public IActionResult AddUserToGroup(int groupId, int userId)
     {
         var response = new Response();
         var group = _dataContext.Set<Group>()
             .FirstOrDefault(x=> x.Id == groupId);
         var user = _dataContext.Set<User>()
-            .FirstOrDefault(x=> x.Id == UserId);
+            .FirstOrDefault(x=> x.Id == userId);
         var groupUser = new GroupUser
         {
             Group = group,
