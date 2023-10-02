@@ -7,7 +7,7 @@ using System;
 
 namespace LearningStarter.Entities;
 
-public class UserMessages
+public class Messages
 {
     public int Id { get; set; }
     public string Content { get; set; }
@@ -16,7 +16,7 @@ public class UserMessages
 
 }
 
-public class UserMessagesGetDto
+public class MessagesGetDto
 {
     public int Id { get; set; }
     public string Content { get; set; }
@@ -25,14 +25,14 @@ public class UserMessagesGetDto
 
 }
 
-public class UserMessagesCreateDto
+public class MessagesCreateDto
 {
     public string Content { get; set; }
     public string ImageUrl { get; set; }
 
 }
 
-public class UserMessagesUpdateDto
+public class MessagesUpdateDto
 {
    
     public string Content { get; set; }
@@ -40,11 +40,11 @@ public class UserMessagesUpdateDto
 
 }
 
-public class UserMessagesEntityTypeConfiguration : IEntityTypeConfiguration<UserMessages>
+public class MessagesEntityTypeConfiguration : IEntityTypeConfiguration<Messages>
 {
-    public void Configure(EntityTypeBuilder<UserMessages> builder)
+    public void Configure(EntityTypeBuilder<Messages> builder)
     {
-        builder.ToTable("UserMessages");
+        builder.ToTable("Messages");
     }
 
 }

@@ -1,11 +1,15 @@
 ﻿using LearningStarter.Common;
 using LearningStarter.Data;
 using LearningStarter.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Net.Sockets;
 
 namespace LearningStarter.Controllers;
 
@@ -39,7 +43,15 @@ public class GroupController : ControllerBase
                     UserName = x.User.UserName,
 
 
-                }).ToList()
+                }).ToList(),
+                Messages = group.Messages.Select(x => new GroupMessagesGetDto
+                {
+                    Id = x.Message.Id,
+                    Content = x.Message.Content,
+                    ImageUrl = x.Message.ImageUrl,
+                    CreatedAt = x.Message.CreatedAt
+
+                }).ToList(),
 
             })
 
@@ -50,12 +62,12 @@ public class GroupController : ControllerBase
         return Ok(response);
     }
 
+
     [HttpGet ("{id}")]
     public IActionResult GetById(int id)
     {
         var response = new Response();
-        var data = _dataContext
-            .Set<Group>()
+        var data = _dataContext.Groups
             .Select(group => new GroupGetDto
             {
                 Id = group.Id,
@@ -147,6 +159,44 @@ public class GroupController : ControllerBase
                 UserName = x.User.UserName,
             }).ToList()
         };
+        return Ok(response);
+    }
+
+    [HttpPost("{groupId}/message/{messageId}")]
+    public IActionResult AddMessageToGroup(int groupId, int messageId)
+    {
+        var response = new Response();
+        var group = _dataContext.Set<Group>()
+            .FirstOrDefault(x => x.Id == groupId);
+        var message = _dataContext.Set<Messages>()
+            .FirstOrDefault(x => x.Id == messageId);
+        var messages = new GroupMessages
+        {
+            Group = group,
+            Message = message,
+
+        };
+
+        _dataContext.Set<GroupMessages>().Add(messages);
+        _dataContext.SaveChanges();
+
+        response.Data = new GroupGetDto
+        {
+            Id = group.Id,
+            Name = group.Name,
+            Description = group.Description,
+            Messages = group.Messages.Select(x => new GroupMessagesGetDto
+            {
+                Id = x.Message.Id,
+                Content = x.Message.Content,
+                ImageUrl = x.Message.ImageUrl,
+                CreatedAt = x.Message.CreatedAt
+
+            }).ToList(),
+
+        }; 
+
+        
         return Ok(response);
     }
 
