@@ -67,7 +67,8 @@ public class GroupController : ControllerBase
     public IActionResult GetById(int id)
     {
         var response = new Response();
-        var data = _dataContext.Groups
+        var data = _dataContext
+            .Set<Group>()
             .Select(group => new GroupGetDto
             {
                 Id = group.Id,
