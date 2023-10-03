@@ -137,13 +137,24 @@ public class GroupController : ControllerBase
             .FirstOrDefault(x=> x.Id == groupId);
         var user = _dataContext.Set<User>()
             .FirstOrDefault(x=> x.Id == userId);
+        if(group == null)
+        {
+            response.AddError("id", "Group not found.");
+        }
+        if (user == null)
+        {
+            response.AddError("id", "User not found.");
+        }
         var groupUser = new GroupUser
         {
             Group = group,
             User = user,
 
         };
-
+        if (response.HasErrors)
+        {
+            return BadRequest(response);
+        }
         _dataContext.Set<GroupUser>().Add(groupUser);
         _dataContext.SaveChanges();
 
