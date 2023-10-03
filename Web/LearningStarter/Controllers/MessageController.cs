@@ -7,12 +7,12 @@ using System.Linq;
 namespace LearningStarter.Controllers;
 
 [ApiController]
-[Route("api/UserMessages")]
+[Route("api/Messages")]
 
-public class UserMessageController : ControllerBase
+public class MessageController : ControllerBase
 {
     private readonly DataContext _dataContext;
-    public UserMessageController(DataContext dataContext)
+    public MessageController(DataContext dataContext)
     {
         _dataContext = dataContext;
     }
@@ -22,8 +22,8 @@ public class UserMessageController : ControllerBase
     {
         var response = new Response();
         var data = _dataContext
-            .Set<UserMessages>()
-            .Select(usermessage => new UserMessagesGetDto
+            .Set<Messages>()
+            .Select(usermessage => new MessagesGetDto
             {
                 Id = usermessage.Id,
                 Content = usermessage.Content,
@@ -44,8 +44,8 @@ public class UserMessageController : ControllerBase
         var response = new Response();
         
         var data = _dataContext
-            .Set<UserMessages>()
-            .Select(usermessage => new UserMessagesGetDto
+            .Set<Messages>()
+            .Select(usermessage => new MessagesGetDto
             {
                 Id = usermessage.Id,
                 Content = usermessage.Content,
@@ -62,11 +62,11 @@ public class UserMessageController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Create([FromBody] UserMessagesCreateDto createDto)
+    public IActionResult Create([FromBody] MessagesCreateDto createDto)
     {
         var response = new Response();
 
-        var messageToCreate = new UserMessages
+        var messageToCreate = new Messages
         {
             Content = createDto.Content,
             ImageUrl= createDto.ImageUrl,
@@ -74,11 +74,11 @@ public class UserMessageController : ControllerBase
         };
 
 
-        _dataContext.Set<UserMessages>().Add(messageToCreate);
+        _dataContext.Set<Messages>().Add(messageToCreate);
 
         _dataContext.SaveChanges(); 
 
-        var messageToReturn = new UserMessagesGetDto
+        var messageToReturn = new MessagesGetDto
         {
             Id = messageToCreate.Id,
             Content = messageToCreate.Content,
@@ -93,11 +93,11 @@ public class UserMessageController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public IActionResult Update([FromBody] UserMessagesUpdateDto updateDto, int id)
+    public IActionResult Update([FromBody] MessagesUpdateDto updateDto, int id)
     {
         var response = new Response();
 
-        var UserMessageToUpdate = _dataContext.Set<UserMessages>()
+        var UserMessageToUpdate = _dataContext.Set<Messages>()
             .FirstOrDefault(group => group.Id == id);
 
         if (UserMessageToUpdate == null)
@@ -116,7 +116,7 @@ public class UserMessageController : ControllerBase
 
         _dataContext.SaveChanges();
 
-        var UserMessageToReturn = new UserMessagesGetDto
+        var UserMessageToReturn = new MessagesGetDto
         {
             Id = UserMessageToUpdate.Id,
             Content = UserMessageToUpdate.Content,
@@ -134,7 +134,7 @@ public class UserMessageController : ControllerBase
     {
         var response = new Response();
 
-        var UserMessageToDelete = _dataContext.Set<UserMessages>()
+        var UserMessageToDelete = _dataContext.Set<Messages>()
             .FirstOrDefault(usermessage => usermessage.Id == id);
 
         if (UserMessageToDelete == null)
@@ -147,7 +147,7 @@ public class UserMessageController : ControllerBase
             return BadRequest(response);
         }
 
-        _dataContext.Set<UserMessages>().Remove(UserMessageToDelete);
+        _dataContext.Set<Messages>().Remove(UserMessageToDelete);
         _dataContext.SaveChanges();
         response.Data = true;
 
