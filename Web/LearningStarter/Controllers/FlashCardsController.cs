@@ -25,7 +25,6 @@ public class FlashCardsController : ControllerBase
             .Select(FlashCards => new FlashCardsGetDto
             {
                 Id = FlashCards.Id,
-                FlashCardSetId = FlashCards.FlashCardSetId,
                 Question = FlashCards.Question,
                 Answer = FlashCards.Answer,
             })
@@ -33,7 +32,7 @@ public class FlashCardsController : ControllerBase
         response.Data = data;
         return Ok(response);
     }
-    [HttpGet("(id")]
+    [HttpGet("({id}")]
     public IActionResult GetById(int id)
     {
         var response = new Response();
@@ -44,7 +43,6 @@ public class FlashCardsController : ControllerBase
             .Select(FlashCards => new FlashCardsGetDto
             {
                 Id = FlashCards.Id,
-                FlashCardSetId = FlashCards.FlashCardSetId,
                 Question = FlashCards.Question,
                 Answer = FlashCards.Answer,
             })
@@ -75,14 +73,10 @@ public class FlashCardsController : ControllerBase
         {
             response.AddError(nameof(createDto.Answer), "Answer can not be empty");
         }
-        if (createDto.FlashCardSetId < 0)
-        {
-            response.AddError(nameof(createDto.FlashCardSetId), "Must enter a valid FlashCard Set Id");
-        }
+
 
         var FlashCardsToCreate = new FlashCards
-        {
-            FlashCardSetId = createDto.FlashCardSetId,
+        { 
             Question = createDto.Question,
             Answer = createDto.Answer,
         };
@@ -93,7 +87,6 @@ public class FlashCardsController : ControllerBase
         var FlashCardsToReturn = new FlashCardsGetDto
         {
             Id = FlashCardsToCreate.Id,
-            FlashCardSetId = FlashCardsToCreate.FlashCardSetId,
             Question = FlashCardsToCreate.Question,
             Answer = FlashCardsToCreate.Answer,
         };
@@ -115,10 +108,8 @@ public class FlashCardsController : ControllerBase
         {
             response.AddError(nameof(updateDto.Answer), "Answer can not be empty");
         }
-        if(updateDto.FlashCardSetId < 0)
-        {
-            response.AddError(nameof(updateDto.FlashCardSetId), "Must enter a valid FlashCard Set Id");
-        }
+      
+       
 
 
         var FlashCardsToUpdate = _dataContext.Set<FlashCards>()
@@ -142,7 +133,6 @@ public class FlashCardsController : ControllerBase
         var FlashCardsToReturn = new FlashCardsGetDto
         {
             Id = FlashCardsToUpdate.Id,
-            FlashCardSetId = FlashCardsToUpdate.FlashCardSetId,
             Answer = FlashCardsToUpdate.Answer,
             Question = FlashCardsToUpdate.Question,
 

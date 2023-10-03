@@ -31,8 +31,18 @@ public class GroupController : ControllerBase
                 Id = group.Id,
                 Name = group.Name,
                 Description = group.Description,
+                Users = group.Users.Select(x => new GroupUserGetDto
+                {
+                    Id = x.User.Id,
+                    FirstName = x.User.FirstName,
+                    LastName = x.User.LastName,
+                    UserName = x.User.UserName,
+
+
+                }).ToList()
 
             })
+
             .ToList();
 
         response.Data = data;
@@ -51,7 +61,17 @@ public class GroupController : ControllerBase
                 Id = group.Id,
                 Name = group.Name,
                 Description = group.Description,
+                Users = group.Users.Select(x=> new GroupUserGetDto
+                {
+                    Id = x.User.Id,
+                    FirstName = x.User.FirstName,
+                    LastName = x.User.LastName,
+                    UserName = x.User.UserName,
 
+
+                }).ToList()
+
+            
             })
             .FirstOrDefault(group  => group.Id == id);
 
@@ -94,6 +114,51 @@ public class GroupController : ControllerBase
         response.Data = groupToReturn;
 
         return Created("", response);
+    }
+
+    [HttpPost("{groupId}/user/{userId}")]
+    public IActionResult AddUserToGroup(int groupId, int userId)
+    {
+        var response = new Response();
+        var group = _dataContext.Set<Group>()
+            .FirstOrDefault(x=> x.Id == groupId);
+        var user = _dataContext.Set<User>()
+            .FirstOrDefault(x=> x.Id == userId);
+        if(group == null)
+        {
+            response.AddError("id", "Group not found.");
+        }
+        if (user == null)
+        {
+            response.AddError("id", "User not found.");
+        }
+        var groupUser = new GroupUser
+        {
+            Group = group,
+            User = user,
+
+        };
+        if (response.HasErrors)
+        {
+            return BadRequest(response);
+        }
+        _dataContext.Set<GroupUser>().Add(groupUser);
+        _dataContext.SaveChanges();
+
+        response.Data = new GroupGetDto
+        {
+            Id = groupId,
+            Name = group.Name,
+            Description = group.Description,
+            Users = group.Users.Select(x => new GroupUserGetDto
+            {
+                Id = x.User.Id,
+                FirstName = x.User.FirstName,
+                LastName = x.User.LastName,
+                UserName = x.User.UserName,
+            }).ToList()
+        };
+        return Ok(response);
     }
 
     [HttpPut("{id}")]
