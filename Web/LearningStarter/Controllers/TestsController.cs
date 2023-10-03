@@ -3,7 +3,10 @@ using LearningStarter.Data;
 using LearningStarter.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using System.Collections.Generic;
 using System.Linq;
+using static System.Net.Mime.MediaTypeNames;
+
 namespace LearningStarter.Controllers
 {
     [ApiController]
@@ -28,6 +31,12 @@ namespace LearningStarter.Controllers
                     GroupId = Tests.GroupId,
                     CreatorId = Tests.CreatorId,
                     Name = Tests.Name,
+                    Questions = Tests.Questions.Select(Tests => new TestQuestionsGetDto
+                    {
+                        
+                        Question = Tests.Question,
+
+                    }).ToList(),
                 })
                 .ToList();
             response.Data = data;
@@ -47,6 +56,12 @@ namespace LearningStarter.Controllers
                     GroupId = Tests.GroupId,
                     CreatorId = Tests.CreatorId,
                     Name = Tests.Name,
+                    Questions = Tests.Questions.Select(Tests => new TestQuestionsGetDto
+                    {
+
+                        Question = Tests.Question,
+
+                    }).ToList(),
                 })
                 .FirstOrDefault(Tests => Tests.Id == id);
 
@@ -101,6 +116,43 @@ namespace LearningStarter.Controllers
             return Created("", response);
 
         }
+
+        [HttpPost("{testId}/question/{testquestionId}")]
+        public IActionResult AddQuestionToTest(int testId, int testquestionId)
+        {
+            var response = new Response();
+
+            // Fetch the corresponding test
+            var test = _dataContext.Set<Tests>().FirstOrDefault(x => x.Id == testId);
+
+            // Fetch the corresponding test question
+            var testQuestion = _dataContext.Set<TestQuestions>().FirstOrDefault(x => x.Id == testquestionId);
+
+            // Check if the test and test question exist
+            if (test == null || testQuestion == null)
+            {
+                return BadRequest("Test or Test Question not found.");
+            }
+
+            // Associate the test question with the test
+            testQuestion.Tests = test;
+
+            // Add the test question to the data context (if not already added)
+            if (!_dataContext.Set<TestQuestions>().Local.Contains(testQuestion))
+            {
+                _dataContext.Set<TestQuestions>().Add(testQuestion);
+            }
+
+            // Save changes to the database
+            _dataContext.SaveChanges();
+
+            // Your response logic here
+
+            return Ok(response);
+        }
+
+
+
         [HttpPut("{id}")]
         public IActionResult Update([FromBody] TestsUpdateDto updateDto, int id)
         {

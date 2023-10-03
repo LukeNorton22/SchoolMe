@@ -11,6 +11,8 @@ namespace LearningStarter.Entities
         public int GroupId { get; set; }
         public int CreatorId {  get; set; }
         public string Name { get; set; }
+        public List<TestQuestions> Questions { get; set; }
+        
     }
     public class TestsCreateDto
     {
@@ -31,12 +33,15 @@ namespace LearningStarter.Entities
         public int GroupId { get; set; }
         public int CreatorId { get; set; }
         public string Name { get; set; }
+        public List<TestQuestionsGetDto> Questions { get; set; }
     }
     public class TestsEntityTypeConfiguration : IEntityTypeConfiguration<Tests>
     {
         public void Configure(EntityTypeBuilder<Tests> builder)
         {
             builder.ToTable("Tests");
+
+            builder.HasMany(x => x.Questions);
         }
     }
 
