@@ -11,6 +11,7 @@ namespace LearningStarter.Entities
         public int GroupId { get; set; }
         public int CreatorId {  get; set; }
         public string Name { get; set; }
+        
     }
     public class TestsCreateDto
     {
