@@ -9,10 +9,10 @@ namespace LearningStarter.Controllers;
 [ApiController]
 [Route("api/UserMessages")]
 
-public class UserMessageController : ControllerBase
+public class MessageController : ControllerBase
 {
     private readonly DataContext _dataContext;
-    public UserMessageController(DataContext dataContext)
+    public MessageController(DataContext dataContext)
     {
         _dataContext = dataContext;
     }
