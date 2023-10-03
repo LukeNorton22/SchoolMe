@@ -7,11 +7,8 @@ using System.Linq;
 namespace LearningStarter.Controllers;
 
 [ApiController]
-GroupUsers
 [Route("api/Messages")]
-=======
-[Route("api/Messages")]
-main
+
 
 public class MessageController : ControllerBase
 {
