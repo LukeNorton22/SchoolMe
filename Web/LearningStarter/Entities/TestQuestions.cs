@@ -7,6 +7,8 @@ namespace LearningStarter.Entities
     {
         public int Id { get; set; }
         public string Question {  get; set; }
+        public int TestId { get; set; }
+        public Tests Tests { get; set; }
 
     }
 
@@ -31,6 +33,11 @@ namespace LearningStarter.Entities
         public void Configure(EntityTypeBuilder<TestQuestions> builder)
         {
             builder.ToTable("TestQuestions");
+
+            builder.HasOne(x => x.Tests)
+               .WithMany(x => x.Questions);
+
+            
         }
     }
 }
