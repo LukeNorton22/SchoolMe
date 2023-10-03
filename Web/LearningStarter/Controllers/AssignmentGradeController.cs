@@ -31,7 +31,7 @@ public class AssignmentGradeController : ControllerBase
                 Id = AssignmentGrade.Id,
                 AssignmentName = AssignmentGrade.AssignmentName,
                 Grade = AssignmentGrade.Grade,
-                AverageGrade = AssignmentGrade.AverageGrade
+                
 
             })
             .ToList();
@@ -50,7 +50,7 @@ public class AssignmentGradeController : ControllerBase
         {
             AssignmentName = createDto.AssignmentName,
             Grade = createDto.Grade,
-            AverageGrade = createDto.AverageGrade
+            
         };
 
         _dataContext.Set<AssignmentGrade>().Add(AssignmentGradeToCreate);
@@ -60,7 +60,7 @@ public class AssignmentGradeController : ControllerBase
         {
            AssignmentName = createDto.AssignmentName,
            Grade = createDto.Grade,
-           AverageGrade = createDto.AverageGrade
+           
         };
 
         response.Data = AssignmentGradeToReturn;
@@ -79,7 +79,7 @@ public class AssignmentGradeController : ControllerBase
                 Id = assignmentGrade.Id, 
                 AssignmentName = assignmentGrade.AssignmentName,
                 Grade = assignmentGrade.Grade,
-                AverageGrade = assignmentGrade.AverageGrade
+              
 
             })
             .FirstOrDefault(group => group.Id == id);
