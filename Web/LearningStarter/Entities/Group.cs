@@ -13,6 +13,8 @@ public class Group
     public List<GroupUser> Users { get; set; }
     
 
+
+
 }
 
 public class GroupCreateDto
