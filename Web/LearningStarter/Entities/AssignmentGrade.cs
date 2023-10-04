@@ -12,7 +12,7 @@ public class AssignmentGrade
 
    
     public decimal Grade { get; set; }
-    public Assignments Asssignments{get; set; }
+    public Assignments Assignments{get; set; }
 
 }
 

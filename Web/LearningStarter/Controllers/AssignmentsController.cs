@@ -167,29 +167,29 @@ namespace LearningStarter.Controllers
         }
 
         [HttpPost("{AssignmentId}/AssignmentGrade/{AssignmentAssignmentGradeId}")]
-        public IActionResult AddAssignmentGradeToAssignment(int AssignmentId, int AssignmentGradeId)
+        public IActionResult AddAssignmentGradeToAssignment(int assignmentId, int assignmentGradeId)
         {
             var response = new Response();
 
             // Fetch the corresponding Assignment
-            var Assignment = _dataContext.Set<Assignments>().FirstOrDefault(x => x.Id == AssignmentId);
+            var assignment = _dataContext.Set<Assignments>().FirstOrDefault(x => x.Id == assignmentId);
 
             // Fetch the corresponding Assignment AssignmentGrade
-            var asgnmentGrade = _dataContext.Set<AssignmentGrade>().FirstOrDefault(x => x.Id == AssignmentGradeId);
+            var assignmentGrade = _dataContext.Set<AssignmentGrade>().FirstOrDefault(x => x.Id == assignmentGradeId);
             
             // Check if the Assignment and Assignment AssignmentGrade exist
-            if (Assignment == null || AssignmentGrade == null)
+            if (assignment == null || assignmentGrade == null)
             {
                 return BadRequest("Assignment or Assignment AssignmentGrade not found.");
             }
 
             // Associate the Assignment AssignmentGrade with the Assignment
-            AssignmentGrade.Assignments =Assignment;
+            assignmentGrade.Assignments = assignment;
 
             // Add the Assignment AssignmentGrade to the data context (if not already added)
-            if (!_dataContext.Set<AssignmentGrade>().Local.Contains(AssignmentGrade))
+            if (!_dataContext.Set<AssignmentGrade>().Local.Contains(assignmentGrade))
             {
-                _dataContext.Set<AssignmentGrades>().Add(AssignmentGrade);
+                _dataContext.Set<AssignmentGrade>().Add(assignmentGrade);
             }
 
             // Save changes to the database
