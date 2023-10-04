@@ -14,6 +14,8 @@ public class Group
  
     public List<GroupMessages> Messages { get; set; }
 
+    public List<Assignments> Assignments { get; set; }
+
 
 }
 
