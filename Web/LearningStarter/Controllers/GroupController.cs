@@ -70,7 +70,6 @@ public class GroupController : ControllerBase
             return BadRequest("Invalid message data.");
         }
 
-        // Create a new test entity and associate it with the group
         var newMessage = new Messages
         {
             GroupId= groupId,
