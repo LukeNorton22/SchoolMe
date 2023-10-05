@@ -9,34 +9,30 @@ public class AssignmentGrade
 {
     public int Id { get; set; }
     public int AssignmentId { get; set; }
-
-   
-    public decimal Grade { get; set; }
-    public Assignments Assignments{get; set; }
+    public int Grade { get; set; }
+    public Assignments Assignments {get; set; }
 
 }
 
 public class AssignmentGradeCreateDto
-{
-    public int AssignmentId { get; set; }
-   
-    public decimal Grade { get; set; }
+{   
+    public int Id { get; set; }
+    public int Grade { get; set; }
     
-
 }
 
 public class AssignmentGradeGetDto
 {
     public int Id { get; set; }
     public int AssignmentId { get; set; }
-    public decimal Grade { get; set; }
-   
+    public int Grade { get; set; }
+    
 }
 
 public class AssignmentGradeUpdateDto
 {
     public int AssignmentId { get; set; }
-    public decimal Grade { get; set; }
+    public int Grade { get; set; }
 
 }
 
@@ -45,7 +41,8 @@ public class AssignmentGradeEntityTypeConfiguration : IEntityTypeConfiguration<A
     public void Configure(EntityTypeBuilder<AssignmentGrade> builder)
     {
         builder.ToTable("AssignmentGrade");
-        builder.HasOne(x => x.Asssignments)
-               .WithMany(x => x.Grades);
+
+        builder.HasOne(x => x.Assignments)
+               .WithMany(x => x.Grade);
     }
 }

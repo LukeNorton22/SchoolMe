@@ -11,12 +11,9 @@ public class Group
     public string Name { get; set; }    
     public string Description { get; set; }
     public List<GroupUser> Users { get; set; }
- 
     public List<GroupMessages> Messages { get; set; }
-
     public List<Assignments> Assignments { get; set; }
-
-
+    public List<Tests> Tests { get; set; }
 }
 
 public class GroupCreateDto
@@ -39,6 +36,8 @@ public class GroupGetDto
     public string Description { get; set; }
     public List<GroupUserGetDto>Users { get; set; }
     public List<GroupMessagesGetDto> Messages { get; set; }
+    public List <TestsGetDto> Tests { get; set; }
+    
 
 }
 
@@ -48,6 +47,8 @@ public class GroupEntityTypeConfiguration : IEntityTypeConfiguration<Group>
     public void Configure(EntityTypeBuilder<Group> builder)
     {
         builder.ToTable("Groups");
+
+        builder.HasMany(x => x.Tests).WithOne(x => x.Group);
     }
 }
 

@@ -24,8 +24,7 @@ public class TestQuestionsController : ControllerBase
             .Set<TestQuestions>()
             .Select(TestQuestions => new TestQuestionsGetDto
             {
-                Id = TestQuestions.Id,
-               
+                Id = TestQuestions.Id,             
                 Question = TestQuestions.Question,
             })
             .ToList();

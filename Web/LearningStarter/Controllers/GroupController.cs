@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Net.Sockets;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LearningStarter.Controllers;
 
@@ -23,6 +24,37 @@ public class GroupController : ControllerBase
     {
         _dataContext = dataContext;
     }
+
+    [HttpPost("{groupId}/tests")]
+    public IActionResult CreateTestInGroup(int groupId, [FromBody] TestsCreateDto testCreateDto)
+    {
+        var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
+
+        if (group == null)
+        {
+            return NotFound("Group not found.");
+        }
+
+        if (testCreateDto == null)
+        {
+            return BadRequest("Invalid test data.");
+        }
+
+        // Create a new test entity and associate it with the group
+        var newTest = new Tests
+        {
+            GroupId = groupId, // Automatically associates the test with the group
+            Name = testCreateDto.Name,
+            // Set other properties as needed
+        };
+
+        _dataContext.Set<Tests>().Add(newTest); 
+        _dataContext.SaveChanges();
+
+        // Return a response, e.g., the newly created test
+        return Ok(newTest);
+    }
+
 
     [HttpGet]
     public IActionResult GetAll()

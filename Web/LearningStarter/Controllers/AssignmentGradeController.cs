@@ -29,9 +29,7 @@ public class AssignmentGradeController : ControllerBase
             .Select(AssignmentGrade => new AssignmentGradeGetDto
             {
                 Id = AssignmentGrade.Id,
-                Grade = AssignmentGrade.Grade,
-                
-
+                Grade = AssignmentGrade.Grade,               
             })
             .ToList();
 
@@ -46,10 +44,8 @@ public class AssignmentGradeController : ControllerBase
         var response = new Response();
 
         var AssignmentGradeToCreate = new AssignmentGrade
-        {
-            
-            Grade = createDto.Grade,
-            
+        {            
+            Grade = createDto.Grade,           
         };
 
         _dataContext.Set<AssignmentGrade>().Add(AssignmentGradeToCreate);
@@ -57,9 +53,8 @@ public class AssignmentGradeController : ControllerBase
 
         var AssignmentGradeToReturn = new AssignmentGradeGetDto
         {
-           Id = AssignmentGradeToCreate.Id,
-           Grade = createDto.Grade,
-           
+            Id = createDto.Id,
+           Grade = createDto.Grade, 
         };
 
         response.Data = AssignmentGradeToReturn;
@@ -75,8 +70,7 @@ public class AssignmentGradeController : ControllerBase
             .Set<AssignmentGrade>()
             .Select(assignmentGrade => new AssignmentGradeGetDto
             {
-                Id = assignmentGrade.Id, 
-              
+                Id = assignmentGrade.Id,               
                 Grade = assignmentGrade.Grade,
               
 
@@ -114,7 +108,6 @@ public class AssignmentGradeController : ControllerBase
 
         var AssignmentGradeToReturn = new AssignmentGradeGetDto
         {
-            Id = AssignmentGradeToUpdate.Id,
            
             Grade = AssignmentGradeToUpdate.Grade,
             

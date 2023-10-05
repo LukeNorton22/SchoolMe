@@ -27,20 +27,13 @@ namespace LearningStarter.Controllers
                 .Select(Assignments => new AssignmentsGetDto
                 {
                     Id = Assignments.Id,
-
                     Name = Assignments.Name,
-                    AverageGrade = Assignments.AverageGrade,
-                    GroupId = Assignments.GroupId,
-                    Grades = Assignments.Grades.Select(x => new AssignmentGradeGetDto
+                    Grade = Assignments.Grade.Select(x => new AssignmentGradeGetDto
                     {
-
-
-                        Grade = Assignments.Grade,
-
-
+                        Grade = x.Grade
 
                     }).ToList()
-                });
+                })
                     .ToList();
             response.Data = data;
             return Ok(response);
@@ -56,16 +49,10 @@ namespace LearningStarter.Controllers
                 .Select(Assignments => new AssignmentsGetDto
                 {
                     Id = Assignments.Id,
-
-                    CreatedById = Assignments.CreatedById,
-                    SetName = Assignments.SetName,
-                    AssignmentGrade = Assignments.AssignmentGrade.Select(x => new AssignmentsFlashCardGetDto
+                    Name = Assignments.Name,
+                    Grade = Assignments.Grade.Select(x => new AssignmentGradeGetDto
                     {
-                        Id = x.AssignmentGrade.Id,
-                        AssignmentId = x.AssignmentGrade.AssignmentId,
-                        Grade = x.AssignmentGrade.Grade,
-
-
+                        Grade = x.Grade
 
                     }).ToList()
                 })
@@ -74,10 +61,7 @@ namespace LearningStarter.Controllers
             response.Data = data;
             if (data == null)
             {
-
-
-
-                response.AddError("id", "FlashCard not found.");
+                response.AddError("id", "Assignment not found.");
             }
             return Ok(response);
 
@@ -88,22 +72,9 @@ namespace LearningStarter.Controllers
         {
             var response = new Response();
 
-            if (createDto.CreatedById < 0)
-            {
-                response.AddError(nameof(createDto.CreatedById), "CreatedById must be valid");
-            }
-            if (createDto.SetName == null)
-            {
-                response.AddError(nameof(createDto.SetName), "SetName can not be empty");
-            }
-
-
-
             var AssignmentsToCreate = new Assignments
             {
-
-                CreatedById = createDto.CreatedById,
-                SetName = createDto.SetName,
+                Name = createDto.Name,
             };
 
             _dataContext.Set<Assignments>().Add(AssignmentsToCreate);
@@ -111,10 +82,8 @@ namespace LearningStarter.Controllers
 
             var AssignmentsToReturn = new AssignmentsGetDto
             {
-                Id = AssignmentsToCreate.Id,
-
-                CreatedById = AssignmentsToCreate.CreatedById,
-                SetName = AssignmentsToCreate.SetName,
+                Id = AssignmentsToCreate.Id,               
+                Name = AssignmentsToCreate.Name,
             };
 
             response.Data = AssignmentsToReturn;
@@ -125,23 +94,13 @@ namespace LearningStarter.Controllers
         public IActionResult Update([FromBody] AssignmentsUpdateDto updateDto, int id)
         {
             var response = new Response();
-
-            if (updateDto.CreatedById < 0)
-            {
-                response.AddError(nameof(updateDto.CreatedById), "CreatedById must be valid");
-            }
-            if (updateDto.SetName == null)
-            {
-                response.AddError(nameof(updateDto.SetName), "SetName can not be empty");
-            }
-
-
+          
             var AssignmentsToUpdate = _dataContext.Set<Assignments>()
                 .FirstOrDefault(Assignments => Assignments.Id == id);
 
             if (AssignmentsToUpdate == null)
             {
-                response.AddError("id", "FlashCard not found.");
+                response.AddError("id", "Assignment not found.");
             }
 
             if (response.HasErrors)
@@ -149,24 +108,21 @@ namespace LearningStarter.Controllers
                 return BadRequest(response);
             }
 
-            AssignmentsToUpdate.SetName = updateDto.SetName;
-            AssignmentsToUpdate.CreatedById = updateDto.CreatedById;
+            AssignmentsToUpdate.Name = updateDto.Name;
 
             _dataContext.SaveChanges();
 
             var AssignmentsToReturn = new AssignmentsGetDto
             {
                 Id = AssignmentsToUpdate.Id,
-
-                SetName = AssignmentsToUpdate.SetName,
-                CreatedById = AssignmentsToUpdate.CreatedById,
+                Name = AssignmentsToUpdate.Name,
 
             };
             response.Data = AssignmentsToReturn;
             return Ok(response);
         }
 
-        [HttpPost("{AssignmentId}/AssignmentGrade/{AssignmentAssignmentGradeId}")]
+        [HttpPost("{AssignmentId}/grade/{AssignmentGradeId}")]
         public IActionResult AddAssignmentGradeToAssignment(int assignmentId, int assignmentGradeId)
         {
             var response = new Response();
@@ -177,16 +133,12 @@ namespace LearningStarter.Controllers
             // Fetch the corresponding Assignment AssignmentGrade
             var assignmentGrade = _dataContext.Set<AssignmentGrade>().FirstOrDefault(x => x.Id == assignmentGradeId);
             
-            // Check if the Assignment and Assignment AssignmentGrade exist
-            if (assignment == null || assignmentGrade == null)
-            {
-                return BadRequest("Assignment or Assignment AssignmentGrade not found.");
-            }
+           
 
-            // Associate the Assignment AssignmentGrade with the Assignment
+            // Associate the AssignmentGrade with the Assignment
             assignmentGrade.Assignments = assignment;
 
-            // Add the Assignment AssignmentGrade to the data context (if not already added)
+            // Add the AssignmentGrade to the data context (if not already added)
             if (!_dataContext.Set<AssignmentGrade>().Local.Contains(assignmentGrade))
             {
                 _dataContext.Set<AssignmentGrade>().Add(assignmentGrade);
@@ -196,7 +148,6 @@ namespace LearningStarter.Controllers
             _dataContext.SaveChanges();
 
             // Your response logic here
-
             return Ok(response);
         }
     }
