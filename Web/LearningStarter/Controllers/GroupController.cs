@@ -43,8 +43,8 @@ public class GroupController : ControllerBase
         // Create a new test entity and associate it with the group
         var newTest = new Tests
         {
-            GroupId = groupId, // Automatically associates the test with the group
-            Name = testCreateDto.Name,
+            GroupId = groupId,
+            TestName = testCreateDto.TestName,
             // Set other properties as needed
         };
 
@@ -55,6 +55,34 @@ public class GroupController : ControllerBase
         return Ok(newTest);
     }
 
+    [HttpPost("{groupId}/messages")]
+    public IActionResult CreateMessageInGroup(int groupId, [FromBody] MessagesCreateDto messagesCreateDto)
+    {
+        var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
+
+        if (group == null)
+        {
+            return NotFound("Group not found.");
+        }
+
+        if (messagesCreateDto == null)
+        {
+            return BadRequest("Invalid message data.");
+        }
+
+        // Create a new test entity and associate it with the group
+        var newMessage = new Messages
+        {
+            GroupId= groupId,
+            Content = messagesCreateDto.Content,
+        };
+
+        _dataContext.Set<Messages>().Add(newMessage);
+        _dataContext.SaveChanges();
+
+        // Return a response, e.g., the newly created test
+        return Ok(newMessage);
+    }
 
     [HttpGet]
     public IActionResult GetAll()
@@ -62,11 +90,19 @@ public class GroupController : ControllerBase
         var response = new Response();
         var data = _dataContext
             .Set<Group>()
+            .Include(x => x.Test)
+            .Include(x => x.Users)
+            .Include(x => x.Messages)
             .Select(group => new GroupGetDto
             {
                 Id = group.Id,
-                Name = group.Name,
+                GroupName = group.GroupName,
                 Description = group.Description,
+                Messages = group.Messages.Select(x => new MessagesGetDto
+                {
+                    Content = x.Content,
+
+                }).ToList(),
                 Users = group.Users.Select(x => new GroupUserGetDto
                 {
                     Id = x.User.Id,
@@ -74,14 +110,10 @@ public class GroupController : ControllerBase
                     LastName = x.User.LastName,
                     UserName = x.User.UserName,
 
-
                 }).ToList(),
-                Messages = group.Messages.Select(x => new GroupMessagesGetDto
+                Tests = group.Test.Select(x => new TestsGetDto
                 {
-                    Id = x.Message.Id,
-                    Content = x.Message.Content,
-                    ImageUrl = x.Message.ImageUrl,
-                    CreatedAt = x.Message.CreatedAt
+                    TestName = x.TestName,
 
                 }).ToList(),
 
@@ -104,7 +136,7 @@ public class GroupController : ControllerBase
             .Select(group => new GroupGetDto
             {
                 Id = group.Id,
-                Name = group.Name,
+                GroupName = group.GroupName,
                 Description = group.Description,
                 Users = group.Users.Select(x=> new GroupUserGetDto
                 {
@@ -130,9 +162,9 @@ public class GroupController : ControllerBase
     {
         var response = new Response();
 
-        if (string.IsNullOrEmpty(createDto.Name))
+        if (string.IsNullOrEmpty(createDto.GroupName))
         {
-            response.AddError(nameof(createDto.Name), "Group name can't be empty");
+            response.AddError(nameof(createDto.GroupName), "Group name can't be empty");
         }
 
         if (response.HasErrors)
@@ -142,24 +174,29 @@ public class GroupController : ControllerBase
 
         var groupToCreate = new Group
         {
-            Name = createDto.Name,
+            GroupName = createDto.GroupName,
             Description = createDto.Description,
         };
 
         _dataContext.Set<Group>().Add(groupToCreate);
         _dataContext.SaveChanges();
 
-        var groupToReturn = new GroupGetDto
-        {
-            Id = groupToCreate.Id,
-            Name = groupToCreate.Name,
-            Description = groupToCreate.Description,
-        };
+        var groupToReturn = _dataContext
+            .Set<Group>()
+            .Select(g => new Group
+            {
+                Id=g.Id,
+                GroupName = g.GroupName,
+                Description = g.Description,
+                // Add more properties here as needed
+            })
+            .FirstOrDefault();
 
         response.Data = groupToReturn;
 
         return Created("", response);
     }
+
 
     [HttpPost("{groupId}/user/{userId}")]
     public IActionResult AddUserToGroup(int groupId, int userId)
@@ -193,7 +230,7 @@ public class GroupController : ControllerBase
         response.Data = new GroupGetDto
         {
             Id = groupId,
-            Name = group.Name,
+            GroupName = group.GroupName,
             Description = group.Description,
             Users = group.Users.Select(x => new GroupUserGetDto
             {
@@ -205,44 +242,7 @@ public class GroupController : ControllerBase
         };
         return Ok(response);
     }
-
-    [HttpPost("{groupId}/message/{messageId}")]
-    public IActionResult AddMessageToGroup(int groupId, int messageId)
-    {
-        var response = new Response();
-        var group = _dataContext.Set<Group>()
-            .FirstOrDefault(x => x.Id == groupId);
-        var message = _dataContext.Set<Messages>()
-            .FirstOrDefault(x => x.Id == messageId);
-        var messages = new GroupMessages
-        {
-            Group = group,
-            Message = message,
-
-        };
-
-        _dataContext.Set<GroupMessages>().Add(messages);
-        _dataContext.SaveChanges();
-
-        response.Data = new GroupGetDto
-        {
-            Id = group.Id,
-            Name = group.Name,
-            Description = group.Description,
-            Messages = group.Messages.Select(x => new GroupMessagesGetDto
-            {
-                Id = x.Message.Id,
-                Content = x.Message.Content,
-                ImageUrl = x.Message.ImageUrl,
-                CreatedAt = x.Message.CreatedAt
-
-            }).ToList(),
-
-        }; 
-
-        
-        return Ok(response);
-    }
+ 
 
     [HttpPut("{id}")]
     public IActionResult Update([FromBody] GroupUpdateDto updateDto, int id)
@@ -262,7 +262,7 @@ public class GroupController : ControllerBase
             return BadRequest(response);
         } 
 
-        groupToUpdate.Name = updateDto.Name;
+        groupToUpdate.GroupName = updateDto.GroupName;
         groupToUpdate.Description = updateDto.Description;
 
         _dataContext.SaveChanges();
@@ -270,7 +270,7 @@ public class GroupController : ControllerBase
         var groupToReturn = new GroupGetDto
         {
             Id = groupToUpdate.Id,
-            Name = groupToUpdate.Name,
+            GroupName = groupToUpdate.GroupName,
             Description = groupToUpdate.Description,
         };
 

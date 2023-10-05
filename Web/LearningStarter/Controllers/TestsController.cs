@@ -27,9 +27,8 @@ namespace LearningStarter.Controllers
                 .Set<Tests>()
                 .Select(Tests => new TestsGetDto
                 {
-                    Id = Tests.Id,
-                    GroupId = Tests.GroupId,
-                    Name = Tests.Name,
+                   
+                    TestName = Tests.TestName,
                     Questions = Tests.Questions.Select(Tests => new TestQuestionsGetDto
                     {
                         Question = Tests.Question,
@@ -51,8 +50,7 @@ namespace LearningStarter.Controllers
                 .Select(Tests => new TestsGetDto
                 {
                     Id = Tests.Id,
-                    GroupId = Tests.GroupId,
-                    Name = Tests.Name,
+                    TestName = Tests.TestName,
                     Questions = Tests.Questions.Select(Tests => new TestQuestionsGetDto
                     {
 
@@ -78,20 +76,16 @@ namespace LearningStarter.Controllers
         {
             var response = new Response();
 
-            if (createDto.GroupId < 0)
-            {
-                response.AddError(nameof(createDto.GroupId), "GroupId must be a valid number");
-            }
+          
            
-            if (createDto.Name == null)
+            if (createDto.TestName == null)
             {
-                response.AddError(nameof(createDto.Name), "Must enter a valid name");
+                response.AddError(nameof(createDto.TestName), "Must enter a valid name");
             }
 
             var TestsToCreate = new Tests
             {
-                GroupId = createDto.GroupId,
-                Name = createDto.Name,
+                TestName = createDto.TestName,
             };
 
             _dataContext.Set<Tests>().Add(TestsToCreate);
@@ -99,9 +93,7 @@ namespace LearningStarter.Controllers
 
             var TestsToReturn = new TestsGetDto
             {
-                Id = TestsToCreate.Id,
-                GroupId = TestsToCreate.GroupId,
-                Name = TestsToCreate.Name,
+                TestName = TestsToCreate.TestName,
             };
 
             response.Data = TestsToReturn;
@@ -150,14 +142,11 @@ namespace LearningStarter.Controllers
         {
             var response = new Response();
 
-            if (updateDto.GroupId <0)
-            {
-                response.AddError(nameof(updateDto.GroupId), "GroupId must be a valid number");
-            }
            
-            if (updateDto.Name == null)
+           
+            if (updateDto.TestName == null)
             {
-                response.AddError(nameof(updateDto.Name), "Must enter a valid Name");
+                response.AddError(nameof(updateDto.TestName), "Must enter a valid Name");
             }
 
 
@@ -174,16 +163,13 @@ namespace LearningStarter.Controllers
                 return BadRequest(response);
             }
 
-            TestsToUpdate.GroupId = updateDto.GroupId;
 
             _dataContext.SaveChanges();
 
             var TestsToReturn = new TestsGetDto
             {
-                Id = TestsToUpdate.Id,
-                
-                GroupId = TestsToUpdate.GroupId,
-                Name = TestsToUpdate.Name,
+               
+                TestName = TestsToUpdate.TestName,
 
             };
             response.Data = TestsToReturn;
