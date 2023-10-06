@@ -26,7 +26,7 @@ namespace LearningStarter.Controllers
                 {
                     Id = FlashCardSets.Id,
                     
-                    CreatedById = FlashCardSets.CreatedById,
+                    
                     SetName = FlashCardSets.SetName,
                     FlashCards = FlashCardSets.FlashCards.Select(x => new FlashCardSetsFlashCardGetDto
                     {
@@ -54,7 +54,7 @@ namespace LearningStarter.Controllers
                 {
                     Id = FlashCardSets.Id,
                   
-                    CreatedById = FlashCardSets.CreatedById,
+                    
                     SetName = FlashCardSets.SetName,
                     FlashCards = FlashCardSets.FlashCards.Select(x => new FlashCardSetsFlashCardGetDto
                     {
@@ -85,10 +85,7 @@ namespace LearningStarter.Controllers
         {
             var response = new Response();
 
-            if (createDto.CreatedById < 0)
-            {
-                response.AddError(nameof(createDto.CreatedById), "CreatedById must be valid");
-            }
+           
             if (createDto.SetName == null)
             {
                 response.AddError(nameof(createDto.SetName), "SetName can not be empty");
@@ -99,7 +96,7 @@ namespace LearningStarter.Controllers
             var FlashCardSetsToCreate = new FlashCardSets
             {
                
-                CreatedById = createDto.CreatedById,
+                
                 SetName = createDto.SetName,
             };
 
@@ -110,7 +107,7 @@ namespace LearningStarter.Controllers
             {
                 Id = FlashCardSetsToCreate.Id,
               
-                CreatedById = FlashCardSetsToCreate.CreatedById,
+                
                 SetName = FlashCardSetsToCreate.SetName,
             };
 
@@ -123,10 +120,7 @@ namespace LearningStarter.Controllers
         {
             var response = new Response();
 
-            if (updateDto.CreatedById < 0)
-            {
-                response.AddError(nameof(updateDto.CreatedById), "CreatedById must be valid");
-            }
+           
             if (updateDto.SetName == null)
             {
                 response.AddError(nameof(updateDto.SetName), "SetName can not be empty");
@@ -147,7 +141,7 @@ namespace LearningStarter.Controllers
             }
 
             FlashCardSetsToUpdate.SetName = updateDto.SetName;
-            FlashCardSetsToUpdate.CreatedById = updateDto.CreatedById;
+           
 
             _dataContext.SaveChanges();
 
@@ -156,7 +150,7 @@ namespace LearningStarter.Controllers
                 Id = FlashCardSetsToUpdate.Id,
         
                 SetName = FlashCardSetsToUpdate.SetName,
-                CreatedById = FlashCardSetsToUpdate.CreatedById,
+                
 
             };
             response.Data = FlashCardSetsToReturn;
@@ -220,7 +214,7 @@ namespace LearningStarter.Controllers
             response.Data = new FlashCardSetsGetDto
             {
                 Id = FlashCardSetsId,
-                CreatedById = FlashCardSets.CreatedById,
+                
                 SetName = FlashCardSets.SetName,
                 FlashCards = FlashCardSets.FlashCards.Select(x => new FlashCardSetsFlashCardGetDto
                 {

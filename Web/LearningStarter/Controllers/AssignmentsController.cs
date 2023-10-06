@@ -123,17 +123,21 @@ namespace LearningStarter.Controllers
         }
 
         [HttpPost("{AssignmentId}/grade/{AssignmentGradeId}")]
-        public IActionResult AddAssignmentGradeToAssignment(int assignmentId, int assignmentGradeId)
+        public IActionResult AddAssignmentGradeToAssignment(int AssignmentId, int AssignmentGradeId)
         {
             var response = new Response();
 
             // Fetch the corresponding Assignment
-            var assignment = _dataContext.Set<Assignments>().FirstOrDefault(x => x.Id == assignmentId);
+            var assignment = _dataContext.Set<Assignments>().FirstOrDefault(x => x.Id == AssignmentId);
 
             // Fetch the corresponding Assignment AssignmentGrade
-            var assignmentGrade = _dataContext.Set<AssignmentGrade>().FirstOrDefault(x => x.Id == assignmentGradeId);
-            
-           
+            var assignmentGrade = _dataContext.Set<AssignmentGrade>().FirstOrDefault(x => x.Id == AssignmentGradeId);
+
+            if (assignment == null || assignmentGrade == null)
+            {
+                return BadRequest("Test or Test Question not found.");
+            }
+
 
             // Associate the AssignmentGrade with the Assignment
             assignmentGrade.Assignments = assignment;
@@ -143,7 +147,19 @@ namespace LearningStarter.Controllers
             {
                 _dataContext.Set<AssignmentGrade>().Add(assignmentGrade);
             }
+            response.Data = new AssignmentsGetDto
+            {
+                Id = AssignmentId,
+                Name = assignment.Name,
+                
+                Grade = assignment.Grade.Select(x => new AssignmentGradeGetDto
+                {
+                    Id = assignmentGrade.Id,
+                    Grade = assignmentGrade.Grade,
+                 
 
+                }).ToList()
+            };
             // Save changes to the database
             _dataContext.SaveChanges();
 

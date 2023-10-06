@@ -9,9 +9,11 @@ namespace LearningStarter.Entities
     {
         public int Id { get; set; }
       
-        public int CreatedById { get; set; }
+        
 
         public string SetName { get; set; }
+        public int GroupId { get; set; }
+        public Group Group { get; set; }
 
         public List<FlashCardSetsFlashCard> FlashCards { get; set; }
     }
@@ -20,7 +22,7 @@ namespace LearningStarter.Entities
     {
         public int Id { get; set; }
        
-        public int CreatedById { get; set; }
+        
         public string SetName { get; set; }
         public List<FlashCardSetsFlashCardGetDto> FlashCards { get; set; }
     }
@@ -28,7 +30,7 @@ namespace LearningStarter.Entities
     {
 
        
-        public int CreatedById { get; set; }
+       
 
         public string SetName { get; set; }
     }
@@ -37,7 +39,7 @@ namespace LearningStarter.Entities
 
 
      
-        public int CreatedById { get; set; }
+       
 
         public string SetName { get; set; }
     }

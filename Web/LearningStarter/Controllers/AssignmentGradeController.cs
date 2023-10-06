@@ -53,8 +53,8 @@ public class AssignmentGradeController : ControllerBase
 
         var AssignmentGradeToReturn = new AssignmentGradeGetDto
         {
-            Id = createDto.Id,
-           Grade = createDto.Grade, 
+            Id = AssignmentGradeToCreate.Id,
+           Grade = AssignmentGradeToCreate.Grade, 
         };
 
         response.Data = AssignmentGradeToReturn;
@@ -75,10 +75,13 @@ public class AssignmentGradeController : ControllerBase
               
 
             })
-            .FirstOrDefault(group => group.Id == id);
+            .FirstOrDefault(AssignmentGrade => AssignmentGrade.Id == id);
 
         response.Data = data;
-
+        if (data == null)
+        {
+            response.AddError("id", "AssignmentGrade not found.");
+        }
         return Ok(response);
     }
 
@@ -108,7 +111,7 @@ public class AssignmentGradeController : ControllerBase
 
         var AssignmentGradeToReturn = new AssignmentGradeGetDto
         {
-           
+            Id = AssignmentGradeToUpdate.Id,
             Grade = AssignmentGradeToUpdate.Grade,
             
         };

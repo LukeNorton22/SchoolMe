@@ -54,6 +54,35 @@ public class GroupController : ControllerBase
         // Return a response, e.g., the newly created test
         return Ok(newTest);
     }
+    [HttpPost("{groupId}/FlashCardSets")]
+    public IActionResult CreateFlashCardSetInGroup(int groupId, [FromBody] FlashCardSetsCreateDto flashcardSetCreateDto)
+    {
+        var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
+
+        if (group == null)
+        {
+            return NotFound("Group not found.");
+        }
+
+        if (flashcardSetCreateDto == null)
+        {
+            return BadRequest("Invalid test data.");
+        }
+
+        // Create a new test entity and associate it with the group
+        var newFlashCardSet = new FlashCardSets
+        {
+            GroupId = groupId,
+            SetName = flashcardSetCreateDto.SetName,
+            // Set other properties as needed
+        };
+
+        _dataContext.Set<FlashCardSets>().Add(newFlashCardSet);
+        _dataContext.SaveChanges();
+
+        // Return a response, e.g., the newly created test
+        return Ok(newFlashCardSet);
+    }
 
     [HttpPost("{groupId}/messages")]
     public IActionResult CreateMessageInGroup(int groupId, [FromBody] MessagesCreateDto messagesCreateDto)
@@ -92,6 +121,8 @@ public class GroupController : ControllerBase
             .Include(x => x.Test)
             .Include(x => x.Users)
             .Include(x => x.Messages)
+            .Include(x=> x.FlashCardSets)
+            
             .Select(group => new GroupGetDto
             {
                 Id = group.Id,
@@ -99,6 +130,7 @@ public class GroupController : ControllerBase
                 Description = group.Description,
                 Messages = group.Messages.Select(x => new MessagesGetDto
                 {
+                    Id = x.Id,
                     Content = x.Content,
 
                 }).ToList(),
@@ -112,10 +144,17 @@ public class GroupController : ControllerBase
                 }).ToList(),
                 Tests = group.Test.Select(x => new TestsGetDto
                 {
+                    Id=x.Id,
                     TestName = x.TestName,
 
                 }).ToList(),
+                FlashCardSets = group.FlashCardSets.Select(x => new FlashCardSetsGetDto
+                {
+                    Id=x.Id,
+                    SetName = x.SetName,
+                  
 
+                }).ToList(),
             })
 
             .ToList();

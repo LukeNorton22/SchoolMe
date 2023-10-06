@@ -20,6 +20,8 @@ public class Group
     [JsonIgnore]
     public List<Assignments> Assignments { get; set; }
     [JsonIgnore]
+    public List<FlashCardSets> FlashCardSets { get; set; }
+    [JsonIgnore]
     public List<Tests> Test { get; set; }
 }
 
@@ -46,7 +48,7 @@ public class GroupGetDto
     public List<GroupUserGetDto> Users { get; set; }
     public List<MessagesGetDto> Messages { get; set; }
     public List <TestsGetDto> Tests { get; set; }
-    
+    public List<FlashCardSetsGetDto>  FlashCardSets { get; set; }
 }
 
 
@@ -58,6 +60,7 @@ public class GroupEntityTypeConfiguration : IEntityTypeConfiguration<Group>
 
         builder.HasMany(x => x.Test).WithOne(x => x.Group);
         builder.HasMany(x => x.Messages);
+        builder.HasMany(x => x.T).WithOne(x => x.Group);
     }
 }
 
