@@ -22,14 +22,14 @@ namespace LearningStarter.Entities
     {
         public int Id { get; set; }
        
-        
+        public int GroupId { get; set; }
         public string SetName { get; set; }
         public List<FlashCardSetsFlashCardGetDto> FlashCards { get; set; }
     }
     public class FlashCardSetsCreateDto
     {
 
-       
+       public int GroupId { get; set; }
        
 
         public string SetName { get; set; }

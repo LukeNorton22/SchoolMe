@@ -58,7 +58,7 @@ public class GroupController : ControllerBase
     public IActionResult CreateFlashCardSetInGroup(int groupId, [FromBody] FlashCardSetsCreateDto flashcardSetCreateDto)
     {
         var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
-
+        
         if (group == null)
         {
             return NotFound("Group not found.");
@@ -72,6 +72,7 @@ public class GroupController : ControllerBase
         // Create a new test entity and associate it with the group
         var newFlashCardSet = new FlashCardSets
         {
+          
             GroupId = groupId,
             SetName = flashcardSetCreateDto.SetName,
             // Set other properties as needed
@@ -151,6 +152,7 @@ public class GroupController : ControllerBase
                 FlashCardSets = group.FlashCardSets.Select(x => new FlashCardSetsGetDto
                 {
                     Id=x.Id,
+                    GroupId=x.GroupId,
                     SetName = x.SetName,
                   
 

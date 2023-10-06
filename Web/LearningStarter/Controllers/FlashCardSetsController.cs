@@ -4,6 +4,9 @@ using LearningStarter.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System.Linq;
+using System.Text.RegularExpressions;
+using Group = LearningStarter.Entities.Group;
+
 namespace LearningStarter.Controllers
 {
     [ApiController]
@@ -81,7 +84,7 @@ namespace LearningStarter.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] FlashCardSetsCreateDto createDto)
+        public IActionResult Create(int groupId, [FromBody] FlashCardSetsCreateDto createDto)
         {
             var response = new Response();
 
@@ -96,10 +99,25 @@ namespace LearningStarter.Controllers
             var FlashCardSetsToCreate = new FlashCardSets
             {
                
-                
+                GroupId = createDto.GroupId,
                 SetName = createDto.SetName,
+               
             };
+           
 
+            if (FlashCardSetsToCreate== null) {
+                return BadRequest("FlashCardSet can not be found.");
+            }
+            if (FlashCardSetsToCreate.GroupId == null)
+            {
+                return BadRequest("Group can not be found.");
+            }
+            var group = _dataContext.Set<Group>()
+            .FirstOrDefault(x => x.Id == groupId);
+            if (group == null)
+            {
+                return BadRequest("Group can not be found.");
+            }
             _dataContext.Set<FlashCardSets>().Add(FlashCardSetsToCreate);
             _dataContext.SaveChanges();
 
@@ -107,7 +125,7 @@ namespace LearningStarter.Controllers
             {
                 Id = FlashCardSetsToCreate.Id,
               
-                
+                GroupId = FlashCardSetsToCreate.GroupId,
                 SetName = FlashCardSetsToCreate.SetName,
             };
 
