@@ -60,7 +60,7 @@ public class GroupEntityTypeConfiguration : IEntityTypeConfiguration<Group>
 
         builder.HasMany(x => x.Test).WithOne(x => x.Group);
         builder.HasMany(x => x.Messages);
-        builder.HasMany(x => x.T).WithOne(x => x.Group);
+        builder.HasMany(x => x.FlashCardSets).WithOne(x => x.Group);
     }
 }
 
