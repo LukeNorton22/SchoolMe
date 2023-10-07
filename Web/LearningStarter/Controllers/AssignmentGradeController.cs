@@ -21,25 +21,6 @@ public class AssignmentGradeController : ControllerBase
         _dataContext = dataContext;
     }
 
-    [HttpGet]
-    public IActionResult GetAll()
-    {
-        var response = new Response();
-        var data = _dataContext
-            .Set<AssignmentGrade>()
-            .Select(AssignmentGrade => new AssignmentGradeGetDto
-            {
-                Id = AssignmentGrade.Id,
-                AssignmentId=AssignmentGrade.AssignmentId,
-                Grade = AssignmentGrade.Grade,               
-            })
-            .ToList();
-
-        response.Data = data;
-
-        return Ok(response);
-    }
-
     [HttpPost]
     public IActionResult Create(int assignmentId, [FromBody] AssignmentGradeCreateDto createDto)
     {
@@ -79,7 +60,26 @@ public class AssignmentGradeController : ControllerBase
         return Created("", response);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet]
+    public IActionResult GetAll()
+    {
+        var response = new Response();
+        var data = _dataContext
+            .Set<AssignmentGrade>()
+            .Select(AssignmentGrade => new AssignmentGradeGetDto
+            {
+                Id = AssignmentGrade.Id,
+                AssignmentId=AssignmentGrade.AssignmentId,
+                Grade = AssignmentGrade.Grade,               
+            })
+            .ToList();
+
+        response.Data = data;
+
+        return Ok(response);
+    }
+
+    [HttpGet("id")]
     public IActionResult GetById(int id)
     {
         var response = new Response();
@@ -103,7 +103,7 @@ public class AssignmentGradeController : ControllerBase
         return Ok(response);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("id")]
     public IActionResult Update([FromBody] AssignmentGradeUpdateDto updateDto, int id)
     {
         var response = new Response();
@@ -138,7 +138,7 @@ public class AssignmentGradeController : ControllerBase
         return Ok(response);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("id")]
     public IActionResult Delete(int id)
     {
         var response = new Response();

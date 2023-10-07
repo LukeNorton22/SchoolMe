@@ -19,64 +19,6 @@ namespace LearningStarter.Controllers
         {
             _dataContext = dataContext;
         }
-        [HttpGet]
-        public IActionResult GetAll()
-        {
-            var response = new Response();
-            var data = _dataContext
-                .Set<Assignments>()
-                 .Include(x => x.Grade)
-                .Select(assignment => new AssignmentsGetDto
-                {
-                    Id = assignment.Id,
-                    GroupId =assignment.GroupId,
-                    Name = assignment.Name,
-                    AverageGrade=assignment.AverageGrade,
-                    Grade = assignment.Grade.Select(x => new AssignmentGradeGetDto
-                    {
-                        Id=x.Id,
-                        AssignmentId=assignment.Id,
-                        Grade = x.Grade
-
-                    }).ToList(),
-                })
-                    .ToList();
-            response.Data = data;
-            return Ok(response);
-        }
-        [HttpGet("({id}")]
-        public IActionResult GetById(int id)
-        {
-            var response = new Response();
-
-
-            var data = _dataContext
-                .Set<Assignments>()
-                 .Include(x => x.Grade)
-                .Select(Assignments => new AssignmentsGetDto
-                {
-                    Id = Assignments.Id,
-                    GroupId=Assignments.GroupId,
-                    AverageGrade=Assignments.AverageGrade,
-                    Name = Assignments.Name,
-                    Grade = Assignments.Grade.Select(x => new AssignmentGradeGetDto
-                    {
-                        Id = x.Id,
-                        AssignmentId = x.AssignmentId,
-                        Grade = x.Grade
-
-                    }).ToList()
-                })
-                .FirstOrDefault(Assignments => Assignments.Id == id);
-
-            response.Data = data;
-            if (data == null)
-            {
-                response.AddError("id", "Assignment not found.");
-            }
-            return Ok(response);
-
-        }
 
         [HttpPost]
         public IActionResult Create(int groupId, [FromBody] AssignmentsCreateDto createDto)
@@ -126,7 +68,68 @@ namespace LearningStarter.Controllers
             return Created("", response);
 
         }
-        [HttpPut("{id}")]
+
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var response = new Response();
+            var data = _dataContext
+                .Set<Assignments>()
+                 .Include(x => x.Grade)
+                .Select(assignment => new AssignmentsGetDto
+                {
+                    Id = assignment.Id,
+                    GroupId =assignment.GroupId,
+                    Name = assignment.Name,
+                    AverageGrade=assignment.AverageGrade,
+                    Grade = assignment.Grade.Select(x => new AssignmentGradeGetDto
+                    {
+                        Id=x.Id,
+                        AssignmentId=assignment.Id,
+                        Grade = x.Grade
+
+                    }).ToList(),
+                })
+                    .ToList();
+            response.Data = data;
+            return Ok(response);
+        }
+
+        [HttpGet("id")]
+        public IActionResult GetById(int id)
+        {
+            var response = new Response();
+
+
+            var data = _dataContext
+                .Set<Assignments>()
+                 .Include(x => x.Grade)
+                .Select(Assignments => new AssignmentsGetDto
+                {
+                    Id = Assignments.Id,
+                    GroupId=Assignments.GroupId,
+                    AverageGrade=Assignments.AverageGrade,
+                    Name = Assignments.Name,
+                    Grade = Assignments.Grade.Select(x => new AssignmentGradeGetDto
+                    {
+                        Id = x.Id,
+                        AssignmentId = x.AssignmentId,
+                        Grade = x.Grade
+
+                    }).ToList()
+                })
+                .FirstOrDefault(Assignments => Assignments.Id == id);
+
+            response.Data = data;
+            if (data == null)
+            {
+                response.AddError("id", "Assignment not found.");
+            }
+            return Ok(response);
+
+        }
+
+        [HttpPut("id")]
         public IActionResult Update([FromBody] AssignmentsUpdateDto updateDto, int id)
         {
             var response = new Response();
@@ -158,7 +161,6 @@ namespace LearningStarter.Controllers
             response.Data = AssignmentsToReturn;
             return Ok(response);
         }
-
-       
+      
     }
 }

@@ -18,53 +18,6 @@ public class MessageController : ControllerBase
         _dataContext = dataContext;
     }
 
-    [HttpGet]
-    public IActionResult GetAll()
-    {
-        var response = new Response();
-        var data = _dataContext
-            .Set<Messages>()
-            .Select(usermessage => new MessagesGetDto
-            {
-                Id = usermessage.Id,
-                GroupId=usermessage.GroupId,
-                Content = usermessage.Content,
-                ImageUrl = usermessage.ImageUrl,
-                CreatedAt = usermessage.CreatedAt,
-
-            })
-            .ToList();
-
-        response.Data = data;
-
-        return Ok(response);
-    }
-
-    [HttpGet("{id}")]
-    public IActionResult GetById(int id)
-    {
-        var response = new Response();
-        
-        var data = _dataContext
-            .Set<Messages>()
-            .Select(usermessage => new MessagesGetDto
-            {
-                Id = usermessage.Id,
-                GroupId=usermessage.GroupId,
-                Content = usermessage.Content,
-                ImageUrl = usermessage.ImageUrl,
-                CreatedAt = usermessage.CreatedAt,
-
-
-            })
-            .FirstOrDefault(usermessage => usermessage.Id == id);
-
-        response.Data = data;
-
-        return Ok(response);
-    }
-
-    
     [HttpPost]
     public IActionResult Create(int groupId, [FromBody] MessagesCreateDto createDto)
     {
@@ -113,7 +66,53 @@ public class MessageController : ControllerBase
 
     }
 
-    [HttpPut("{id}")]
+    [HttpGet]
+    public IActionResult GetAll()
+    {
+        var response = new Response();
+        var data = _dataContext
+            .Set<Messages>()
+            .Select(usermessage => new MessagesGetDto
+            {
+                Id = usermessage.Id,
+                GroupId=usermessage.GroupId,
+                Content = usermessage.Content,
+                ImageUrl = usermessage.ImageUrl,
+                CreatedAt = usermessage.CreatedAt,
+
+            })
+            .ToList();
+
+        response.Data = data;
+
+        return Ok(response);
+    }
+
+    [HttpGet("id")]
+    public IActionResult GetById(int id)
+    {
+        var response = new Response();
+        
+        var data = _dataContext
+            .Set<Messages>()
+            .Select(usermessage => new MessagesGetDto
+            {
+                Id = usermessage.Id,
+                GroupId=usermessage.GroupId,
+                Content = usermessage.Content,
+                ImageUrl = usermessage.ImageUrl,
+                CreatedAt = usermessage.CreatedAt,
+
+
+            })
+            .FirstOrDefault(usermessage => usermessage.Id == id);
+
+        response.Data = data;
+
+        return Ok(response);
+    }
+
+    [HttpPut("id")]
     public IActionResult Update([FromBody] MessagesUpdateDto updateDto, int id)
     {
         var response = new Response();
@@ -149,8 +148,7 @@ public class MessageController : ControllerBase
         return Ok(response);
     }
 
-
-    [HttpDelete("{id}")]
+    [HttpDelete("id")]
     public IActionResult Delete(int id)
     {
         var response = new Response();
@@ -175,4 +173,5 @@ public class MessageController : ControllerBase
         return Ok(response);
 
     }
+
 }

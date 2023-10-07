@@ -15,7 +15,7 @@ using static System.Net.Mime.MediaTypeNames;
 namespace LearningStarter.Controllers;
 
 [ApiController]
-[Route("api/groups")]
+[Route("api/Groups")]
 
 public class GroupController : ControllerBase
 {
@@ -25,93 +25,89 @@ public class GroupController : ControllerBase
         _dataContext = dataContext;
     }
 
-    [HttpPost("{groupId}/tests")]
-    public IActionResult CreateTestInGroup(int groupId, [FromBody] TestsCreateDto testCreateDto)
+    [HttpPost]
+    public IActionResult Create([FromBody] GroupCreateDto createDto)
     {
-        var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
+        var response = new Response();
 
-        if (group == null)
+        if (string.IsNullOrEmpty(createDto.GroupName))
         {
-            return NotFound("Group not found.");
+            response.AddError(nameof(createDto.GroupName), "Group name can't be empty");
         }
 
-        if (testCreateDto == null)
+        if (response.HasErrors)
         {
-            return BadRequest("Invalid test data.");
+            return BadRequest(response);
         }
 
-        // Create a new test entity and associate it with the group
-        var newTest = new Tests
+        var groupToCreate = new Group
         {
-            GroupId = groupId,
-            TestName = testCreateDto.TestName,
-            // Set other properties as needed
+            GroupName = createDto.GroupName,
+            Description = createDto.Description,
         };
 
-        _dataContext.Set<Tests>().Add(newTest);
+        _dataContext.Set<Group>().Add(groupToCreate);
         _dataContext.SaveChanges();
 
-        // Return a response, e.g., the newly created test
-        return Ok(newTest);
+        var groupToReturn = _dataContext
+            .Set<Group>()
+            .Select(g => new Group
+            {
+                Id=g.Id,
+                GroupName = g.GroupName,
+                Description = g.Description,
+            })
+            .FirstOrDefault();
+
+        response.Data = groupToReturn;
+
+        return Created("", response);
     }
-    [HttpPost("{groupId}/FlashCardSets")]
-    public IActionResult CreateFlashCardSetInGroup(int groupId, [FromBody] FlashCardSetsCreateDto flashcardSetCreateDto)
+
+    [HttpPost("groupId/user/userId")]
+    public IActionResult AddUserToGroup(int groupId, int userId)
     {
-        var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
-
-        if (group == null)
+        var response = new Response();
+        var group = _dataContext.Set<Group>()
+            .FirstOrDefault(x=> x.Id == groupId);
+        var user = _dataContext.Set<User>()
+            .FirstOrDefault(x=> x.Id == userId);
+        if(group == null)
         {
-            return NotFound("Group not found.");
+            response.AddError("id", "Group not found.");
         }
-
-        if (flashcardSetCreateDto == null)
+        if (user == null)
         {
-            return BadRequest("Invalid test data.");
+            response.AddError("id", "User not found.");
         }
-
-        // Create a new test entity and associate it with the group
-        var newFlashCardSet = new FlashCardSets
+        var groupUser = new GroupUser
         {
+            Group = group,
+            User = user,
 
-            GroupId = groupId,
-            SetName = flashcardSetCreateDto.SetName,
-            // Set other properties as needed
         };
-
-        _dataContext.Set<FlashCardSets>().Add(newFlashCardSet);
+        if (response.HasErrors)
+        {
+            return BadRequest(response);
+        }
+        _dataContext.Set<GroupUser>().Add(groupUser);
         _dataContext.SaveChanges();
 
-        // Return a response, e.g., the newly created test
-        return Ok(newFlashCardSet);
-    }
-
-    [HttpPost("{groupId}/messages")]
-    public IActionResult CreateMessageInGroup(int groupId, [FromBody] MessagesCreateDto messagesCreateDto)
-    {
-        var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
-
-        if (group == null)
+        response.Data = new GroupGetDto
         {
-            return NotFound("Group not found.");
-        }
-
-        if (messagesCreateDto == null)
-        {
-            return BadRequest("Invalid message data.");
-        }
-
-        var newMessage = new Messages
-        {
-            GroupId= groupId,
-            Content = messagesCreateDto.Content,
+            Id = groupId,
+            GroupName = group.GroupName,
+            Description = group.Description,
+            Users = group.Users.Select(x => new GroupUserGetDto
+            {
+                Id = x.User.Id,
+                FirstName = x.User.FirstName,
+                LastName = x.User.LastName,
+                UserName = x.User.UserName,
+            }).ToList()
         };
-
-        _dataContext.Set<Messages>().Add(newMessage);
-        _dataContext.SaveChanges();
-
-        // Return a response, e.g., the newly created test
-        return Ok(newMessage);
-    }
+        return Ok(response);
+    } 
 
     [HttpGet]
     public IActionResult GetAll()
@@ -123,8 +119,7 @@ public class GroupController : ControllerBase
             .Include(x => x.Users)
             .Include(x => x.Messages)
             .Include(x=> x.FlashCardSets)
-            .Include(x=>x.Assignments)
-            
+            .Include(x=>x.Assignments)           
             .Select(group => new GroupGetDto
             {
                 Id = group.Id,
@@ -176,8 +171,7 @@ public class GroupController : ControllerBase
         return Ok(response);
     }
 
-
-    [HttpGet ("{id}")]
+    [HttpGet ("id")]
     public IActionResult GetById(int id)
     {
         var response = new Response();
@@ -237,96 +231,9 @@ public class GroupController : ControllerBase
         response.Data = data;
 
         return Ok(response);
-    }
+    }  
 
-    [HttpPost]
-    public IActionResult Create([FromBody] GroupCreateDto createDto)
-    {
-        var response = new Response();
-
-        if (string.IsNullOrEmpty(createDto.GroupName))
-        {
-            response.AddError(nameof(createDto.GroupName), "Group name can't be empty");
-        }
-
-        if (response.HasErrors)
-        {
-            return BadRequest(response);
-        }
-
-        var groupToCreate = new Group
-        {
-            GroupName = createDto.GroupName,
-            Description = createDto.Description,
-        };
-
-        _dataContext.Set<Group>().Add(groupToCreate);
-        _dataContext.SaveChanges();
-
-        var groupToReturn = _dataContext
-            .Set<Group>()
-            .Select(g => new Group
-            {
-                Id=g.Id,
-                GroupName = g.GroupName,
-                Description = g.Description,
-                // Add more properties here as needed
-            })
-            .FirstOrDefault();
-
-        response.Data = groupToReturn;
-
-        return Created("", response);
-    }
-
-
-    [HttpPost("{groupId}/user/{userId}")]
-    public IActionResult AddUserToGroup(int groupId, int userId)
-    {
-        var response = new Response();
-        var group = _dataContext.Set<Group>()
-            .FirstOrDefault(x=> x.Id == groupId);
-        var user = _dataContext.Set<User>()
-            .FirstOrDefault(x=> x.Id == userId);
-        if(group == null)
-        {
-            response.AddError("id", "Group not found.");
-        }
-        if (user == null)
-        {
-            response.AddError("id", "User not found.");
-        }
-        var groupUser = new GroupUser
-        {
-            Group = group,
-            User = user,
-
-        };
-        if (response.HasErrors)
-        {
-            return BadRequest(response);
-        }
-        _dataContext.Set<GroupUser>().Add(groupUser);
-        _dataContext.SaveChanges();
-
-        response.Data = new GroupGetDto
-        {
-            Id = groupId,
-            GroupName = group.GroupName,
-            Description = group.Description,
-            Users = group.Users.Select(x => new GroupUserGetDto
-            {
-                Id = x.User.Id,
-                FirstName = x.User.FirstName,
-                LastName = x.User.LastName,
-                UserName = x.User.UserName,
-            }).ToList()
-        };
-        return Ok(response);
-    }
- 
-
-    [HttpPut("{id}")]
+    [HttpPut("id")]
     public IActionResult Update([FromBody] GroupUpdateDto updateDto, int id)
     {
         var response = new Response();
@@ -360,7 +267,7 @@ public class GroupController : ControllerBase
         return Ok(response);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("id")]
     public IActionResult Delete(int id)
     {
         var response = new Response();
@@ -385,7 +292,5 @@ public class GroupController : ControllerBase
         return Ok(response);
 
     }
-
-    
 
 }

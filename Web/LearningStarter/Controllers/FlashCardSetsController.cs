@@ -20,6 +20,50 @@ namespace LearningStarter.Controllers
         {
             _dataContext = dataContext;
         }
+
+        [HttpPost]
+        public IActionResult Create(int groupId, [FromBody] FlashCardSetsCreateDto createDto)
+        {
+            var response = new Response();
+
+            var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
+            if (createDto.SetName == null)
+            {
+                response.AddError(nameof(createDto.SetName), "SetName can not be empty");
+            }
+
+            if (group == null)
+            {
+                return BadRequest("Group can not be found.");
+            }
+
+            var FlashCardSetsToCreate = new FlashCardSets
+            {              
+                GroupId = group.Id,
+                SetName = createDto.SetName,               
+            };
+           
+
+            if (FlashCardSetsToCreate== null) {
+                return BadRequest("FlashCardSet can not be found.");
+            }
+           
+            
+           
+            _dataContext.Set<FlashCardSets>().Add(FlashCardSetsToCreate);
+            _dataContext.SaveChanges();
+
+            var FlashCardSetsToReturn = new FlashCardSetsGetDto
+            {
+                Id = FlashCardSetsToCreate.Id, 
+                GroupId = FlashCardSetsToCreate.GroupId,
+                SetName = FlashCardSetsToCreate.SetName,
+            };
+
+            response.Data = FlashCardSetsToReturn;
+            return Created("", response);
+        }
+
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -46,7 +90,8 @@ namespace LearningStarter.Controllers
             response.Data = data;
             return Ok(response);
         }
-        [HttpGet("({id}")]
+
+        [HttpGet("id")]
         public IActionResult GetById(int id)
         {
             var response = new Response();
@@ -67,8 +112,6 @@ namespace LearningStarter.Controllers
                         Question = x.Question,
                         Answer = x.Answer,
                        
-
-
                     }).ToList()
                 })
                 .FirstOrDefault(FlashCardSets => FlashCardSets.Id == id);
@@ -85,53 +128,7 @@ namespace LearningStarter.Controllers
 
         }
 
-        [HttpPost]
-        public IActionResult Create(int groupId, [FromBody] FlashCardSetsCreateDto createDto)
-        {
-            var response = new Response();
-
-            var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
-            if (createDto.SetName == null)
-            {
-                response.AddError(nameof(createDto.SetName), "SetName can not be empty");
-            }
-
-            if (group == null)
-            {
-                return BadRequest("Group can not be found.");
-            }
-
-            var FlashCardSetsToCreate = new FlashCardSets
-            {
-               
-                GroupId = group.Id,
-                SetName = createDto.SetName,
-               
-            };
-           
-
-            if (FlashCardSetsToCreate== null) {
-                return BadRequest("FlashCardSet can not be found.");
-            }
-           
-            
-           
-            _dataContext.Set<FlashCardSets>().Add(FlashCardSetsToCreate);
-            _dataContext.SaveChanges();
-
-            var FlashCardSetsToReturn = new FlashCardSetsGetDto
-            {
-                Id = FlashCardSetsToCreate.Id,
-              
-                GroupId = FlashCardSetsToCreate.GroupId,
-                SetName = FlashCardSetsToCreate.SetName,
-            };
-
-            response.Data = FlashCardSetsToReturn;
-            return Created("", response);
-
-        }
-        [HttpPut("{id}")]
+        [HttpPut("id")]
         public IActionResult Update([FromBody] FlashCardSetsUpdateDto updateDto, int id)
         {
             var response = new Response();
@@ -172,7 +169,8 @@ namespace LearningStarter.Controllers
             response.Data = FlashCardSetsToReturn;
             return Ok(response);
         }
-        [HttpDelete("{id}")]
+
+        [HttpDelete("id")]
         public IActionResult Delete(int id)
         {
             var response = new Response();

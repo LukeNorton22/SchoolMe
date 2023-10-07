@@ -9,16 +9,15 @@ namespace LearningStarter.Entities
         public int FlashCardSetId { get; set; }
         public FlashCardSets FlashCardSet { get; set; }
         public string Question { get; set; }
-
         public string Answer { get; set; }
     }
 
     public class FlashCardsGetDto
     {
-        public int Id { get; set; }
+      public int Id { get; set; }
       public int FlashCardSetId { get; set; }
-        public string Question { get; set; }
-        public string Answer { get; set; }
+      public string Question { get; set; }
+      public string Answer { get; set; }
     }
     public class FlashCardsCreateDto
     {

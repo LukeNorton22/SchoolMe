@@ -3,6 +3,7 @@ using LearningStarter.Data;
 using LearningStarter.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using static System.Net.Mime.MediaTypeNames;
@@ -19,28 +20,78 @@ namespace LearningStarter.Controllers
         {
             _dataContext = dataContext;
         }
+
+        [HttpPost]
+        public IActionResult Create(int groupId, [FromBody] TestsCreateDto createDto)
+        {
+            var response = new Response();
+
+            var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
+            if (createDto.TestName == null)
+            {
+                response.AddError(nameof(createDto.TestName), "Test Name can not be empty");
+            }
+
+            if (group == null)
+            {
+                return BadRequest("Group can not be found.");
+            }
+
+            var TestsToCreate = new Tests
+            {
+                GroupId = group.Id,
+                TestName = createDto.TestName      
+            };
+
+
+            if (TestsToCreate == null)
+            {
+                return BadRequest("Test can not be found.");
+            }
+
+
+
+            _dataContext.Set<Tests>().Add(TestsToCreate);
+            _dataContext.SaveChanges();
+
+            var TestsToReturn = new TestsGetDto
+            {
+                Id = TestsToCreate.Id,
+                GroupId = TestsToCreate.GroupId,
+                TestName = TestsToCreate.TestName,
+            };
+
+            response.Data = TestsToReturn;
+            return Created("", response);
+        }
+
         [HttpGet]
         public IActionResult GetAll()
         {
             var response = new Response();
             var data = _dataContext
                 .Set<Tests>()
+                .Include(x => x.Questions)
                 .Select(Tests => new TestsGetDto
                 {
                     Id = Tests.Id,
-                   GroupId=Tests.GroupId,
+                    GroupId = Tests.GroupId,
                     TestName = Tests.TestName,
-                    Questions = Tests.Questions.Select(Tests => new TestQuestionsGetDto
+                    Questions = Tests.Questions.Select(x => new TestQuestionsGetDto
                     {
-                        Question = Tests.Question,
+                        Id = x.Id,
+                        TestId = x.TestId,
+                        Question = x.Question,
+                        Answer = x.Answer,
 
                     }).ToList(),
                 })
-                .ToList();
+               .ToList();
             response.Data = data;
             return Ok(response);
         }
-        [HttpGet("({id}")]
+
+        [HttpGet("id")]
         public IActionResult GetById(int id)
         {
             var response = new Response();
@@ -53,10 +104,12 @@ namespace LearningStarter.Controllers
                     Id = Tests.Id,
                     GroupId= Tests.GroupId,
                     TestName = Tests.TestName,
-                    Questions = Tests.Questions.Select(Tests => new TestQuestionsGetDto
+                    Questions = Tests.Questions.Select(x => new TestQuestionsGetDto
                     {
-
-                        Question = Tests.Question,
+                        Id= x.Id,
+                        TestId = x.TestId,
+                        Question = x.Question,
+                        Answer = x.Answer,
 
                     }).ToList(),
                 })
@@ -73,92 +126,8 @@ namespace LearningStarter.Controllers
             return Ok(response);
 
         }
-        [HttpPost]
-        public IActionResult Create(int groupId, [FromBody] TestsCreateDto createDto)
-        {
-            var response = new Response();
 
-            var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
-            if (createDto.TestName == null)
-            {
-                response.AddError(nameof(createDto.TestName), "SetName can not be empty");
-            }
-            if (group == null)
-            {
-                return BadRequest("Group can not be found.");
-            }
-
-
-
-            var TestsToCreate = new Tests
-            {
-
-                GroupId = group.Id,
-                TestName = createDto.TestName,
-
-            };
-
-
-            if (TestsToCreate == null)
-            {
-                return BadRequest("FlashCardSet can not be found.");
-            }
-           
-
-            
-            _dataContext.Set<Tests>().Add(TestsToCreate);
-            _dataContext.SaveChanges();
-
-            var TestsToReturn = new TestsGetDto
-            {
-                Id = TestsToCreate.Id,
-
-               GroupId= group.Id,
-                TestName = TestsToCreate.TestName,
-            };
-
-            response.Data = TestsToReturn;
-            return Created("", response);
-
-        }
-
-        [HttpPost("{testId}/question/{testquestionId}")]
-        public IActionResult AddQuestionToTest(int testId, int testquestionId)
-        {
-            var response = new Response();
-
-            // Fetch the corresponding test
-            var test = _dataContext.Set<Tests>().FirstOrDefault(x => x.Id == testId);
-
-            // Fetch the corresponding test question
-            var testQuestion = _dataContext.Set<TestQuestions>().FirstOrDefault(x => x.Id == testquestionId);
-
-            // Check if the test and test question exist
-            if (test == null || testQuestion == null)
-            {
-                return BadRequest("Test or Test Question not found.");
-            }
-
-            // Associate the test question with the test
-            testQuestion.Tests = test;
-
-            // Add the test question to the data context (if not already added)
-            if (!_dataContext.Set<TestQuestions>().Local.Contains(testQuestion))
-            {
-                _dataContext.Set<TestQuestions>().Add(testQuestion);
-            }
-
-            // Save changes to the database
-            _dataContext.SaveChanges();
-
-            // Your response logic here
-
-            return Ok(response);
-        }
-
-
-
-        [HttpPut("{id}")]
+        [HttpPut("id")]
         public IActionResult Update([FromBody] TestsUpdateDto updateDto, int id)
         {
             var response = new Response();
@@ -196,7 +165,8 @@ namespace LearningStarter.Controllers
             response.Data = TestsToReturn;
             return Ok(response);
         }
-        [HttpDelete("{id}")]
+
+        [HttpDelete("id")]
         public IActionResult Delete(int id)
         {
             var response = new Response();
@@ -220,7 +190,6 @@ namespace LearningStarter.Controllers
             return Ok(response);
         }
     }
-
 
 }
 

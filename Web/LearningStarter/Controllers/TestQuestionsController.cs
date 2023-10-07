@@ -3,6 +3,7 @@ using LearningStarter.Data;
 using LearningStarter.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace LearningStarter.Controllers;
 
@@ -16,6 +17,49 @@ public class TestQuestionsController : ControllerBase
     {
         _dataContext = dataContext;
     }
+
+    [HttpPost]
+    public IActionResult Create(int TestId, [FromBody] TestQuestionsCreateDto createDto)
+    {
+        var response = new Response();
+
+        var test = _dataContext.Set<Tests>().FirstOrDefault(x => x.Id == TestId);
+        if (createDto.Question == null)
+        {
+            response.AddError(nameof(createDto.Question), "Question can not be empty");
+        }
+        
+        if (test == null)
+        {
+            return BadRequest("Test can not be found.");
+        }
+
+
+        var TestQuestionsToCreate = new TestQuestions
+        {
+
+            TestId = TestId,
+            Question = createDto.Question,
+            Answer = createDto.Answer,
+
+        };
+
+        _dataContext.Set<TestQuestions>().Add(TestQuestionsToCreate);
+        _dataContext.SaveChanges();
+
+        var TestQuestionsToReturn = new TestQuestionsGetDto
+        {
+            Id = TestQuestionsToCreate.Id,
+            TestId = TestId,
+            Question = createDto.Question,
+            Answer = createDto.Answer,
+        };
+
+        response.Data = TestQuestionsToReturn;
+        return Created("", response);
+
+    }
+
     [HttpGet]
     public IActionResult GetAll()
     {
@@ -24,14 +68,17 @@ public class TestQuestionsController : ControllerBase
             .Set<TestQuestions>()
             .Select(TestQuestions => new TestQuestionsGetDto
             {
-                Id = TestQuestions.Id,             
+                Id = TestQuestions.Id,
+                TestId = TestQuestions.TestId,
                 Question = TestQuestions.Question,
+                Answer = TestQuestions.Answer,
             })
             .ToList();
         response.Data = data;
         return Ok(response);
     }
-    [HttpGet("({id}")]
+
+    [HttpGet("id")]
     public IActionResult GetById(int id)
     {
         var response = new Response();
@@ -41,9 +88,9 @@ public class TestQuestionsController : ControllerBase
             .Set<TestQuestions>()
             .Select(TestQuestions => new TestQuestionsGetDto
             {
-                Id = TestQuestions.Id,
-               
+                Id = TestQuestions.Id,              
                 Question = TestQuestions.Question,
+                Answer = TestQuestions.Answer,
             })
             .FirstOrDefault(TestQuestions => TestQuestions.Id == id);
 
@@ -55,33 +102,8 @@ public class TestQuestionsController : ControllerBase
         return Ok(response);
 
     }
-    [HttpPost]
-    public IActionResult Create([FromBody] TestQuestionsCreateDto createDto)
-    {
-        var response = new Response();
 
-
-        var TestQuestionsToCreate = new TestQuestions
-        {
-            Question = createDto.Question,
-             
-        };
-
-        _dataContext.Set<TestQuestions>().Add(TestQuestionsToCreate);
-        _dataContext.SaveChanges(); 
-
-        var TestQuestionsToReturn = new TestQuestionsGetDto
-        {
-            Id = TestQuestionsToCreate.Id,
-              
-                Question = TestQuestionsToCreate.Question,
-        };
-
-        response.Data = TestQuestionsToReturn;
-        return Created("", response);
-
-    }
-    [HttpPut("{id}")]
+    [HttpPut("id")]
     public IActionResult Update([FromBody] TestQuestionsUpdateDto updateDto, int id)
     {
         var response = new Response();
@@ -107,13 +129,15 @@ public class TestQuestionsController : ControllerBase
         var TestQuestionsToReturn = new TestQuestionsGetDto
         {
             Id = TestQuestionsToUpdate.Id,
-            Question = TestQuestionsToUpdate.Question,
+            Question = TestQuestionsToUpdate.Question, 
+            Answer = TestQuestionsToUpdate.Answer,
 
         };
         response.Data = TestQuestionsToReturn;
         return Ok(response);
     }
-    [HttpDelete("{id}")]
+
+    [HttpDelete("id")]
     public IActionResult Delete(int id)
     {
         var response = new Response();

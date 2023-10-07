@@ -16,50 +16,6 @@ public class FlashCardsController : ControllerBase
     {
         _dataContext = dataContext;
     }
-    [HttpGet]
-    public IActionResult GetAll()
-    {
-        var response = new Response();
-        var data = _dataContext
-            .Set<FlashCards>()
-            .Select(FlashCards => new FlashCardsGetDto
-            {
-                Id = FlashCards.Id,
-                FlashCardSetId=FlashCards.FlashCardSetId,
-                Question = FlashCards.Question,
-                Answer = FlashCards.Answer,
-            })
-            .ToList();
-        response.Data = data;
-        return Ok(response);
-    }
-    [HttpGet("({id}")]
-    public IActionResult GetById(int id)
-    {
-        var response = new Response();
-
-        
-        var data = _dataContext
-            .Set<FlashCards>()
-            .Select(FlashCards => new FlashCardsGetDto
-            {
-                Id = FlashCards.Id,
-                Question = FlashCards.Question,
-                Answer = FlashCards.Answer,
-            })
-            .FirstOrDefault(FlashCards => FlashCards.Id == id);
-
-        response.Data = data;
-        if (data == null)
-        {
-
-
-
-            response.AddError("id", "FlashCard not found.");
-        }
-        return Ok(response);
-
-    }
 
     [HttpPost]
     public IActionResult Create(int flashcardsetId, [FromBody] FlashCardsCreateDto createDto)
@@ -90,10 +46,6 @@ public class FlashCardsController : ControllerBase
 
         };
 
-
-       
-
-      
         _dataContext.Set<FlashCards>().Add(FlashCardsToCreate);
         _dataContext.SaveChanges();
 
@@ -109,7 +61,54 @@ public class FlashCardsController : ControllerBase
         return Created("", response);
 
     }
-    [HttpPut("{id}")]
+
+    [HttpGet]
+    public IActionResult GetAll()
+    {
+        var response = new Response();
+        var data = _dataContext
+            .Set<FlashCards>()
+            .Select(FlashCards => new FlashCardsGetDto
+            {
+                Id = FlashCards.Id,
+                FlashCardSetId=FlashCards.FlashCardSetId,
+                Question = FlashCards.Question,
+                Answer = FlashCards.Answer,
+            })
+            .ToList();
+        response.Data = data;
+        return Ok(response);
+    }
+
+    [HttpGet("id")]
+    public IActionResult GetById(int id)
+    {
+        var response = new Response();
+
+        
+        var data = _dataContext
+            .Set<FlashCards>()
+            .Select(FlashCards => new FlashCardsGetDto
+            {
+                Id = FlashCards.Id,
+                Question = FlashCards.Question,
+                Answer = FlashCards.Answer,
+            })
+            .FirstOrDefault(FlashCards => FlashCards.Id == id);
+
+        response.Data = data;
+        if (data == null)
+        {
+
+
+
+            response.AddError("id", "FlashCard not found.");
+        }
+        return Ok(response);
+
+    }   
+
+    [HttpPut("id")]
     public IActionResult Update([FromBody] FlashCardsUpdateDto updateDto, int id)
     {
         var response = new Response();
@@ -154,7 +153,8 @@ public class FlashCardsController : ControllerBase
         response.Data = FlashCardsToReturn;
         return Ok(response);
     }
-    [HttpDelete("{id}")]
+
+    [HttpDelete("id")]
     public IActionResult Delete(int id)
     {
         var response = new Response();

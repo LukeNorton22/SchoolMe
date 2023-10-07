@@ -7,7 +7,7 @@ namespace LearningStarter.Entities
 {
     public class Tests
     {
-       public int Id { get; set; }
+        public int Id { get; set; }
         public int GroupId { get; set; }
         public Group Group { get; set; }
         public string TestName { get; set; }
