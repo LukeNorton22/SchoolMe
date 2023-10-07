@@ -15,7 +15,7 @@ namespace LearningStarter.Entities
         public int GroupId { get; set; }
         public Group Group { get; set; }
 
-        public List<FlashCardSetsFlashCard> FlashCards { get; set; }
+        public List<FlashCards> FlashCards { get; set; }
     }
 
     public class FlashCardSetsGetDto
@@ -24,7 +24,7 @@ namespace LearningStarter.Entities
        
         public int GroupId { get; set; }
         public string SetName { get; set; }
-        public List<FlashCardSetsFlashCardGetDto> FlashCards { get; set; }
+        public List<FlashCardsGetDto> FlashCards { get; set; }
     }
     public class FlashCardSetsCreateDto
     {
@@ -49,7 +49,7 @@ namespace LearningStarter.Entities
         public void Configure(EntityTypeBuilder<FlashCardSets> builder)
         {
             builder.ToTable("FlashCardSets");
-            builder.HasMany(x => x.FlashCards).WithOne(x => x.FlashCardSets);
+            builder.HasMany(x => x.FlashCards).WithOne(x => x.FlashCardSet);
         }
     }
 

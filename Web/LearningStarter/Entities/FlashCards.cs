@@ -7,6 +7,7 @@ namespace LearningStarter.Entities
     {
         public int Id { get; set; }
         public int FlashCardSetId { get; set; }
+        public FlashCardSets FlashCardSet { get; set; }
         public string Question { get; set; }
 
         public string Answer { get; set; }

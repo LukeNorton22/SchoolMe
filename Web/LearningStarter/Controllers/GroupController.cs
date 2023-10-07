@@ -165,6 +165,7 @@ public class GroupController : ControllerBase
                     Id=x.Id,
                     GroupId=x.GroupId,
                     Name=x.Name,
+                    
                 }).ToList(),
             })
 

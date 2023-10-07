@@ -30,13 +30,13 @@ namespace LearningStarter.Controllers
                 .Select(FlashCardSets => new FlashCardSetsGetDto
                 {
                     Id = FlashCardSets.Id,
-                    
+                    GroupId = FlashCardSets.GroupId,
                     
                     SetName = FlashCardSets.SetName,
                     FlashCards = FlashCardSets.FlashCards.Select(x => new FlashCardsGetDto
                     {
                         Id = x.Id,
-                        FlashCardSetId = x.FlashCardSetsId,
+                        FlashCardSetId = x.FlashCardSetId,
                         Question = x.Question,
                         Answer= x.Answer,
 
@@ -57,14 +57,15 @@ namespace LearningStarter.Controllers
                 .Select(FlashCardSets => new FlashCardSetsGetDto
                 {
                     Id = FlashCardSets.Id,
-                  
+                  GroupId= FlashCardSets.GroupId,
                     
                     SetName = FlashCardSets.SetName,
-                    FlashCards = FlashCardSets.FlashCards.Select(x => new FlashCardSetsFlashCardGetDto
+                    FlashCards = FlashCardSets.FlashCards.Select(x => new FlashCardsGetDto
                     {
-                        Id = x.FlashCards.Id,
-                        Question = x.FlashCards.Question,
-                        Answer = x.FlashCards.Answer,
+                        Id = x.Id,
+                        FlashCardSetId=x.FlashCardSetId,
+                        Question = x.Question,
+                        Answer = x.Answer,
                        
 
 
@@ -94,8 +95,11 @@ namespace LearningStarter.Controllers
             {
                 response.AddError(nameof(createDto.SetName), "SetName can not be empty");
             }
-          
-           
+
+            if (group == null)
+            {
+                return BadRequest("Group can not be found.");
+            }
 
             var FlashCardSetsToCreate = new FlashCardSets
             {
@@ -109,10 +113,7 @@ namespace LearningStarter.Controllers
             if (FlashCardSetsToCreate== null) {
                 return BadRequest("FlashCardSet can not be found.");
             }
-            if (group == null)
-            {
-                return BadRequest("Group can not be found.");
-            }
+           
             
            
             _dataContext.Set<FlashCardSets>().Add(FlashCardSetsToCreate);
@@ -194,52 +195,6 @@ namespace LearningStarter.Controllers
             response.Data = true;
             return Ok(response);
         }
-        [HttpPost("{FlashCardSetsId}/FlashCards/{FlashCardsId}")]
-        public IActionResult AddFlashCardsToFlashCardSets(int FlashCardSetsId, int FlashCardsId)
-        {
-            var response = new Response();
-          
-
-                
-            var FlashCardSets = _dataContext.Set<FlashCardSets>()
-                .FirstOrDefault(x => x.Id == FlashCardSetsId);
-            var FlashCards = _dataContext.Set<FlashCards>()
-                .FirstOrDefault(x => x.Id == FlashCardsId);
-            if (FlashCards == null)
-            {
-                response.AddError("id", "FlashCard not found.");
-            }
-            if (FlashCardSets == null)
-            {
-                response.AddError("id", "FlashCardSet not found.");
-            }
-            var FlashCardSetsFlashCard = new FlashCardSetsFlashCard
-            {
-                FlashCardSets = FlashCardSets,
-                FlashCards = FlashCards,
-
-            };
-            if (response.HasErrors)
-            {
-                return BadRequest(response);
-            }
-            _dataContext.Set<FlashCardSetsFlashCard>().Add(FlashCardSetsFlashCard);
-            _dataContext.SaveChanges();
-
-            response.Data = new FlashCardSetsGetDto
-            {
-                Id = FlashCardSetsId,
-                
-                SetName = FlashCardSets.SetName,
-                FlashCards = FlashCardSets.FlashCards.Select(x => new FlashCardSetsFlashCardGetDto
-                {
-                    Id = x.FlashCards.Id,
-                    Question = x.FlashCards.Question,
-                    Answer = x.FlashCards.Answer,
-                  
-                }).ToList()
-            };
-            return Ok(response);
-        }
+       
     }
 }

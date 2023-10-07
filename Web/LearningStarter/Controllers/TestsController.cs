@@ -51,6 +51,7 @@ namespace LearningStarter.Controllers
                 .Select(Tests => new TestsGetDto
                 {
                     Id = Tests.Id,
+                    GroupId= Tests.GroupId,
                     TestName = Tests.TestName,
                     Questions = Tests.Questions.Select(Tests => new TestQuestionsGetDto
                     {
@@ -82,6 +83,10 @@ namespace LearningStarter.Controllers
             {
                 response.AddError(nameof(createDto.TestName), "SetName can not be empty");
             }
+            if (group == null)
+            {
+                return BadRequest("Group can not be found.");
+            }
 
 
 
@@ -98,10 +103,7 @@ namespace LearningStarter.Controllers
             {
                 return BadRequest("FlashCardSet can not be found.");
             }
-            if (group == null)
-            {
-                return BadRequest("Group can not be found.");
-            }
+           
 
             
             _dataContext.Set<Tests>().Add(TestsToCreate);

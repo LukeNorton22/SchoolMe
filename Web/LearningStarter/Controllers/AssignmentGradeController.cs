@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Text.RegularExpressions;
 
 namespace LearningStarter.Controllers;
 
@@ -29,6 +30,7 @@ public class AssignmentGradeController : ControllerBase
             .Select(AssignmentGrade => new AssignmentGradeGetDto
             {
                 Id = AssignmentGrade.Id,
+                AssignmentId=AssignmentGrade.AssignmentId,
                 Grade = AssignmentGrade.Grade,               
             })
             .ToList();
@@ -39,21 +41,36 @@ public class AssignmentGradeController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Create([FromBody] AssignmentGradeCreateDto createDto)
+    public IActionResult Create(int assignmentId, [FromBody] AssignmentGradeCreateDto createDto)
     {
         var response = new Response();
+        var assignment = _dataContext.Set<Assignments>().FirstOrDefault(x => x.Id == assignmentId);
+        if (createDto.Grade <0)
+        {
+            response.AddError(nameof(createDto.Grade), "Must enter a valid Grade");
+        }
+        if (assignment == null)
+        {
+            return BadRequest("Assignment can not be found.");
+        }
 
         var AssignmentGradeToCreate = new AssignmentGrade
-        {            
-            Grade = createDto.Grade,           
-        };
+        {
 
+            AssignmentId = assignmentId,
+            Grade = createDto.Grade,
+
+        };
+        if (AssignmentGradeToCreate == null)
+        {
+            return BadRequest("AssignmentGrade can not be found.");
+        }
         _dataContext.Set<AssignmentGrade>().Add(AssignmentGradeToCreate);
         _dataContext.SaveChanges();
-
         var AssignmentGradeToReturn = new AssignmentGradeGetDto
         {
             Id = AssignmentGradeToCreate.Id,
+            AssignmentId = assignment.Id,
            Grade = AssignmentGradeToCreate.Grade, 
         };
 
@@ -70,7 +87,8 @@ public class AssignmentGradeController : ControllerBase
             .Set<AssignmentGrade>()
             .Select(assignmentGrade => new AssignmentGradeGetDto
             {
-                Id = assignmentGrade.Id,               
+                Id = assignmentGrade.Id,    
+                AssignmentId= assignmentGrade.AssignmentId,
                 Grade = assignmentGrade.Grade,
               
 

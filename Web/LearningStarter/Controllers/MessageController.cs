@@ -27,6 +27,7 @@ public class MessageController : ControllerBase
             .Select(usermessage => new MessagesGetDto
             {
                 Id = usermessage.Id,
+                GroupId=usermessage.GroupId,
                 Content = usermessage.Content,
                 ImageUrl = usermessage.ImageUrl,
                 CreatedAt = usermessage.CreatedAt,
@@ -49,6 +50,7 @@ public class MessageController : ControllerBase
             .Select(usermessage => new MessagesGetDto
             {
                 Id = usermessage.Id,
+                GroupId=usermessage.GroupId,
                 Content = usermessage.Content,
                 ImageUrl = usermessage.ImageUrl,
                 CreatedAt = usermessage.CreatedAt,
@@ -74,6 +76,10 @@ public class MessageController : ControllerBase
             response.AddError(nameof(createDto.Content), "Content can not be empty");
         }
 
+        if (group == null)
+        {
+            return BadRequest("Group can not be found.");
+        }
 
 
         var MessagesToCreate = new Messages
@@ -89,15 +95,7 @@ public class MessageController : ControllerBase
         {
             return BadRequest("FlashCardSet can not be found.");
         }
-        if (group == null)
-        {
-            return BadRequest("Group can not be found.");
-        }
-
-        if (group == null)
-        {
-            return BadRequest("Group can not be found.");
-        }
+       
         _dataContext.Set<Messages>().Add(MessagesToCreate);
         _dataContext.SaveChanges();
 

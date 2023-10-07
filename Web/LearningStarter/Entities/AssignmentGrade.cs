@@ -24,7 +24,7 @@ public class AssignmentGradeCreateDto
 public class AssignmentGradeGetDto
 {
     public int Id { get; set; }
-   
+    public int AssignmentId {get; set;}
     public int Grade { get; set; }
     
 }

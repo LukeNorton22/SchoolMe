@@ -3,6 +3,7 @@ using LearningStarter.Data;
 using LearningStarter.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using static System.Net.Mime.MediaTypeNames;
@@ -24,16 +25,20 @@ namespace LearningStarter.Controllers
             var response = new Response();
             var data = _dataContext
                 .Set<Assignments>()
-                .Select(Assignments => new AssignmentsGetDto
+                 .Include(x => x.Grade)
+                .Select(assignment => new AssignmentsGetDto
                 {
-                    Id = Assignments.Id,
-                    GroupId =Assignments.GroupId,
-                    Name = Assignments.Name,
-                    Grade = Assignments.Grade.Select(x => new AssignmentGradeGetDto
+                    Id = assignment.Id,
+                    GroupId =assignment.GroupId,
+                    Name = assignment.Name,
+                    AverageGrade=assignment.AverageGrade,
+                    Grade = assignment.Grade.Select(x => new AssignmentGradeGetDto
                     {
+                        Id=x.Id,
+                        AssignmentId=assignment.Id,
                         Grade = x.Grade
 
-                    }).ToList()
+                    }).ToList(),
                 })
                     .ToList();
             response.Data = data;
@@ -47,12 +52,17 @@ namespace LearningStarter.Controllers
 
             var data = _dataContext
                 .Set<Assignments>()
+                 .Include(x => x.Grade)
                 .Select(Assignments => new AssignmentsGetDto
                 {
                     Id = Assignments.Id,
+                    GroupId=Assignments.GroupId,
+                    AverageGrade=Assignments.AverageGrade,
                     Name = Assignments.Name,
                     Grade = Assignments.Grade.Select(x => new AssignmentGradeGetDto
                     {
+                        Id = x.Id,
+                        AssignmentId = x.AssignmentId,
                         Grade = x.Grade
 
                     }).ToList()
@@ -79,6 +89,10 @@ namespace LearningStarter.Controllers
                 response.AddError(nameof(createDto.Name), "SetName can not be empty");
             }
 
+            if (group == null)
+            {
+                return BadRequest("Group can not be found.");
+            }
 
 
             var AssignmentsToCreate = new Assignments
@@ -94,10 +108,7 @@ namespace LearningStarter.Controllers
             {
                 return BadRequest("FlashCardSet can not be found.");
             }
-            if (group == null)
-            {
-                return BadRequest("Group can not be found.");
-            }
+          
 
 
             _dataContext.Set<Assignments>().Add(AssignmentsToCreate);
@@ -141,55 +152,13 @@ namespace LearningStarter.Controllers
             {
                 Id = AssignmentsToUpdate.Id,
                 Name = AssignmentsToUpdate.Name,
+                AverageGrade=AssignmentsToUpdate.AverageGrade,
 
             };
             response.Data = AssignmentsToReturn;
             return Ok(response);
         }
 
-        [HttpPost("{AssignmentId}/grade/{AssignmentGradeId}")]
-        public IActionResult AddAssignmentGradeToAssignment(int AssignmentId, int AssignmentGradeId)
-        {
-            var response = new Response();
-
-            // Fetch the corresponding Assignment
-            var assignment = _dataContext.Set<Assignments>().FirstOrDefault(x => x.Id == AssignmentId);
-
-            // Fetch the corresponding Assignment AssignmentGrade
-            var assignmentGrade = _dataContext.Set<AssignmentGrade>().FirstOrDefault(x => x.Id == AssignmentGradeId);
-
-            if (assignment == null || assignmentGrade == null)
-            {
-                return BadRequest("Test or Test Question not found.");
-            }
-
-
-            // Associate the AssignmentGrade with the Assignment
-            assignmentGrade.Assignments = assignment;
-
-            // Add the AssignmentGrade to the data context (if not already added)
-            if (!_dataContext.Set<AssignmentGrade>().Local.Contains(assignmentGrade))
-            {
-                _dataContext.Set<AssignmentGrade>().Add(assignmentGrade);
-            }
-            response.Data = new AssignmentsGetDto
-            {
-                Id = AssignmentId,
-                Name = assignment.Name,
-                
-                Grade = assignment.Grade.Select(x => new AssignmentGradeGetDto
-                {
-                    Id = assignmentGrade.Id,
-                    Grade = assignmentGrade.Grade,
-                 
-
-                }).ToList()
-            };
-            // Save changes to the database
-            _dataContext.SaveChanges();
-
-            // Your response logic here
-            return Ok(response);
-        }
+       
     }
 }

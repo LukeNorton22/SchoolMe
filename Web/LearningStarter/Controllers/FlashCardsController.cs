@@ -25,7 +25,7 @@ public class FlashCardsController : ControllerBase
             .Select(FlashCards => new FlashCardsGetDto
             {
                 Id = FlashCards.Id,
-                
+                FlashCardSetId=FlashCards.FlashCardSetId,
                 Question = FlashCards.Question,
                 Answer = FlashCards.Answer,
             })
@@ -75,6 +75,10 @@ public class FlashCardsController : ControllerBase
         {
             response.AddError(nameof(createDto.Answer), "SetName can not be empty");
         }
+        if (flashcardset == null)
+        {
+            return BadRequest("FlashCardSet can not be found.");
+        }
 
 
         var FlashCardsToCreate = new FlashCards
@@ -87,14 +91,7 @@ public class FlashCardsController : ControllerBase
         };
 
 
-        if (FlashCardsToCreate == null)
-        {
-            return BadRequest("FlashCardSet can not be found.");
-        }
-        if (flashcardset == null)
-        {
-            return BadRequest("flashcardset can not be found.");
-        }
+       
 
       
         _dataContext.Set<FlashCards>().Add(FlashCardsToCreate);

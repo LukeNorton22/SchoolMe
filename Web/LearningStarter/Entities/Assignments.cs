@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Net.Http;
 using System;
+using System.Text.Json.Serialization;
+
 namespace LearningStarter.Entities;
 
     public class Assignments
@@ -10,7 +12,9 @@ namespace LearningStarter.Entities;
     public int Id { get; set; }
     public string Name { get; set; }
     public int GroupId { get; set; }
+    public int AverageGrade { get; set; }
     public Group Group { get; set; }
+    [JsonIgnore]
     public List<AssignmentGrade> Grade { get; set; }
     }
 public class AssignmentsCreateDto
@@ -23,6 +27,7 @@ public class AssignmentsGetDto
 {
     public int Id { get; set; }
     public int GroupId { get; set; }
+    public int AverageGrade { get; set; }
     public string Name { get; set; }
     public List<AssignmentGradeGetDto> Grade { get; set; }
 }
@@ -30,6 +35,7 @@ public class AssignmentsGetDto
 public class AssignmentsUpdateDto
 {
     public string Name { get; set; }
+
 }
 
 public class AssignmentEntityTypeConfiguration : IEntityTypeConfiguration<Assignments>
