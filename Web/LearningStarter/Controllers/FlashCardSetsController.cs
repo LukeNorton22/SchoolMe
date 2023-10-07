@@ -3,6 +3,7 @@ using LearningStarter.Data;
 using LearningStarter.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Group = LearningStarter.Entities.Group;
@@ -25,21 +26,21 @@ namespace LearningStarter.Controllers
             var response = new Response();
             var data = _dataContext
                 .Set<FlashCardSets>()
+                .Include(x => x.FlashCards)
                 .Select(FlashCardSets => new FlashCardSetsGetDto
                 {
                     Id = FlashCardSets.Id,
                     
                     
                     SetName = FlashCardSets.SetName,
-                    FlashCards = FlashCardSets.FlashCards.Select(x => new FlashCardSetsFlashCardGetDto
+                    FlashCards = FlashCardSets.FlashCards.Select(x => new FlashCardsGetDto
                     {
-                        Id = x.FlashCards.Id,
-                        Question = x.FlashCards.Question,
-                        Answer = x.FlashCards.Answer,
-                      
+                        Id = x.Id,
+                        FlashCardSetId = x.FlashCardSetsId,
+                        Question = x.Question,
+                        Answer= x.Answer,
 
-
-                    }).ToList()
+                    }).ToList(),
                 })
                 .ToList();
             response.Data = data;
@@ -88,7 +89,7 @@ namespace LearningStarter.Controllers
         {
             var response = new Response();
 
-           
+            var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
             if (createDto.SetName == null)
             {
                 response.AddError(nameof(createDto.SetName), "SetName can not be empty");
@@ -99,7 +100,7 @@ namespace LearningStarter.Controllers
             var FlashCardSetsToCreate = new FlashCardSets
             {
                
-                GroupId = createDto.GroupId,
+                GroupId = group.Id,
                 SetName = createDto.SetName,
                
             };
@@ -108,16 +109,12 @@ namespace LearningStarter.Controllers
             if (FlashCardSetsToCreate== null) {
                 return BadRequest("FlashCardSet can not be found.");
             }
-            if (FlashCardSetsToCreate.GroupId == null)
-            {
-                return BadRequest("Group can not be found.");
-            }
-            var group = _dataContext.Set<Group>()
-            .FirstOrDefault(x => x.Id == groupId);
             if (group == null)
             {
                 return BadRequest("Group can not be found.");
             }
+            
+           
             _dataContext.Set<FlashCardSets>().Add(FlashCardSetsToCreate);
             _dataContext.SaveChanges();
 

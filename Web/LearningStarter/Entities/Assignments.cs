@@ -9,6 +9,7 @@ namespace LearningStarter.Entities;
     {
     public int Id { get; set; }
     public string Name { get; set; }
+    public int GroupId { get; set; }
     public Group Group { get; set; }
     public List<AssignmentGrade> Grade { get; set; }
     }
@@ -21,6 +22,7 @@ public class AssignmentsCreateDto
 public class AssignmentsGetDto
 {
     public int Id { get; set; }
+    public int GroupId { get; set; }
     public string Name { get; set; }
     public List<AssignmentGradeGetDto> Grade { get; set; }
 }

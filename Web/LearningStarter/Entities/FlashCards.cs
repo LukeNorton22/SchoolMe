@@ -6,6 +6,7 @@ namespace LearningStarter.Entities
     public class FlashCards
     {
         public int Id { get; set; }
+        public int FlashCardSetId { get; set; }
         public string Question { get; set; }
 
         public string Answer { get; set; }
@@ -14,7 +15,7 @@ namespace LearningStarter.Entities
     public class FlashCardsGetDto
     {
         public int Id { get; set; }
-      
+      public int FlashCardSetId { get; set; }
         public string Question { get; set; }
         public string Answer { get; set; }
     }

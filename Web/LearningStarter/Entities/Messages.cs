@@ -25,6 +25,7 @@ public class MessagesGetDto
 {
     public int Id { get; set; }
     public string Content { get; set; }
+    public int GroupId { get; set; }
     public string ImageUrl { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 

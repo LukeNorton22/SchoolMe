@@ -49,6 +49,7 @@ public class GroupGetDto
     public List<MessagesGetDto> Messages { get; set; }
     public List <TestsGetDto> Tests { get; set; }
     public List<FlashCardSetsGetDto>  FlashCardSets { get; set; }
+    public List<AssignmentsGetDto> Assignments { get; set; }
 }
 
 
@@ -61,6 +62,7 @@ public class GroupEntityTypeConfiguration : IEntityTypeConfiguration<Group>
         builder.HasMany(x => x.Test).WithOne(x => x.Group);
         builder.HasMany(x => x.Messages);
         builder.HasMany(x => x.FlashCardSets).WithOne(x => x.Group);
+        builder.HasMany(x=>x.Assignments).WithOne(x => x.Group);
     }
 }
 

@@ -48,7 +48,7 @@ public class GroupController : ControllerBase
             // Set other properties as needed
         };
 
-        _dataContext.Set<Tests>().Add(newTest); 
+        _dataContext.Set<Tests>().Add(newTest);
         _dataContext.SaveChanges();
 
         // Return a response, e.g., the newly created test
@@ -58,7 +58,7 @@ public class GroupController : ControllerBase
     public IActionResult CreateFlashCardSetInGroup(int groupId, [FromBody] FlashCardSetsCreateDto flashcardSetCreateDto)
     {
         var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
-        
+
         if (group == null)
         {
             return NotFound("Group not found.");
@@ -72,7 +72,7 @@ public class GroupController : ControllerBase
         // Create a new test entity and associate it with the group
         var newFlashCardSet = new FlashCardSets
         {
-          
+
             GroupId = groupId,
             SetName = flashcardSetCreateDto.SetName,
             // Set other properties as needed
@@ -123,6 +123,7 @@ public class GroupController : ControllerBase
             .Include(x => x.Users)
             .Include(x => x.Messages)
             .Include(x=> x.FlashCardSets)
+            .Include(x=>x.Assignments)
             
             .Select(group => new GroupGetDto
             {
@@ -132,6 +133,7 @@ public class GroupController : ControllerBase
                 Messages = group.Messages.Select(x => new MessagesGetDto
                 {
                     Id = x.Id,
+                    GroupId=x.Id,
                     Content = x.Content,
 
                 }).ToList(),
@@ -146,6 +148,7 @@ public class GroupController : ControllerBase
                 Tests = group.Test.Select(x => new TestsGetDto
                 {
                     Id=x.Id,
+                    GroupId=x.GroupId,
                     TestName = x.TestName,
 
                 }).ToList(),
@@ -156,6 +159,12 @@ public class GroupController : ControllerBase
                     SetName = x.SetName,
                   
 
+                }).ToList(),
+                Assignments = group.Assignments.Select(x=> new AssignmentsGetDto
+                {
+                    Id=x.Id,
+                    GroupId=x.GroupId,
+                    Name=x.Name,
                 }).ToList(),
             })
 
@@ -173,6 +182,10 @@ public class GroupController : ControllerBase
         var response = new Response();
         var data = _dataContext
             .Set<Group>()
+            .Include(x=>x.Test)
+            .Include(x => x.Messages)
+            .Include(x => x.FlashCardSets)
+            .Include(x=>x.Assignments)
             .Select(group => new GroupGetDto
             {
                 Id = group.Id,
@@ -186,9 +199,37 @@ public class GroupController : ControllerBase
                     UserName = x.User.UserName,
 
 
-                }).ToList()
+                }).ToList(),
+                Messages = group.Messages.Select(x => new MessagesGetDto
+                {
+                    Id = x.Id,
+                    GroupId = x.Id,
+                    Content = x.Content,
 
-            
+                }).ToList(),
+                Tests = group.Test.Select(x => new TestsGetDto
+                {
+                    Id = x.Id,
+                    GroupId = x.GroupId,
+                    TestName = x.TestName,
+
+                }).ToList(),
+                FlashCardSets = group.FlashCardSets.Select(x => new FlashCardSetsGetDto
+                {
+                    Id = x.Id,
+                    GroupId = x.GroupId,
+                    SetName = x.SetName,
+
+
+                }).ToList(),
+                Assignments = group.Assignments.Select(x => new AssignmentsGetDto
+                {
+                    Id = x.Id,
+                    GroupId = x.GroupId,
+                    Name = x.Name,
+                }).ToList(),
+
+
             })
             .FirstOrDefault(group  => group.Id == id);
 

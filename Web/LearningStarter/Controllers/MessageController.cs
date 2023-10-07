@@ -62,35 +62,57 @@ public class MessageController : ControllerBase
         return Ok(response);
     }
 
+    
     [HttpPost]
-    public IActionResult Create([FromBody] MessagesCreateDto createDto)
+    public IActionResult Create(int groupId, [FromBody] MessagesCreateDto createDto)
     {
         var response = new Response();
 
-        var messageToCreate = new Messages
+        var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
+        if (createDto.Content == null)
         {
+            response.AddError(nameof(createDto.Content), "Content can not be empty");
+        }
+
+
+
+        var MessagesToCreate = new Messages
+        {
+            GroupId = group.Id,
             Content = createDto.Content,
-            ImageUrl= createDto.ImageUrl,
+            ImageUrl = createDto.ImageUrl,
 
         };
 
 
-        _dataContext.Set<Messages>().Add(messageToCreate);
-
-        _dataContext.SaveChanges(); 
-
-        var messageToReturn = new MessagesGetDto
+        if (MessagesToCreate == null)
         {
-            Id = messageToCreate.Id,
-            Content = messageToCreate.Content,
-            ImageUrl = messageToCreate.ImageUrl,
-            CreatedAt = messageToCreate.CreatedAt,
-         
+            return BadRequest("FlashCardSet can not be found.");
+        }
+        if (group == null)
+        {
+            return BadRequest("Group can not be found.");
+        }
+
+        if (group == null)
+        {
+            return BadRequest("Group can not be found.");
+        }
+        _dataContext.Set<Messages>().Add(MessagesToCreate);
+        _dataContext.SaveChanges();
+
+        var MessagesToReturn = new MessagesGetDto
+        {
+            Id = MessagesToCreate.Id,
+            GroupId = MessagesToCreate.GroupId,
+            Content =MessagesToCreate.Content,
+            ImageUrl = MessagesToCreate.ImageUrl,
+            CreatedAt = MessagesToCreate.CreatedAt,
         };
 
-        response.Data = messageToReturn;
-
+        response.Data = MessagesToReturn;
         return Created("", response);
+
     }
 
     [HttpPut("{id}")]

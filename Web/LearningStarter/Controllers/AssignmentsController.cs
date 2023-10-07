@@ -27,6 +27,7 @@ namespace LearningStarter.Controllers
                 .Select(Assignments => new AssignmentsGetDto
                 {
                     Id = Assignments.Id,
+                    GroupId =Assignments.GroupId,
                     Name = Assignments.Name,
                     Grade = Assignments.Grade.Select(x => new AssignmentGradeGetDto
                     {
@@ -68,21 +69,45 @@ namespace LearningStarter.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] AssignmentsCreateDto createDto)
+        public IActionResult Create(int groupId, [FromBody] AssignmentsCreateDto createDto)
         {
             var response = new Response();
 
+            var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
+            if (createDto.Name == null)
+            {
+                response.AddError(nameof(createDto.Name), "SetName can not be empty");
+            }
+
+
+
             var AssignmentsToCreate = new Assignments
             {
+
+                GroupId = group.Id,
                 Name = createDto.Name,
+
             };
+
+
+            if (AssignmentsToCreate == null)
+            {
+                return BadRequest("FlashCardSet can not be found.");
+            }
+            if (group == null)
+            {
+                return BadRequest("Group can not be found.");
+            }
+
 
             _dataContext.Set<Assignments>().Add(AssignmentsToCreate);
             _dataContext.SaveChanges();
 
             var AssignmentsToReturn = new AssignmentsGetDto
             {
-                Id = AssignmentsToCreate.Id,               
+                Id = AssignmentsToCreate.Id,
+
+                GroupId = group.Id,
                 Name = AssignmentsToCreate.Name,
             };
 

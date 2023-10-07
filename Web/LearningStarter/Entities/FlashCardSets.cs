@@ -29,7 +29,7 @@ namespace LearningStarter.Entities
     public class FlashCardSetsCreateDto
     {
 
-       public int GroupId { get; set; }
+       
        
 
         public string SetName { get; set; }
@@ -49,6 +49,7 @@ namespace LearningStarter.Entities
         public void Configure(EntityTypeBuilder<FlashCardSets> builder)
         {
             builder.ToTable("FlashCardSets");
+            builder.HasMany(x => x.FlashCards).WithOne(x => x.FlashCardSets);
         }
     }
 

@@ -25,6 +25,7 @@ public class FlashCardsController : ControllerBase
             .Select(FlashCards => new FlashCardsGetDto
             {
                 Id = FlashCards.Id,
+                
                 Question = FlashCards.Question,
                 Answer = FlashCards.Answer,
             })
@@ -61,34 +62,50 @@ public class FlashCardsController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Create([FromBody] FlashCardsCreateDto createDto)
+    public IActionResult Create(int flashcardsetId, [FromBody] FlashCardsCreateDto createDto)
     {
         var response = new Response();
 
+        var flashcardset = _dataContext.Set<FlashCardSets>().FirstOrDefault(x => x.Id == flashcardsetId);
         if (createDto.Question == null)
         {
-            response.AddError(nameof(createDto.Question), "Question can not be empty");
+            response.AddError(nameof(createDto.Question), "SetName can not be empty");
         }
         if (createDto.Answer == null)
         {
-            response.AddError(nameof(createDto.Answer), "Answer can not be empty");
+            response.AddError(nameof(createDto.Answer), "SetName can not be empty");
         }
 
 
         var FlashCardsToCreate = new FlashCards
-        { 
+        {
+
+            FlashCardSetId = flashcardset.Id,
             Question = createDto.Question,
             Answer = createDto.Answer,
+
         };
 
+
+        if (FlashCardsToCreate == null)
+        {
+            return BadRequest("FlashCardSet can not be found.");
+        }
+        if (flashcardset == null)
+        {
+            return BadRequest("flashcardset can not be found.");
+        }
+
+      
         _dataContext.Set<FlashCards>().Add(FlashCardsToCreate);
         _dataContext.SaveChanges();
 
         var FlashCardsToReturn = new FlashCardsGetDto
         {
             Id = FlashCardsToCreate.Id,
-            Question = FlashCardsToCreate.Question,
-            Answer = FlashCardsToCreate.Answer,
+            FlashCardSetId = flashcardset.Id,
+            Question = createDto.Question,
+            Answer = createDto.Answer,
         };
 
         response.Data = FlashCardsToReturn;

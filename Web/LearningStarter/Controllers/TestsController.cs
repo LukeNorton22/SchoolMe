@@ -27,7 +27,8 @@ namespace LearningStarter.Controllers
                 .Set<Tests>()
                 .Select(Tests => new TestsGetDto
                 {
-                   
+                    Id = Tests.Id,
+                   GroupId=Tests.GroupId,
                     TestName = Tests.TestName,
                     Questions = Tests.Questions.Select(Tests => new TestQuestionsGetDto
                     {
@@ -72,27 +73,45 @@ namespace LearningStarter.Controllers
 
         }
         [HttpPost]
-        public IActionResult Create([FromBody] TestsCreateDto createDto)
+        public IActionResult Create(int groupId, [FromBody] TestsCreateDto createDto)
         {
             var response = new Response();
 
-          
-           
+            var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
             if (createDto.TestName == null)
             {
-                response.AddError(nameof(createDto.TestName), "Must enter a valid name");
+                response.AddError(nameof(createDto.TestName), "SetName can not be empty");
             }
+
+
 
             var TestsToCreate = new Tests
             {
+
+                GroupId = group.Id,
                 TestName = createDto.TestName,
+
             };
 
+
+            if (TestsToCreate == null)
+            {
+                return BadRequest("FlashCardSet can not be found.");
+            }
+            if (group == null)
+            {
+                return BadRequest("Group can not be found.");
+            }
+
+            
             _dataContext.Set<Tests>().Add(TestsToCreate);
             _dataContext.SaveChanges();
 
             var TestsToReturn = new TestsGetDto
             {
+                Id = TestsToCreate.Id,
+
+               GroupId= group.Id,
                 TestName = TestsToCreate.TestName,
             };
 
@@ -100,7 +119,7 @@ namespace LearningStarter.Controllers
             return Created("", response);
 
         }
-       
+
         [HttpPost("{testId}/question/{testquestionId}")]
         public IActionResult AddQuestionToTest(int testId, int testquestionId)
         {
