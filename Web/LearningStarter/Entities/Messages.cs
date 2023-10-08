@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System;
 using Microsoft.VisualBasic;
+using System.Text.Json.Serialization;
 
 namespace LearningStarter.Entities;
 
@@ -11,8 +12,8 @@ public class Messages
 {
     public int Id { get; set; }
     public string Content { get; set; }
-    public string ImageUrl { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    [JsonIgnore]
+    public String CreatedAt { get; set; } = DateTime.Now.ToString("hh:mm tt");
     public int GroupId { get; set; }
     public Group Group { get; set; }
     public Messages Message { get; set; }
@@ -24,18 +25,18 @@ public class Messages
 public class MessagesGetDto
 {
     public int Id { get; set; }
-    public string Content { get; set; }
     public int GroupId { get; set; }
-    public string ImageUrl { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public string Content { get; set; }
+   
+    public String CreatedAt { get; set; } = DateTime.Now.ToString("hh:mm tt");
 
 }
 
 public class MessagesCreateDto
 {
     public string Content { get; set; }
-    public string ImageUrl { get; set; }
-    public DateTime CreatedAt { get; set;} = DateTime.Now;
+    [JsonIgnore]
+    public String CreatedAt { get; set; } = DateTime.Now.ToString("hh:mm tt");
 
 }
 
@@ -43,7 +44,6 @@ public class MessagesUpdateDto
 {
    
     public string Content { get; set; }
-    public string ImageUrl { get; set; }
 
 }
 

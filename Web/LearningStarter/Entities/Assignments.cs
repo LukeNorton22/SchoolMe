@@ -10,7 +10,7 @@ namespace LearningStarter.Entities;
     public class Assignments
     {
     public int Id { get; set; }
-    public string Name { get; set; }
+    public string AssignmentName { get; set; }
     public int GroupId { get; set; }
     public int AverageGrade { get; set; }
     public Group Group { get; set; }
@@ -19,7 +19,7 @@ namespace LearningStarter.Entities;
     }
 public class AssignmentsCreateDto
 {
-    public string Name { get; set; }
+    public string AssignmentName { get; set; }
 
 }
 
@@ -28,13 +28,13 @@ public class AssignmentsGetDto
     public int Id { get; set; }
     public int GroupId { get; set; }
     public int AverageGrade { get; set; }
-    public string Name { get; set; }
+    public string AssignmentName { get; set; }
     public List<AssignmentGradeGetDto> Grade { get; set; }
 }
 
 public class AssignmentsUpdateDto
 {
-    public string Name { get; set; }
+    public string AssignmentName { get; set; }
 
 }
 

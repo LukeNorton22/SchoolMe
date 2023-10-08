@@ -46,9 +46,13 @@ public class GroupGetDto
     public string Description { get; set; }
 
     public List<GroupUserGetDto> Users { get; set; }
+    [JsonIgnore]
     public List<MessagesGetDto> Messages { get; set; }
+    [JsonIgnore]
     public List <TestsGetDto> Tests { get; set; }
+    [JsonIgnore]
     public List<FlashCardSetsGetDto>  FlashCardSets { get; set; }
+    [JsonIgnore]
     public List<AssignmentsGetDto> Assignments { get; set; }
 }
 

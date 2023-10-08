@@ -26,9 +26,9 @@ namespace LearningStarter.Controllers
             var response = new Response();
 
             var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
-            if (createDto.Name == null)
+            if (createDto.AssignmentName == null)
             {
-                response.AddError(nameof(createDto.Name), "SetName can not be empty");
+                response.AddError(nameof(createDto.AssignmentName), "SetName can not be empty");
             }
 
             if (group == null)
@@ -41,7 +41,7 @@ namespace LearningStarter.Controllers
             {
 
                 GroupId = group.Id,
-                Name = createDto.Name,
+                AssignmentName = createDto.AssignmentName,
 
             };
 
@@ -61,7 +61,7 @@ namespace LearningStarter.Controllers
                 Id = AssignmentsToCreate.Id,
 
                 GroupId = group.Id,
-                Name = AssignmentsToCreate.Name,
+                AssignmentName = AssignmentsToCreate.AssignmentName,
             };
 
             response.Data = AssignmentsToReturn;
@@ -80,7 +80,7 @@ namespace LearningStarter.Controllers
                 {
                     Id = assignment.Id,
                     GroupId =assignment.GroupId,
-                    Name = assignment.Name,
+                    AssignmentName = assignment.AssignmentName,
                     AverageGrade=assignment.AverageGrade,
                     Grade = assignment.Grade.Select(x => new AssignmentGradeGetDto
                     {
@@ -109,7 +109,7 @@ namespace LearningStarter.Controllers
                     Id = Assignments.Id,
                     GroupId=Assignments.GroupId,
                     AverageGrade=Assignments.AverageGrade,
-                    Name = Assignments.Name,
+                    AssignmentName = Assignments.AssignmentName,
                     Grade = Assignments.Grade.Select(x => new AssignmentGradeGetDto
                     {
                         Id = x.Id,
@@ -147,20 +147,45 @@ namespace LearningStarter.Controllers
                 return BadRequest(response);
             }
 
-            AssignmentsToUpdate.Name = updateDto.Name;
+            AssignmentsToUpdate.AssignmentName = updateDto.AssignmentName;
 
             _dataContext.SaveChanges();
 
             var AssignmentsToReturn = new AssignmentsGetDto
             {
                 Id = AssignmentsToUpdate.Id,
-                Name = AssignmentsToUpdate.Name,
+                AssignmentName = AssignmentsToUpdate.AssignmentName,
                 AverageGrade=AssignmentsToUpdate.AverageGrade,
 
             };
             response.Data = AssignmentsToReturn;
             return Ok(response);
         }
-      
+
+        [HttpDelete("id")]
+        public IActionResult Delete(int id)
+        {
+            var response = new Response();
+
+            var AssignmentToDelete = _dataContext.Set<Assignments>()
+                .FirstOrDefault(assignmentGrade => assignmentGrade.Id == id);
+
+            if (AssignmentToDelete == null)
+            {
+                response.AddError("id", "Assignment not found");
+            }
+
+            if (response.HasErrors)
+            {
+                return BadRequest(response);
+            }
+
+            _dataContext.Set<Assignments>().Remove(AssignmentToDelete);
+            _dataContext.SaveChanges();
+            response.Data = true;
+
+            return Ok(response);
+
+        }
     }
 }

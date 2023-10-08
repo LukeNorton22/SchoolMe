@@ -2,6 +2,7 @@
 using LearningStarter.Data;
 using LearningStarter.Entities;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
 
 namespace LearningStarter.Controllers;
@@ -39,26 +40,27 @@ public class MessageController : ControllerBase
         {
             GroupId = group.Id,
             Content = createDto.Content,
-            ImageUrl = createDto.ImageUrl,
 
         };
-
+        
 
         if (MessagesToCreate == null)
         {
-            return BadRequest("FlashCardSet can not be found.");
+            return BadRequest("Message can not be found.");
         }
        
         _dataContext.Set<Messages>().Add(MessagesToCreate);
         _dataContext.SaveChanges();
+
+        MessagesToCreate.CreatedAt = DateTime.Now.ToString("hh:mm tt"); 
+
 
         var MessagesToReturn = new MessagesGetDto
         {
             Id = MessagesToCreate.Id,
             GroupId = MessagesToCreate.GroupId,
             Content =MessagesToCreate.Content,
-            ImageUrl = MessagesToCreate.ImageUrl,
-            CreatedAt = MessagesToCreate.CreatedAt,
+            CreatedAt = MessagesToCreate.CreatedAt 
         };
 
         response.Data = MessagesToReturn;
@@ -77,12 +79,11 @@ public class MessageController : ControllerBase
                 Id = usermessage.Id,
                 GroupId=usermessage.GroupId,
                 Content = usermessage.Content,
-                ImageUrl = usermessage.ImageUrl,
-                CreatedAt = usermessage.CreatedAt,
+                CreatedAt = usermessage.CreatedAt, 
 
             })
             .ToList();
-
+        
         response.Data = data;
 
         return Ok(response);
@@ -100,7 +101,6 @@ public class MessageController : ControllerBase
                 Id = usermessage.Id,
                 GroupId=usermessage.GroupId,
                 Content = usermessage.Content,
-                ImageUrl = usermessage.ImageUrl,
                 CreatedAt = usermessage.CreatedAt,
 
 
@@ -131,7 +131,6 @@ public class MessageController : ControllerBase
         }
 
         UserMessageToUpdate.Content = updateDto.Content;
-        UserMessageToUpdate.ImageUrl = updateDto.ImageUrl;
 
 
         _dataContext.SaveChanges();
@@ -140,7 +139,6 @@ public class MessageController : ControllerBase
         {
             Id = UserMessageToUpdate.Id,
             Content = UserMessageToUpdate.Content,
-            ImageUrl = UserMessageToUpdate.ImageUrl,
         };
 
         response.Data = UserMessageToReturn;

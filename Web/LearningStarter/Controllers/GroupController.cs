@@ -114,24 +114,12 @@ public class GroupController : ControllerBase
     {
         var response = new Response();
         var data = _dataContext
-            .Set<Group>()
-            .Include(x => x.Test)
-            .Include(x => x.Users)
-            .Include(x => x.Messages)
-            .Include(x=> x.FlashCardSets)
-            .Include(x=>x.Assignments)           
+            .Set<Group>()          
             .Select(group => new GroupGetDto
             {
                 Id = group.Id,
                 GroupName = group.GroupName,
                 Description = group.Description,
-                Messages = group.Messages.Select(x => new MessagesGetDto
-                {
-                    Id = x.Id,
-                    GroupId=x.Id,
-                    Content = x.Content,
-
-                }).ToList(),
                 Users = group.Users.Select(x => new GroupUserGetDto
                 {
                     Id = x.User.Id,
@@ -140,31 +128,8 @@ public class GroupController : ControllerBase
                     UserName = x.User.UserName,
 
                 }).ToList(),
-                Tests = group.Test.Select(x => new TestsGetDto
-                {
-                    Id=x.Id,
-                    GroupId=x.GroupId,
-                    TestName = x.TestName,
-
-                }).ToList(),
-                FlashCardSets = group.FlashCardSets.Select(x => new FlashCardSetsGetDto
-                {
-                    Id=x.Id,
-                    GroupId=x.GroupId,
-                    SetName = x.SetName,
-                  
-
-                }).ToList(),
-                Assignments = group.Assignments.Select(x=> new AssignmentsGetDto
-                {
-                    Id=x.Id,
-                    GroupId=x.GroupId,
-                    Name=x.Name,
-                    
-                }).ToList(),
-            })
-
-            .ToList();
+                
+            }).ToList();
 
         response.Data = data;
 
@@ -177,10 +142,6 @@ public class GroupController : ControllerBase
         var response = new Response();
         var data = _dataContext
             .Set<Group>()
-            .Include(x=>x.Test)
-            .Include(x => x.Messages)
-            .Include(x => x.FlashCardSets)
-            .Include(x=>x.Assignments)
             .Select(group => new GroupGetDto
             {
                 Id = group.Id,
@@ -195,36 +156,7 @@ public class GroupController : ControllerBase
 
 
                 }).ToList(),
-                Messages = group.Messages.Select(x => new MessagesGetDto
-                {
-                    Id = x.Id,
-                    GroupId = x.Id,
-                    Content = x.Content,
-
-                }).ToList(),
-                Tests = group.Test.Select(x => new TestsGetDto
-                {
-                    Id = x.Id,
-                    GroupId = x.GroupId,
-                    TestName = x.TestName,
-
-                }).ToList(),
-                FlashCardSets = group.FlashCardSets.Select(x => new FlashCardSetsGetDto
-                {
-                    Id = x.Id,
-                    GroupId = x.GroupId,
-                    SetName = x.SetName,
-
-
-                }).ToList(),
-                Assignments = group.Assignments.Select(x => new AssignmentsGetDto
-                {
-                    Id = x.Id,
-                    GroupId = x.GroupId,
-                    Name = x.Name,
-                }).ToList(),
-
-
+               
             })
             .FirstOrDefault(group  => group.Id == id);
 

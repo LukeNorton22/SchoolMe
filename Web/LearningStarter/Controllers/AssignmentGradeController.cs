@@ -50,8 +50,8 @@ public class AssignmentGradeController : ControllerBase
         _dataContext.SaveChanges();
         var AssignmentGradeToReturn = new AssignmentGradeGetDto
         {
-            Id = AssignmentGradeToCreate.Id,
-            AssignmentId = assignment.Id,
+           Id = AssignmentGradeToCreate.Id,
+           AssignmentId = assignment.Id,
            Grade = AssignmentGradeToCreate.Grade, 
         };
 
