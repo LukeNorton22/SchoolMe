@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿/*using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -48,3 +48,4 @@ public class PrivateMessagesEntityTypeConfiguration : IEntityTypeConfiguration<P
     }
 
 }
+*/
