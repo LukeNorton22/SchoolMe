@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Text.RegularExpressions;
 
 namespace LearningStarter.Controllers;
 
@@ -20,6 +21,45 @@ public class AssignmentGradeController : ControllerBase
         _dataContext = dataContext;
     }
 
+    [HttpPost]
+    public IActionResult Create(int assignmentId, [FromBody] AssignmentGradeCreateDto createDto)
+    {
+        var response = new Response();
+        var assignment = _dataContext.Set<Assignments>().FirstOrDefault(x => x.Id == assignmentId);
+        if (createDto.Grade <0)
+        {
+            response.AddError(nameof(createDto.Grade), "Must enter a valid Grade");
+        }
+        if (assignment == null)
+        {
+            return BadRequest("Assignment can not be found.");
+        }
+
+        var AssignmentGradeToCreate = new AssignmentGrade
+        {
+
+            AssignmentId = assignmentId,
+            Grade = createDto.Grade,
+
+        };
+        if (AssignmentGradeToCreate == null)
+        {
+            return BadRequest("AssignmentGrade can not be found.");
+        }
+        _dataContext.Set<AssignmentGrade>().Add(AssignmentGradeToCreate);
+        _dataContext.SaveChanges();
+        var AssignmentGradeToReturn = new AssignmentGradeGetDto
+        {
+           Id = AssignmentGradeToCreate.Id,
+           AssignmentId = assignment.Id,
+           Grade = AssignmentGradeToCreate.Grade, 
+        };
+
+        response.Data = AssignmentGradeToReturn;
+
+        return Created("", response);
+    }
+
     [HttpGet]
     public IActionResult GetAll()
     {
@@ -29,10 +69,8 @@ public class AssignmentGradeController : ControllerBase
             .Select(AssignmentGrade => new AssignmentGradeGetDto
             {
                 Id = AssignmentGrade.Id,
-                AssignmentName = AssignmentGrade.AssignmentName,
-                Grade = AssignmentGrade.Grade,
-                
-
+                AssignmentId=AssignmentGrade.AssignmentId,
+                Grade = AssignmentGrade.Grade,               
             })
             .ToList();
 
@@ -41,34 +79,7 @@ public class AssignmentGradeController : ControllerBase
         return Ok(response);
     }
 
-    [HttpPost]
-    public IActionResult Create([FromBody] AssignmentGradeCreateDto createDto)
-    {
-        var response = new Response();
-
-        var AssignmentGradeToCreate = new AssignmentGrade
-        {
-            AssignmentName = createDto.AssignmentName,
-            Grade = createDto.Grade,
-            
-        };
-
-        _dataContext.Set<AssignmentGrade>().Add(AssignmentGradeToCreate);
-        _dataContext.SaveChanges();
-
-        var AssignmentGradeToReturn = new AssignmentGradeGetDto
-        {
-           AssignmentName = createDto.AssignmentName,
-           Grade = createDto.Grade,
-           
-        };
-
-        response.Data = AssignmentGradeToReturn;
-
-        return Created("", response);
-    }
-
-    [HttpGet("{id}")]
+    [HttpGet("id")]
     public IActionResult GetById(int id)
     {
         var response = new Response();
@@ -76,20 +87,23 @@ public class AssignmentGradeController : ControllerBase
             .Set<AssignmentGrade>()
             .Select(assignmentGrade => new AssignmentGradeGetDto
             {
-                Id = assignmentGrade.Id, 
-                AssignmentName = assignmentGrade.AssignmentName,
+                Id = assignmentGrade.Id,    
+                AssignmentId= assignmentGrade.AssignmentId,
                 Grade = assignmentGrade.Grade,
               
 
             })
-            .FirstOrDefault(group => group.Id == id);
+            .FirstOrDefault(AssignmentGrade => AssignmentGrade.Id == id);
 
         response.Data = data;
-
+        if (data == null)
+        {
+            response.AddError("id", "AssignmentGrade not found.");
+        }
         return Ok(response);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("id")]
     public IActionResult Update([FromBody] AssignmentGradeUpdateDto updateDto, int id)
     {
         var response = new Response();
@@ -107,7 +121,7 @@ public class AssignmentGradeController : ControllerBase
             return BadRequest(response);
         }
 
-        AssignmentGradeToUpdate.AssignmentName = updateDto.AssignmentName;
+        
         AssignmentGradeToUpdate.Grade = updateDto.Grade;
         
 
@@ -116,7 +130,6 @@ public class AssignmentGradeController : ControllerBase
         var AssignmentGradeToReturn = new AssignmentGradeGetDto
         {
             Id = AssignmentGradeToUpdate.Id,
-            AssignmentName = AssignmentGradeToUpdate.AssignmentName,
             Grade = AssignmentGradeToUpdate.Grade,
             
         };
@@ -125,7 +138,7 @@ public class AssignmentGradeController : ControllerBase
         return Ok(response);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("id")]
     public IActionResult Delete(int id)
     {
         var response = new Response();

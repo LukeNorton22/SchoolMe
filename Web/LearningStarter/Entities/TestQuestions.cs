@@ -7,6 +7,7 @@ namespace LearningStarter.Entities
     {
         public int Id { get; set; }
         public string Question {  get; set; }
+        public string Answer { get; set; }
         public int TestId { get; set; }
         public Tests Tests { get; set; }
 
@@ -14,18 +15,22 @@ namespace LearningStarter.Entities
 
     public class TestQuestionsGetDto
     {
+        public int TestId { get; set; }
         public int Id { get; set; }
         public string Question { get; set; }
+        public string Answer { get; set; }
 
     }
     public class TestQuestionsCreateDto
     {
         public string Question { get; set; }
+        public string Answer { get; set; }
     }
 
     public class TestQuestionsUpdateDto
     {
         public string Question { get; set; }
+        public string Answer { get; set;}
     }
 
     public class TestQuestionsEntityTypeConfiguration : IEntityTypeConfiguration<TestQuestions>
@@ -34,10 +39,9 @@ namespace LearningStarter.Entities
         {
             builder.ToTable("TestQuestions");
 
-            builder.HasOne(x => x.Tests)
-               .WithMany(x => x.Questions);
-
-            
+            builder.HasOne(q => q.Tests)
+           .WithMany(t => t.Questions)
+           .HasForeignKey(q => q.TestId);
         }
     }
 }

@@ -10,11 +10,12 @@ using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Net.Sockets;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LearningStarter.Controllers;
 
 [ApiController]
-[Route("api/groups")]
+[Route("api/Groups")]
 
 public class GroupController : ControllerBase
 {
@@ -24,83 +25,14 @@ public class GroupController : ControllerBase
         _dataContext = dataContext;
     }
 
-    [HttpGet]
-    public IActionResult GetAll()
-    {
-        var response = new Response();
-        var data = _dataContext
-            .Set<Group>()
-            .Select(group => new GroupGetDto
-            {
-                Id = group.Id,
-                Name = group.Name,
-                Description = group.Description,
-                Users = group.Users.Select(x => new GroupUserGetDto
-                {
-                    Id = x.User.Id,
-                    FirstName = x.User.FirstName,
-                    LastName = x.User.LastName,
-                    UserName = x.User.UserName,
-
-
-                }).ToList(),
-                Messages = group.Messages.Select(x => new GroupMessagesGetDto
-                {
-                    Id = x.Message.Id,
-                    Content = x.Message.Content,
-                    ImageUrl = x.Message.ImageUrl,
-                    CreatedAt = x.Message.CreatedAt
-
-                }).ToList(),
-
-            })
-
-            .ToList();
-
-        response.Data = data;
-
-        return Ok(response);
-    }
-
-
-    [HttpGet ("{id}")]
-    public IActionResult GetById(int id)
-    {
-        var response = new Response();
-        var data = _dataContext
-            .Set<Group>()
-            .Select(group => new GroupGetDto
-            {
-                Id = group.Id,
-                Name = group.Name,
-                Description = group.Description,
-                Users = group.Users.Select(x=> new GroupUserGetDto
-                {
-                    Id = x.User.Id,
-                    FirstName = x.User.FirstName,
-                    LastName = x.User.LastName,
-                    UserName = x.User.UserName,
-
-
-                }).ToList()
-
-            
-            })
-            .FirstOrDefault(group  => group.Id == id);
-
-        response.Data = data;
-
-        return Ok(response);
-    }
-
     [HttpPost]
     public IActionResult Create([FromBody] GroupCreateDto createDto)
     {
         var response = new Response();
 
-        if (string.IsNullOrEmpty(createDto.Name))
+        if (string.IsNullOrEmpty(createDto.GroupName))
         {
-            response.AddError(nameof(createDto.Name), "Group name can't be empty");
+            response.AddError(nameof(createDto.GroupName), "Group name can't be empty");
         }
 
         if (response.HasErrors)
@@ -110,26 +42,29 @@ public class GroupController : ControllerBase
 
         var groupToCreate = new Group
         {
-            Name = createDto.Name,
+            GroupName = createDto.GroupName,
             Description = createDto.Description,
         };
 
         _dataContext.Set<Group>().Add(groupToCreate);
         _dataContext.SaveChanges();
 
-        var groupToReturn = new GroupGetDto
-        {
-            Id = groupToCreate.Id,
-            Name = groupToCreate.Name,
-            Description = groupToCreate.Description,
-        };
+        var groupToReturn = _dataContext
+            .Set<Group>()
+            .Select(g => new Group
+            {
+                Id=g.Id,
+                GroupName = g.GroupName,
+                Description = g.Description,
+            })
+            .FirstOrDefault();
 
         response.Data = groupToReturn;
 
         return Created("", response);
     }
 
-    [HttpPost("{groupId}/user/{userId}")]
+    [HttpPost("groupId/user/userId")]
     public IActionResult AddUserToGroup(int groupId, int userId)
     {
         var response = new Response();
@@ -161,7 +96,7 @@ public class GroupController : ControllerBase
         response.Data = new GroupGetDto
         {
             Id = groupId,
-            Name = group.Name,
+            GroupName = group.GroupName,
             Description = group.Description,
             Users = group.Users.Select(x => new GroupUserGetDto
             {
@@ -172,47 +107,65 @@ public class GroupController : ControllerBase
             }).ToList()
         };
         return Ok(response);
-    }
+    } 
 
-    [HttpPost("{groupId}/message/{messageId}")]
-    public IActionResult AddMessageToGroup(int groupId, int messageId)
+    [HttpGet]
+    public IActionResult GetAll()
     {
         var response = new Response();
-        var group = _dataContext.Set<Group>()
-            .FirstOrDefault(x => x.Id == groupId);
-        var message = _dataContext.Set<Messages>()
-            .FirstOrDefault(x => x.Id == messageId);
-        var messages = new GroupMessages
-        {
-            Group = group,
-            Message = message,
-
-        };
-
-        _dataContext.Set<GroupMessages>().Add(messages);
-        _dataContext.SaveChanges();
-
-        response.Data = new GroupGetDto
-        {
-            Id = group.Id,
-            Name = group.Name,
-            Description = group.Description,
-            Messages = group.Messages.Select(x => new GroupMessagesGetDto
+        var data = _dataContext
+            .Set<Group>()          
+            .Select(group => new GroupGetDto
             {
-                Id = x.Message.Id,
-                Content = x.Message.Content,
-                ImageUrl = x.Message.ImageUrl,
-                CreatedAt = x.Message.CreatedAt
+                Id = group.Id,
+                GroupName = group.GroupName,
+                Description = group.Description,
+                Users = group.Users.Select(x => new GroupUserGetDto
+                {
+                    Id = x.User.Id,
+                    FirstName = x.User.FirstName,
+                    LastName = x.User.LastName,
+                    UserName = x.User.UserName,
 
-            }).ToList(),
+                }).ToList(),
+                
+            }).ToList();
 
-        }; 
+        response.Data = data;
 
-        
         return Ok(response);
     }
 
-    [HttpPut("{id}")]
+    [HttpGet ("id")]
+    public IActionResult GetById(int id)
+    {
+        var response = new Response();
+        var data = _dataContext
+            .Set<Group>()
+            .Select(group => new GroupGetDto
+            {
+                Id = group.Id,
+                GroupName = group.GroupName,
+                Description = group.Description,
+                Users = group.Users.Select(x=> new GroupUserGetDto
+                {
+                    Id = x.User.Id,
+                    FirstName = x.User.FirstName,
+                    LastName = x.User.LastName,
+                    UserName = x.User.UserName,
+
+
+                }).ToList(),
+               
+            })
+            .FirstOrDefault(group  => group.Id == id);
+
+        response.Data = data;
+
+        return Ok(response);
+    }  
+
+    [HttpPut("id")]
     public IActionResult Update([FromBody] GroupUpdateDto updateDto, int id)
     {
         var response = new Response();
@@ -230,7 +183,7 @@ public class GroupController : ControllerBase
             return BadRequest(response);
         } 
 
-        groupToUpdate.Name = updateDto.Name;
+        groupToUpdate.GroupName = updateDto.GroupName;
         groupToUpdate.Description = updateDto.Description;
 
         _dataContext.SaveChanges();
@@ -238,7 +191,7 @@ public class GroupController : ControllerBase
         var groupToReturn = new GroupGetDto
         {
             Id = groupToUpdate.Id,
-            Name = groupToUpdate.Name,
+            GroupName = groupToUpdate.GroupName,
             Description = groupToUpdate.Description,
         };
 
@@ -246,7 +199,7 @@ public class GroupController : ControllerBase
         return Ok(response);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("id")]
     public IActionResult Delete(int id)
     {
         var response = new Response();
@@ -271,7 +224,5 @@ public class GroupController : ControllerBase
         return Ok(response);
 
     }
-
-    
 
 }

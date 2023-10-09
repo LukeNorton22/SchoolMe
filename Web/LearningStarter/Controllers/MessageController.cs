@@ -2,6 +2,7 @@
 using LearningStarter.Data;
 using LearningStarter.Entities;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
 
 namespace LearningStarter.Controllers;
@@ -18,6 +19,55 @@ public class MessageController : ControllerBase
         _dataContext = dataContext;
     }
 
+    [HttpPost]
+    public IActionResult Create(int groupId, [FromBody] MessagesCreateDto createDto)
+    {
+        var response = new Response();
+
+        var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
+        if (createDto.Content == null)
+        {
+            response.AddError(nameof(createDto.Content), "Content can not be empty");
+        }
+
+        if (group == null)
+        {
+            return BadRequest("Group can not be found.");
+        }
+
+
+        var MessagesToCreate = new Messages
+        {
+            GroupId = group.Id,
+            Content = createDto.Content,
+
+        };
+        
+
+        if (MessagesToCreate == null)
+        {
+            return BadRequest("Message can not be found.");
+        }
+       
+        _dataContext.Set<Messages>().Add(MessagesToCreate);
+        _dataContext.SaveChanges();
+
+        MessagesToCreate.CreatedAt = DateTime.Now.ToString("hh:mm tt"); 
+
+
+        var MessagesToReturn = new MessagesGetDto
+        {
+            Id = MessagesToCreate.Id,
+            GroupId = MessagesToCreate.GroupId,
+            Content =MessagesToCreate.Content,
+            CreatedAt = MessagesToCreate.CreatedAt 
+        };
+
+        response.Data = MessagesToReturn;
+        return Created("", response);
+
+    }
+
     [HttpGet]
     public IActionResult GetAll()
     {
@@ -27,19 +77,19 @@ public class MessageController : ControllerBase
             .Select(usermessage => new MessagesGetDto
             {
                 Id = usermessage.Id,
+                GroupId=usermessage.GroupId,
                 Content = usermessage.Content,
-                ImageUrl = usermessage.ImageUrl,
-                CreatedAt = usermessage.CreatedAt,
+                CreatedAt = usermessage.CreatedAt, 
 
             })
             .ToList();
-
+        
         response.Data = data;
 
         return Ok(response);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("id")]
     public IActionResult GetById(int id)
     {
         var response = new Response();
@@ -49,8 +99,8 @@ public class MessageController : ControllerBase
             .Select(usermessage => new MessagesGetDto
             {
                 Id = usermessage.Id,
+                GroupId=usermessage.GroupId,
                 Content = usermessage.Content,
-                ImageUrl = usermessage.ImageUrl,
                 CreatedAt = usermessage.CreatedAt,
 
 
@@ -62,38 +112,7 @@ public class MessageController : ControllerBase
         return Ok(response);
     }
 
-    [HttpPost]
-    public IActionResult Create([FromBody] MessagesCreateDto createDto)
-    {
-        var response = new Response();
-
-        var messageToCreate = new Messages
-        {
-            Content = createDto.Content,
-            ImageUrl= createDto.ImageUrl,
-
-        };
-
-
-        _dataContext.Set<Messages>().Add(messageToCreate);
-
-        _dataContext.SaveChanges(); 
-
-        var messageToReturn = new MessagesGetDto
-        {
-            Id = messageToCreate.Id,
-            Content = messageToCreate.Content,
-            ImageUrl = messageToCreate.ImageUrl,
-            CreatedAt = messageToCreate.CreatedAt,
-         
-        };
-
-        response.Data = messageToReturn;
-
-        return Created("", response);
-    }
-
-    [HttpPut("{id}")]
+    [HttpPut("id")]
     public IActionResult Update([FromBody] MessagesUpdateDto updateDto, int id)
     {
         var response = new Response();
@@ -112,7 +131,6 @@ public class MessageController : ControllerBase
         }
 
         UserMessageToUpdate.Content = updateDto.Content;
-        UserMessageToUpdate.ImageUrl = updateDto.ImageUrl;
 
 
         _dataContext.SaveChanges();
@@ -121,7 +139,6 @@ public class MessageController : ControllerBase
         {
             Id = UserMessageToUpdate.Id,
             Content = UserMessageToUpdate.Content,
-            ImageUrl = UserMessageToUpdate.ImageUrl,
         };
 
         response.Data = UserMessageToReturn;
@@ -129,8 +146,7 @@ public class MessageController : ControllerBase
         return Ok(response);
     }
 
-
-    [HttpDelete("{id}")]
+    [HttpDelete("id")]
     public IActionResult Delete(int id)
     {
         var response = new Response();
@@ -155,4 +171,5 @@ public class MessageController : ControllerBase
         return Ok(response);
 
     }
+
 }

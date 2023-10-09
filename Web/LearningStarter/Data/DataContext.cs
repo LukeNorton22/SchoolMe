@@ -7,6 +7,7 @@ namespace LearningStarter.Data;
 
 public sealed class DataContext : IdentityDbContext<User, Role, int>
 {
+   
     public DataContext(DbContextOptions<DataContext> options)
         : base(options)
     {

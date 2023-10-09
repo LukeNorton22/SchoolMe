@@ -21,52 +21,6 @@ public class UsersController : ControllerBase
         _userManager = userManager;
     }
 
-    [HttpGet]
-    public IActionResult GetAll()
-    {
-        var response = new Response();
-
-        response.Data = _context
-            .Users
-            .Select(x => new UserGetDto
-            {
-                Id = x.Id,
-                FirstName = x.FirstName,
-                LastName = x.LastName,
-                UserName = x.UserName
-            })
-            .ToList();
-
-        return Ok(response);
-    }
-
-    [HttpGet("{id}")]
-    public IActionResult GetById(
-        [FromRoute] int id)
-    {
-        var response = new Response();
-
-        var user = _context.Users.FirstOrDefault(x => x.Id == id);
-
-        if (user == null)
-        {
-            response.AddError("id", "There was a problem finding the user.");
-            return NotFound(response);
-        }
-
-        var userGetDto = new UserGetDto
-        {
-            Id = user.Id,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            UserName = user.UserName,
-        };
-
-        response.Data = userGetDto;
-
-        return Ok(response);
-    }
-
     [HttpPost]
     public IActionResult Create(
         [FromBody] UserCreateDto userCreateDto)
@@ -123,7 +77,53 @@ public class UsersController : ControllerBase
         return Created("", response);
     }
 
-    [HttpPut("{id}")]
+    [HttpGet]
+    public IActionResult GetAll()
+    {
+        var response = new Response();
+
+        response.Data = _context
+            .Users
+            .Select(x => new UserGetDto
+            {
+                Id = x.Id,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                UserName = x.UserName
+            })
+            .ToList();
+
+        return Ok(response);
+    }
+
+    [HttpGet("id")]
+    public IActionResult GetById(
+        [FromRoute] int id)
+    {
+        var response = new Response();
+
+        var user = _context.Users.FirstOrDefault(x => x.Id == id);
+
+        if (user == null)
+        {
+            response.AddError("id", "There was a problem finding the user.");
+            return NotFound(response);
+        }
+
+        var userGetDto = new UserGetDto
+        {
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            UserName = user.UserName,
+        };
+
+        response.Data = userGetDto;
+
+        return Ok(response);
+    }
+
+    [HttpPut("id")]
     public IActionResult Edit(
         [FromRoute] int id,
         [FromBody] UserUpdateDto userUpdateDto)
@@ -187,7 +187,7 @@ public class UsersController : ControllerBase
         return Ok(response);
     }
     
-    [HttpDelete("{id}")]
+    [HttpDelete("id")]
     public IActionResult Delete(int id)
     {
         var response = new Response();

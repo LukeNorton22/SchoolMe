@@ -16,6 +16,52 @@ public class FlashCardsController : ControllerBase
     {
         _dataContext = dataContext;
     }
+
+    [HttpPost]
+    public IActionResult Create(int flashcardsetId, [FromBody] FlashCardsCreateDto createDto)
+    {
+        var response = new Response();
+
+        var flashcardset = _dataContext.Set<FlashCardSets>().FirstOrDefault(x => x.Id == flashcardsetId);
+        if (createDto.Question == null)
+        {
+            response.AddError(nameof(createDto.Question), "SetName can not be empty");
+        }
+        if (createDto.Answer == null)
+        {
+            response.AddError(nameof(createDto.Answer), "SetName can not be empty");
+        }
+        if (flashcardset == null)
+        {
+            return BadRequest("FlashCardSet can not be found.");
+        }
+
+
+        var FlashCardsToCreate = new FlashCards
+        {
+
+            FlashCardSetId = flashcardset.Id,
+            Question = createDto.Question,
+            Answer = createDto.Answer,
+
+        };
+
+        _dataContext.Set<FlashCards>().Add(FlashCardsToCreate);
+        _dataContext.SaveChanges();
+
+        var FlashCardsToReturn = new FlashCardsGetDto
+        {
+            Id = FlashCardsToCreate.Id,
+            FlashCardSetId = flashcardset.Id,
+            Question = createDto.Question,
+            Answer = createDto.Answer,
+        };
+
+        response.Data = FlashCardsToReturn;
+        return Created("", response);
+
+    }
+
     [HttpGet]
     public IActionResult GetAll()
     {
@@ -25,6 +71,7 @@ public class FlashCardsController : ControllerBase
             .Select(FlashCards => new FlashCardsGetDto
             {
                 Id = FlashCards.Id,
+                FlashCardSetId=FlashCards.FlashCardSetId,
                 Question = FlashCards.Question,
                 Answer = FlashCards.Answer,
             })
@@ -32,7 +79,8 @@ public class FlashCardsController : ControllerBase
         response.Data = data;
         return Ok(response);
     }
-    [HttpGet("({id}")]
+
+    [HttpGet("id")]
     public IActionResult GetById(int id)
     {
         var response = new Response();
@@ -58,44 +106,9 @@ public class FlashCardsController : ControllerBase
         }
         return Ok(response);
 
-    }
+    }   
 
-    [HttpPost]
-    public IActionResult Create([FromBody] FlashCardsCreateDto createDto)
-    {
-        var response = new Response();
-
-        if (createDto.Question == null)
-        {
-            response.AddError(nameof(createDto.Question), "Question can not be empty");
-        }
-        if (createDto.Answer == null)
-        {
-            response.AddError(nameof(createDto.Answer), "Answer can not be empty");
-        }
-
-
-        var FlashCardsToCreate = new FlashCards
-        { 
-            Question = createDto.Question,
-            Answer = createDto.Answer,
-        };
-
-        _dataContext.Set<FlashCards>().Add(FlashCardsToCreate);
-        _dataContext.SaveChanges();
-
-        var FlashCardsToReturn = new FlashCardsGetDto
-        {
-            Id = FlashCardsToCreate.Id,
-            Question = FlashCardsToCreate.Question,
-            Answer = FlashCardsToCreate.Answer,
-        };
-
-        response.Data = FlashCardsToReturn;
-        return Created("", response);
-
-    }
-    [HttpPut("{id}")]
+    [HttpPut("id")]
     public IActionResult Update([FromBody] FlashCardsUpdateDto updateDto, int id)
     {
         var response = new Response();
@@ -140,7 +153,8 @@ public class FlashCardsController : ControllerBase
         response.Data = FlashCardsToReturn;
         return Ok(response);
     }
-    [HttpDelete("{id}")]
+
+    [HttpDelete("id")]
     public IActionResult Delete(int id)
     {
         var response = new Response();

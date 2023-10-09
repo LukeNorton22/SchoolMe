@@ -3,7 +3,11 @@ using LearningStarter.Data;
 using LearningStarter.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Text.RegularExpressions;
+using Group = LearningStarter.Entities.Group;
+
 namespace LearningStarter.Controllers
 {
     [ApiController]
@@ -16,33 +20,78 @@ namespace LearningStarter.Controllers
         {
             _dataContext = dataContext;
         }
+
+        [HttpPost]
+        public IActionResult Create(int groupId, [FromBody] FlashCardSetsCreateDto createDto)
+        {
+            var response = new Response();
+
+            var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
+            if (createDto.SetName == null)
+            {
+                response.AddError(nameof(createDto.SetName), "SetName can not be empty");
+            }
+
+            if (group == null)
+            {
+                return BadRequest("Group can not be found.");
+            }
+
+            var FlashCardSetsToCreate = new FlashCardSets
+            {              
+                GroupId = group.Id,
+                SetName = createDto.SetName,               
+            };
+           
+
+            if (FlashCardSetsToCreate== null) {
+                return BadRequest("FlashCardSet can not be found.");
+            }
+           
+            
+           
+            _dataContext.Set<FlashCardSets>().Add(FlashCardSetsToCreate);
+            _dataContext.SaveChanges();
+
+            var FlashCardSetsToReturn = new FlashCardSetsGetDto
+            {
+                Id = FlashCardSetsToCreate.Id, 
+                GroupId = FlashCardSetsToCreate.GroupId,
+                SetName = FlashCardSetsToCreate.SetName,
+            };
+
+            response.Data = FlashCardSetsToReturn;
+            return Created("", response);
+        }
+
         [HttpGet]
         public IActionResult GetAll()
         {
             var response = new Response();
             var data = _dataContext
                 .Set<FlashCardSets>()
+                .Include(x => x.FlashCards)
                 .Select(FlashCardSets => new FlashCardSetsGetDto
                 {
                     Id = FlashCardSets.Id,
+                    GroupId = FlashCardSets.GroupId,
                     
-                    CreatedById = FlashCardSets.CreatedById,
                     SetName = FlashCardSets.SetName,
-                    FlashCards = FlashCardSets.FlashCards.Select(x => new FlashCardSetsFlashCardGetDto
+                    FlashCards = FlashCardSets.FlashCards.Select(x => new FlashCardsGetDto
                     {
-                        Id = x.FlashCards.Id,
-                        Question = x.FlashCards.Question,
-                        Answer = x.FlashCards.Answer,
-                      
+                        Id = x.Id,
+                        FlashCardSetId = x.FlashCardSetId,
+                        Question = x.Question,
+                        Answer= x.Answer,
 
-
-                    }).ToList()
+                    }).ToList(),
                 })
                 .ToList();
             response.Data = data;
             return Ok(response);
         }
-        [HttpGet("({id}")]
+
+        [HttpGet("id")]
         public IActionResult GetById(int id)
         {
             var response = new Response();
@@ -53,17 +102,16 @@ namespace LearningStarter.Controllers
                 .Select(FlashCardSets => new FlashCardSetsGetDto
                 {
                     Id = FlashCardSets.Id,
-                  
-                    CreatedById = FlashCardSets.CreatedById,
+                  GroupId= FlashCardSets.GroupId,
+                    
                     SetName = FlashCardSets.SetName,
-                    FlashCards = FlashCardSets.FlashCards.Select(x => new FlashCardSetsFlashCardGetDto
+                    FlashCards = FlashCardSets.FlashCards.Select(x => new FlashCardsGetDto
                     {
-                        Id = x.FlashCards.Id,
-                        Question = x.FlashCards.Question,
-                        Answer = x.FlashCards.Answer,
+                        Id = x.Id,
+                        FlashCardSetId=x.FlashCardSetId,
+                        Question = x.Question,
+                        Answer = x.Answer,
                        
-
-
                     }).ToList()
                 })
                 .FirstOrDefault(FlashCardSets => FlashCardSets.Id == id);
@@ -80,53 +128,12 @@ namespace LearningStarter.Controllers
 
         }
 
-        [HttpPost]
-        public IActionResult Create([FromBody] FlashCardSetsCreateDto createDto)
-        {
-            var response = new Response();
-
-            if (createDto.CreatedById < 0)
-            {
-                response.AddError(nameof(createDto.CreatedById), "CreatedById must be valid");
-            }
-            if (createDto.SetName == null)
-            {
-                response.AddError(nameof(createDto.SetName), "SetName can not be empty");
-            }
-          
-           
-
-            var FlashCardSetsToCreate = new FlashCardSets
-            {
-               
-                CreatedById = createDto.CreatedById,
-                SetName = createDto.SetName,
-            };
-
-            _dataContext.Set<FlashCardSets>().Add(FlashCardSetsToCreate);
-            _dataContext.SaveChanges();
-
-            var FlashCardSetsToReturn = new FlashCardSetsGetDto
-            {
-                Id = FlashCardSetsToCreate.Id,
-              
-                CreatedById = FlashCardSetsToCreate.CreatedById,
-                SetName = FlashCardSetsToCreate.SetName,
-            };
-
-            response.Data = FlashCardSetsToReturn;
-            return Created("", response);
-
-        }
-        [HttpPut("{id}")]
+        [HttpPut("id")]
         public IActionResult Update([FromBody] FlashCardSetsUpdateDto updateDto, int id)
         {
             var response = new Response();
 
-            if (updateDto.CreatedById < 0)
-            {
-                response.AddError(nameof(updateDto.CreatedById), "CreatedById must be valid");
-            }
+           
             if (updateDto.SetName == null)
             {
                 response.AddError(nameof(updateDto.SetName), "SetName can not be empty");
@@ -147,7 +154,7 @@ namespace LearningStarter.Controllers
             }
 
             FlashCardSetsToUpdate.SetName = updateDto.SetName;
-            FlashCardSetsToUpdate.CreatedById = updateDto.CreatedById;
+           
 
             _dataContext.SaveChanges();
 
@@ -156,13 +163,14 @@ namespace LearningStarter.Controllers
                 Id = FlashCardSetsToUpdate.Id,
         
                 SetName = FlashCardSetsToUpdate.SetName,
-                CreatedById = FlashCardSetsToUpdate.CreatedById,
+                
 
             };
             response.Data = FlashCardSetsToReturn;
             return Ok(response);
         }
-        [HttpDelete("{id}")]
+
+        [HttpDelete("id")]
         public IActionResult Delete(int id)
         {
             var response = new Response();
@@ -185,52 +193,6 @@ namespace LearningStarter.Controllers
             response.Data = true;
             return Ok(response);
         }
-        [HttpPost("{FlashCardSetsId}/FlashCards/{FlashCardsId}")]
-        public IActionResult AddFlashCardsToFlashCardSets(int FlashCardSetsId, int FlashCardsId)
-        {
-            var response = new Response();
-          
-
-                
-            var FlashCardSets = _dataContext.Set<FlashCardSets>()
-                .FirstOrDefault(x => x.Id == FlashCardSetsId);
-            var FlashCards = _dataContext.Set<FlashCards>()
-                .FirstOrDefault(x => x.Id == FlashCardsId);
-            if (FlashCards == null)
-            {
-                response.AddError("id", "FlashCard not found.");
-            }
-            if (FlashCardSets == null)
-            {
-                response.AddError("id", "FlashCardSet not found.");
-            }
-            var FlashCardSetsFlashCard = new FlashCardSetsFlashCard
-            {
-                FlashCardSets = FlashCardSets,
-                FlashCards = FlashCards,
-
-            };
-            if (response.HasErrors)
-            {
-                return BadRequest(response);
-            }
-            _dataContext.Set<FlashCardSetsFlashCard>().Add(FlashCardSetsFlashCard);
-            _dataContext.SaveChanges();
-
-            response.Data = new FlashCardSetsGetDto
-            {
-                Id = FlashCardSetsId,
-                CreatedById = FlashCardSets.CreatedById,
-                SetName = FlashCardSets.SetName,
-                FlashCards = FlashCardSets.FlashCards.Select(x => new FlashCardSetsFlashCardGetDto
-                {
-                    Id = x.FlashCards.Id,
-                    Question = x.FlashCards.Question,
-                    Answer = x.FlashCards.Answer,
-                  
-                }).ToList()
-            };
-            return Ok(response);
-        }
+       
     }
 }

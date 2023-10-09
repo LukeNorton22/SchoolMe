@@ -9,30 +9,27 @@ namespace LearningStarter.Entities
     {
         public int Id { get; set; }
         public int GroupId { get; set; }
-        public int CreatorId {  get; set; }
-        public string Name { get; set; }
+        public Group Group { get; set; }
+        public string TestName { get; set; }
         public List<TestQuestions> Questions { get; set; }
         
     }
     public class TestsCreateDto
     {
-        public int GroupId { get; set; }
-        public int CreatorId { get; set; }
-        public string Name { get; set; }
+        
+        public string TestName { get; set; }
+
     }
 
     public class TestsUpdateDto
     {
-        public int GroupId { get; set; }
-        public int CreatorId { get; set; }
-        public string Name { get; set; }
+        public string TestName { get; set; }
     }
     public class TestsGetDto
     {
         public int Id { get; set; }
         public int GroupId { get; set; }
-        public int CreatorId { get; set; }
-        public string Name { get; set; }
+        public string TestName { get; set; }
         public List<TestQuestionsGetDto> Questions { get; set; }
     }
     public class TestsEntityTypeConfiguration : IEntityTypeConfiguration<Tests>
@@ -40,8 +37,8 @@ namespace LearningStarter.Entities
         public void Configure(EntityTypeBuilder<Tests> builder)
         {
             builder.ToTable("Tests");
-
-            builder.HasMany(x => x.Questions);
+            builder.HasOne(x => x.Group).WithMany(x => x.Test);
+            builder.HasMany(x => x.Questions).WithOne(x => x.Tests);
         }
     }
 
