@@ -38,7 +38,7 @@ public class AssignmentGradeController : ControllerBase
         var AssignmentGradeToCreate = new AssignmentGrade
         {
 
-            AssignmentId = assignmentId,
+            AssignmentId = assignment.Id,
             Grade = createDto.Grade,
 
         };

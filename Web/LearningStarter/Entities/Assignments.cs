@@ -14,7 +14,7 @@ namespace LearningStarter.Entities;
     public int GroupId { get; set; }
     public int AverageGrade { get; set; }
     public Group Group { get; set; }
-    [JsonIgnore]
+    
     public List<AssignmentGrade> Grade { get; set; }
     }
 public class AssignmentsCreateDto

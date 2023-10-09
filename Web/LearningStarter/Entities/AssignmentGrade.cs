@@ -43,6 +43,7 @@ public class AssignmentGradeEntityTypeConfiguration : IEntityTypeConfiguration<A
         builder.ToTable("AssignmentGrade");
 
         builder.HasOne(x => x.Assignments)
-               .WithMany(x => x.Grade);
+               .WithMany(x => x.Grade)
+               .HasForeignKey(x => x.AssignmentId);
     }
 }

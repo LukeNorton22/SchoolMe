@@ -75,7 +75,7 @@ namespace LearningStarter.Controllers
             var response = new Response();
             var data = _dataContext
                 .Set<Assignments>()
-                 .Include(x => x.Grade)
+                .Include(x => x.Grade)
                 .Select(assignment => new AssignmentsGetDto
                 {
                     Id = assignment.Id,
