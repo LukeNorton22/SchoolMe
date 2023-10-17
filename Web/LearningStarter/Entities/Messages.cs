@@ -26,8 +26,7 @@ public class MessagesGetDto
 {
     public int Id { get; set; }
     public int GroupId { get; set; }
-    public string Content { get; set; }
-   
+    public string Content { get; set; }   
     public String CreatedAt { get; set; } = DateTime.Now.ToString("hh:mm tt");
 
 }
