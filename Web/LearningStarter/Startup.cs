@@ -28,7 +28,6 @@ public class Startup
 
     private IConfiguration Configuration { get; }
 
-    // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddCors();
@@ -153,7 +152,164 @@ public class Startup
         var userManager = scope.ServiceProvider.GetService<UserManager<User>>();
 
         SeedUsers(dataContext, userManager).Wait();
+        SeedGroup(dataContext);
+        SeedMessage(dataContext);
+        SeedFlasCardSet(dataContext);
+        SeedFlashCards(dataContext);
+        SeedTests(dataContext);
+        SeedTestQuestions(dataContext);
+        SeedAssignments(dataContext);
+        SeedAssignmentGrades(dataContext);
     }
+
+
+    private static void SeedGroup(DataContext dataContext)
+    {
+        if (dataContext.Set<Group>().Any())
+        {
+            return;
+        }
+
+        var seededGroup1 = new Group
+        {
+            GroupName = "CMPS 285",
+            Description = "Group for students in CMPS 285",
+        };
+
+        dataContext.Set<Group>().Add(seededGroup1);
+        dataContext.SaveChanges();
+    }
+
+    private static void SeedMessage(DataContext dataContext)
+    {
+        if (dataContext.Set<Messages>().Any())
+        {
+            return;
+        }
+
+        var seededMessage1 = new Messages
+        {
+            GroupId = 1,
+            Content = "What is up guys! So glad to be in CMPS 285!",
+            CreatedAt = "12:52 pm",
+        };
+
+        dataContext.Set<Messages>().Add(seededMessage1);
+        dataContext.SaveChanges();
+    }
+
+    private static void SeedFlasCardSet(DataContext dataContext)
+    {
+        if (dataContext.Set<FlashCardSets>().Any())
+        {
+            return;
+        }
+
+        var seededFlashCardSet1 = new FlashCardSets
+        {
+            SetName = "Midterm study material",
+            GroupId = 1,
+           
+        };
+
+        dataContext.Set<FlashCardSets>().Add(seededFlashCardSet1);
+        dataContext.SaveChanges();
+    }
+
+    private static void SeedFlashCards(DataContext dataContext)
+    {
+        if (dataContext.Set<FlashCards>().Any())
+        {
+            return;
+        }
+
+        var seededFlashCard1 = new FlashCards
+        {
+            FlashCardSetId = 1,
+            Question = "What do you call a cow with no legs",
+            Answer = "Ground beef!",
+        };
+
+        dataContext.Set<FlashCards>().Add(seededFlashCard1);
+        dataContext.SaveChanges();
+    }
+
+    private static void SeedTests(DataContext dataContext)
+    {
+        if (dataContext.Set<Tests>().Any())
+        {
+            return;
+        }
+
+        var seededTest1 = new Tests
+        {
+            TestName = "Midterm Material",
+            GroupId = 1,
+        };
+
+        dataContext.Set<Tests>().Add(seededTest1);
+        dataContext.SaveChanges();
+    }
+
+    private static void SeedTestQuestions(DataContext dataContext)
+    {
+        if (dataContext.Set<TestQuestions>().Any())
+        {
+            return;
+        }
+
+        var seededTestQuestion1 = new TestQuestions
+        {
+            TestId = 1,
+            Question = "Who is Patrick Mahomes' dad?",
+            Answer = "Jared Goff!",
+        };
+
+        dataContext.Set<TestQuestions>().Add(seededTestQuestion1);
+        dataContext.SaveChanges();
+    }
+
+    private static void SeedAssignments(DataContext dataContext)
+    {
+        if (dataContext.Set<Assignments>().Any())
+        {
+            return;
+        }
+
+        var seededAssignment1 = new Assignments
+        {
+            GroupId = 1,
+            AssignmentName = "Midterm Presentations",
+            AverageGrade = 100,
+        };
+
+        dataContext.Set<Assignments>().Add(seededAssignment1);
+        dataContext.SaveChanges();
+    }
+
+    private static void SeedAssignmentGrades(DataContext dataContext)
+    {
+        if (dataContext.Set<AssignmentGrade>().Any())
+        {
+            return;
+        }
+
+        var seededAssignmentGrade1 = new AssignmentGrade
+        {
+            CreatorId = 1,
+            AssignmentId = 1,
+            Grade = 100,
+        };
+
+        dataContext.Set<AssignmentGrade>().Add(seededAssignmentGrade1);
+        dataContext.SaveChanges(); 
+    }
+
+
+
+
+
+
 
     private static async Task SeedUsers(DataContext dataContext, UserManager<User> userManager)
     {
@@ -166,6 +322,7 @@ public class Startup
                 FirstName = "Seeded",
                 LastName = "User",
                 UserName = "admin",
+                
             };
 
             await userManager.CreateAsync(seededUser, "Password");
