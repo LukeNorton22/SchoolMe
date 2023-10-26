@@ -7,4 +7,6 @@ export const routes = {
   FlashCardUpdate: "/flashcards/:id",
   AssignmentGradeListing: "/assignmentGrade",
   AssignmentGradeUpdate: "/assignmentGrade/:id",
+  GroupListing: "/group",
+  TestListing: "/tests"
 };
