@@ -41,7 +41,7 @@ namespace LearningStarter.Entities
     {
         public void Configure(EntityTypeBuilder<FlashCards> builder)
         {
-            builder.ToTable("FlashCards");
+            builder.ToTable("Flashcards");
         }
     }
 

@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 namespace LearningStarter.Controllers;
 
 [ApiController]
-[Route("api/AssignmentGrade")]
+[Route("api/assignmentGrade")]
 
 public class AssignmentGradeController : ControllerBase
 {
