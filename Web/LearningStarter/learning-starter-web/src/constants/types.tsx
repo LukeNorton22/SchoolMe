@@ -38,3 +38,16 @@ export type AssignmentGradeGetDto = {
   creatorId: number;
   grade: number;
 };
+
+export type GroupGetDto = {
+  id: number;
+  groupName: string;
+  description: string;
+
+};
+
+export type TestsGetDto = {
+  id: number;
+  testName: string;
+
+};

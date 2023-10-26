@@ -85,6 +85,20 @@ const navigation: NavigationItem[] = [
       to: routes.AssignmentGradeListing,
     },
   },
+  {
+    text: "Group",
+    hide: false,
+    nav: {
+      to:routes.GroupListing,
+    },
+  },
+  {
+    text: "Tests",
+    hide: false,
+    nav: {
+      to:routes.TestListing
+    }
+  }
 ];
 
 const DesktopNavigation = () => {
