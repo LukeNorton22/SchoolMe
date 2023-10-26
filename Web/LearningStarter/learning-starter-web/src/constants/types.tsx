@@ -38,3 +38,9 @@ export type AssignmentGradeGetDto = {
   creatorId: number;
   grade: number;
 };
+
+export type MessagesGetDto = {
+  id: number;
+  content: string;
+  createdAt: string;
+};

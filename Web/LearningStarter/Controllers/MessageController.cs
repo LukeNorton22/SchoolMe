@@ -8,7 +8,7 @@ using System.Linq;
 namespace LearningStarter.Controllers;
 
 [ApiController]
-[Route("api/Messages")]
+[Route("api/messages")]
 
 
 public class MessageController : ControllerBase

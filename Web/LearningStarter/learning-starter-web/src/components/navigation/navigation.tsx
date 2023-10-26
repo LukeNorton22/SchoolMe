@@ -25,6 +25,7 @@ import {
   AssignmentGradeGetDto,
   FlashCardsGetDto,
   UserDto,
+  MessagesGetDto,
 } from "../../constants/types";
 import { useAuth } from "../../authentication/use-auth";
 
@@ -83,6 +84,13 @@ const navigation: NavigationItem[] = [
     hide: false,
     nav: {
       to: routes.AssignmentGradeListing,
+    },
+  },
+  {
+    text: "Messages",
+    hide: false,
+    nav: {
+      to: routes.MessageListing,
     },
   },
 ];
