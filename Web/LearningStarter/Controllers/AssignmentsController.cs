@@ -85,6 +85,7 @@ namespace LearningStarter.Controllers
                     Grade = assignment.Grade.Select(x => new AssignmentGradeGetDto
                     {
                         Id=x.Id,
+                        CreatorId = x.CreatorId,
                         AssignmentId=assignment.Id,
                         Grade = x.Grade
 

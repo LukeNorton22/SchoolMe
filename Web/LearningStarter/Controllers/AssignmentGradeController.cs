@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 namespace LearningStarter.Controllers;
 
 [ApiController]
-[Route("api/AssignmentGrade")]
+[Route("api/assignmentGrade")]
 
 public class AssignmentGradeController : ControllerBase
 {
@@ -22,7 +22,7 @@ public class AssignmentGradeController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Create(int assignmentId, [FromBody] AssignmentGradeCreateDto createDto)
+    public IActionResult Create(int assignmentId, int creatorId, [FromBody] AssignmentGradeCreateDto createDto)
     {
         var response = new Response();
         var assignment = _dataContext.Set<Assignments>().FirstOrDefault(x => x.Id == assignmentId);
@@ -34,11 +34,17 @@ public class AssignmentGradeController : ControllerBase
         {
             return BadRequest("Assignment can not be found.");
         }
+        var creator = _dataContext.Set<User>().FirstOrDefault(y => y.Id == creatorId);
+        if (creator == null)
+        {
+            return BadRequest("Creator user not found.");
+        }
 
-        var AssignmentGradeToCreate = new AssignmentGrade
+        var AssignmentGradeToCreate = new AssignmentGrade 
         {
 
             AssignmentId = assignment.Id,
+            CreatorId = creatorId,
             Grade = createDto.Grade,
 
         };
@@ -51,6 +57,7 @@ public class AssignmentGradeController : ControllerBase
         var AssignmentGradeToReturn = new AssignmentGradeGetDto
         {
            Id = AssignmentGradeToCreate.Id,
+           CreatorId=creator.Id,
            AssignmentId = assignment.Id,
            Grade = AssignmentGradeToCreate.Grade, 
         };
@@ -69,6 +76,7 @@ public class AssignmentGradeController : ControllerBase
             .Select(AssignmentGrade => new AssignmentGradeGetDto
             {
                 Id = AssignmentGrade.Id,
+                CreatorId = AssignmentGrade.CreatorId,
                 AssignmentId=AssignmentGrade.AssignmentId,
                 Grade = AssignmentGrade.Grade,               
             })
@@ -88,6 +96,7 @@ public class AssignmentGradeController : ControllerBase
             .Select(assignmentGrade => new AssignmentGradeGetDto
             {
                 Id = assignmentGrade.Id,    
+                CreatorId = assignmentGrade.CreatorId,
                 AssignmentId= assignmentGrade.AssignmentId,
                 Grade = assignmentGrade.Grade,
               
@@ -130,6 +139,8 @@ public class AssignmentGradeController : ControllerBase
         var AssignmentGradeToReturn = new AssignmentGradeGetDto
         {
             Id = AssignmentGradeToUpdate.Id,
+            CreatorId = AssignmentGradeToUpdate.CreatorId,
+            AssignmentId = AssignmentGradeToUpdate.AssignmentId,
             Grade = AssignmentGradeToUpdate.Grade,
             
         };

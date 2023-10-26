@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace LearningStarter.Controllers;
 [ApiController]
-[Route("api/FlashCards")]
+[Route("api/flashcards")]
 
 public class FlashCardsController : ControllerBase
 {

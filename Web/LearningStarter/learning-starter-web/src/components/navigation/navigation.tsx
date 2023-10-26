@@ -21,11 +21,17 @@ import {
 } from "../../constants/theme-constants";
 import { NavLink, NavLinkProps, useLocation } from "react-router-dom";
 import logo from "../../assets/logo.png";
-import { UserDto } from "../../constants/types";
+import {
+  AssignmentGradeGetDto,
+  FlashCardsGetDto,
+  UserDto,
+} from "../../constants/types";
 import { useAuth } from "../../authentication/use-auth";
 
 type PrimaryNavigationProps = {
   user?: UserDto;
+  FlashCardListing?: FlashCardsGetDto;
+  AssignmentGradeListing?: AssignmentGradeGetDto;
 };
 
 type NavigationItem = {
@@ -63,6 +69,20 @@ const navigation: NavigationItem[] = [
     hide: false,
     nav: {
       to: routes.user,
+    },
+  },
+  {
+    text: "FlashCards",
+    hide: false,
+    nav: {
+      to: routes.FlashCardListing,
+    },
+  },
+  {
+    text: "AssignmentGrades",
+    hide: false,
+    nav: {
+      to: routes.AssignmentGradeListing,
     },
   },
 ];
