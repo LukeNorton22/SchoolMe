@@ -25,6 +25,7 @@ import {
   AssignmentGradeGetDto,
   FlashCardsGetDto,
   UserDto,
+  MessagesGetDto,
 } from "../../constants/types";
 import { useAuth } from "../../authentication/use-auth";
 
@@ -86,6 +87,13 @@ const navigation: NavigationItem[] = [
     },
   },
   {
+    text: "Messages",
+    hide: false,
+    nav: {
+      to: routes.MessageListing,
+    },
+  },
+   {
     text: "Group",
     hide: false,
     nav: {
@@ -99,6 +107,7 @@ const navigation: NavigationItem[] = [
       to:routes.TestListing
     }
   }
+
 ];
 
 const DesktopNavigation = () => {

@@ -9,8 +9,12 @@ import { FlashCardListing } from "../pages/flashcard-page/flashcard-listing";
 import { FlashCardUpdate } from "../pages/flashcard-page/flashcard-update";
 import { AssignmentGradeListing } from "../pages/assignmentgrade-page/assignmentgrade-listing";
 import { AssignmentGradeUpdate } from "../pages/assignmentgrade-page/assignmentgrade-update";
+
+import { MessageListing } from "../pages/message-page/message-listing";
+import { MessageUpdate } from "../pages/message-page/message-update";
 import { GroupListing } from "../pages/Group-page/Group-listing";
 import { TestListing } from "../pages/Test-page/Test-listing";
+
 
 //This is where you will tell React Router what to render when the path matches the route specified.
 export const Routes = () => {
@@ -35,6 +39,8 @@ export const Routes = () => {
             path={routes.AssignmentGradeListing}
             element={<AssignmentGradeListing />}
           />
+          <Route path={routes.MessageListing} element={<MessageListing />} />
+          <Route path={routes.MessageUpdate} element={<MessageUpdate />} />
           <Route path={routes.FlashCardUpdate} element={<FlashCardUpdate />} />
           <Route
             path={routes.AssignmentGradeUpdate}

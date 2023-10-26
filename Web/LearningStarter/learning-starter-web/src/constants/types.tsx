@@ -39,6 +39,12 @@ export type AssignmentGradeGetDto = {
   grade: number;
 };
 
+export type MessagesGetDto = {
+  id: number;
+  content: string;
+  createdAt: string;
+};
+
 export type GroupGetDto = {
   id: number;
   groupName: string;
