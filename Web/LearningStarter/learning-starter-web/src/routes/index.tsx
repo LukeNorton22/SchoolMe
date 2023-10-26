@@ -9,4 +9,7 @@ export const routes = {
   AssignmentGradeUpdate: "/assignmentGrade/:id",
   MessageListing: "/messages",
   MessageUpdate: "/messages/:id",
+  GroupListing: "/group",
+  TestListing: "/tests",
+
 };

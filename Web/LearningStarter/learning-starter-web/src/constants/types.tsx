@@ -44,3 +44,16 @@ export type MessagesGetDto = {
   content: string;
   createdAt: string;
 };
+
+export type GroupGetDto = {
+  id: number;
+  groupName: string;
+  description: string;
+
+};
+
+export type TestsGetDto = {
+  id: number;
+  testName: string;
+
+};
