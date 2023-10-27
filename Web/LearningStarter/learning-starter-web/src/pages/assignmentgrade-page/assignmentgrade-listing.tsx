@@ -57,7 +57,7 @@ export const AssignmentGradeListing = () => {
                         navigate(
                           routes.AssignmentGradeUpdate.replace(
                             ":id",
-                            "${assignmentGrade.id}"
+                            "{assignmentGrade.id}"
                           )
                         );
                       }}

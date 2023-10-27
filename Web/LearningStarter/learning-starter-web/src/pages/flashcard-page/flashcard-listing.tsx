@@ -54,7 +54,7 @@ export const FlashCardListing = () => {
                         navigate(
                           routes.FlashCardUpdate.replace(
                             ":id",
-                            "${flashcard.id}"
+                            "{flashcard.id}"
                           )
                         );
                       }}

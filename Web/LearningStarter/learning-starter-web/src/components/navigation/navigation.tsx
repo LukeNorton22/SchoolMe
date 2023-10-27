@@ -23,15 +23,13 @@ import { NavLink, NavLinkProps, useLocation } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import {
   AssignmentGradeGetDto,
-  FlashCardsGetDto,
   UserDto,
-  MessagesGetDto,
 } from "../../constants/types";
 import { useAuth } from "../../authentication/use-auth";
 
 type PrimaryNavigationProps = {
   user?: UserDto;
-  FlashCardListing?: FlashCardsGetDto;
+ 
   AssignmentGradeListing?: AssignmentGradeGetDto;
 };
 

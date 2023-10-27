@@ -14,6 +14,8 @@ import { MessageListing } from "../pages/message-page/message-listing";
 import { MessageUpdate } from "../pages/message-page/message-update";
 import { GroupListing } from "../pages/Group-page/Group-listing";
 import { TestListing } from "../pages/Test-page/Test-listing";
+import { GroupUpdate } from "../pages/Group-page/Group-update";
+import { TestUpdate } from "../pages/Test-page/Test-update";
 
 
 //This is where you will tell React Router what to render when the path matches the route specified.
@@ -34,18 +36,14 @@ export const Routes = () => {
             element={<FlashCardListing />}
           />
           <Route path={routes.TestListing} element={<TestListing />} />
-          <Route path = {routes.GroupListing} element = {<GroupListing/>} />
-          <Route
-            path={routes.AssignmentGradeListing}
-            element={<AssignmentGradeListing />}
-          />
+          <Route path={routes.TestUpdate} element={<TestUpdate />} />
+          <Route path={routes.GroupListing} element = {<GroupListing/>} />
+          <Route path={routes.GroupUpdate} element = {<GroupUpdate/>} />
+          <Route path={routes.AssignmentGradeListing} element={<AssignmentGradeListing />}/>
           <Route path={routes.MessageListing} element={<MessageListing />} />
           <Route path={routes.MessageUpdate} element={<MessageUpdate />} />
           <Route path={routes.FlashCardUpdate} element={<FlashCardUpdate />} />
-          <Route
-            path={routes.AssignmentGradeUpdate}
-            element={<AssignmentGradeUpdate />}
-          />
+          <Route path={routes.AssignmentGradeUpdate}  element={<AssignmentGradeUpdate />}/>
           {/* Going to route "localhost:5001/" will go to homepage */}
           <Route path={routes.root} element={<Navigate to={routes.home} />} />
 

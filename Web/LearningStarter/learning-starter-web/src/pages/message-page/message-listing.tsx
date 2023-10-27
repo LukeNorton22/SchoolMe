@@ -53,7 +53,7 @@ export const MessageListing = () => {
                       icon={faPencil}
                       onClick={() => {
                         navigate(
-                          routes.MessageUpdate.replace(":id", "${messages.id}")
+                          routes.MessageUpdate.replace(":id", "{messages.id}")
                         );
                       }}
                     />
