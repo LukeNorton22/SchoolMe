@@ -16,6 +16,7 @@ import { GroupListing } from "../pages/Group-page/Group-listing";
 import { TestListing } from "../pages/Test-page/Test-listing";
 import { GroupUpdate } from "../pages/Group-page/Group-update";
 import { TestUpdate } from "../pages/Test-page/Test-update";
+import { GroupCreate } from "../pages/Group-page/Group-create";
 
 
 //This is where you will tell React Router what to render when the path matches the route specified.
@@ -39,6 +40,7 @@ export const Routes = () => {
           <Route path={routes.TestUpdate} element={<TestUpdate />} />
           <Route path={routes.GroupListing} element = {<GroupListing/>} />
           <Route path={routes.GroupUpdate} element = {<GroupUpdate/>} />
+          <Route path={routes.groupCreate} element = {<GroupCreate/>} />
           <Route path={routes.AssignmentGradeListing} element={<AssignmentGradeListing />}/>
           <Route path={routes.MessageListing} element={<MessageListing />} />
           <Route path={routes.MessageUpdate} element={<MessageUpdate />} />

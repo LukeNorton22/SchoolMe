@@ -35,6 +35,7 @@ public class GroupCreateDto
 
 public class GroupUpdateDto
 {
+   
     public string GroupName { get; set; }
     public string Description { get; set; }
 }

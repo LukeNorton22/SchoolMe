@@ -1,42 +1,22 @@
-import { Button, Container, Flex, Space, TextInput } from "@mantine/core"
-import { useEffect, useState } from "react"
-import { ApiResponse, GroupUpdateDto, GroupGetDto } from "../../constants/types"
-import api from "../../config/axios";
-import { useNavigate, useParams } from "react-router-dom";
-import { showNotification } from "@mantine/notifications";
 import { FormErrors, useForm } from "@mantine/form";
+import { ApiResponse, GroupGetDto, GroupUpdateDto } from "../../constants/types";
+import { Button, Container, Flex, Space, TextInput } from "@mantine/core";
 import { routes } from "../../routes";
+import { useNavigate } from "react-router-dom";
+import { showNotification } from "@mantine/notifications";
+import api from "../../config/axios";
 
-export const GroupUpdate = () => {
-    const [group, setGroup] = useState<GroupGetDto>();
-    const navigate = useNavigate();
-    const {id} = useParams();
-
+export const GroupCreate = () => {
+const navigate = useNavigate();
     const mantineForm = useForm<GroupUpdateDto>({
-        initialValues: group
-    });
-
-    useEffect(() => {
-        fetchGroup();
-
-        async function fetchGroup(){
-            const response = await api.get<ApiResponse<GroupGetDto>>(`/api/Groups/${id}`);
-
-            if(response.data.hasErrors) {
-               showNotification({message: "Error finding group", color: "red"});
-               
-            }
-
-            if(response.data.data){
-                setGroup(response.data.data);
-                mantineForm.setValues(response.data.data);
-                mantineForm.resetDirty();
-            };
-        };
-    }, [id]);
+        initialValues:{
+            groupName: "",
+            description: ""
+        }
+    })
 
     const submitGroup = async (values: GroupUpdateDto) => {
-        const response = await api.put<ApiResponse<GroupGetDto>>(`/api/Groups/${id}`, values);
+        const response = await api.post<ApiResponse<GroupGetDto>>("/api/Groups", values);
 
         if(response.data.hasErrors) {
             const formErrors: FormErrors = response.data.errors.reduce(
@@ -56,12 +36,11 @@ export const GroupUpdate = () => {
         }
 
     };
-
-    return (
-        <Container>
-          {group && (
-            <form onSubmit={mantineForm.onSubmit(submitGroup)}>
-                <TextInput 
+    
+    
+    return (<Container>
+        <form onSubmit={mantineForm.onSubmit(submitGroup)}>
+        <TextInput 
                     {...mantineForm.getInputProps("groupName")} 
                     label = "Name"
                     withAsterisk
@@ -81,9 +60,7 @@ export const GroupUpdate = () => {
                     Cancel
                     </Button>
                 </Flex>
-            </form>
-            )}
-        </Container>
-    );
-};
+        </form>
 
+    </Container>);
+}

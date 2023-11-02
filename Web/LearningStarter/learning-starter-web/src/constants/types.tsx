@@ -53,6 +53,12 @@ export type GroupGetDto = {
 
 };
 
+export type GroupUpdateDto = {
+  groupName: string;
+  description: string;
+
+};
+
 export type TestsGetDto = {
   id: number;
   testName: string;

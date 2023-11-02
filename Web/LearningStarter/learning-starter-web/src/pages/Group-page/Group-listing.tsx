@@ -1,11 +1,11 @@
 
 import { useEffect, useState } from "react";
 import { GroupGetDto, ApiResponse } from "../../constants/types";
-import {  Header, Space, Table, createStyles } from "@mantine/core";
+import {  Button, Flex, Header, Space, Table, Title, createStyles } from "@mantine/core";
 import { Container } from "@mantine/core";
 import api from "../../config/axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTruckMonster } from "@fortawesome/free-solid-svg-icons";
+import { faTruckMonster, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { routes } from "../../routes";
 
@@ -32,7 +32,16 @@ export const GroupListing =  () => {
     return (
     
         <Container>
-        <Header height={32}>Group</Header>
+        <Flex direction = "row" justify={"space-between"}>
+            <Title order = {3}>Group</Title>
+                <Button onClick={() => {
+                    navigate(routes.groupCreate);
+                }}
+                >
+                    <FontAwesomeIcon icon = {faPlus}/> <Space w={8} />
+                    New Group
+                </Button>
+        </Flex>
         <Space h="md" />
         {group && (
         <Table withBorder striped>
@@ -52,7 +61,7 @@ export const GroupListing =  () => {
                              icon = {faTruckMonster} 
                              onClick={() =>{
                                 navigate(
-                                    routes.GroupUpdate.replace(":id", "{group.id}")
+                                    routes.GroupUpdate.replace(":id", `${group.id}`)
                                 );
                             }}/></td>
                             <td>{group.groupName}</td>

@@ -136,7 +136,7 @@ public class GroupController : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet ("id")]
+    [HttpGet ("{id}")]
     public IActionResult GetById(int id)
     {
         var response = new Response();
@@ -165,7 +165,7 @@ public class GroupController : ControllerBase
         return Ok(response);
     }  
 
-    [HttpPut("id")]
+    [HttpPut("{id}")]
     public IActionResult Update([FromBody] GroupUpdateDto updateDto, int id)
     {
         var response = new Response();

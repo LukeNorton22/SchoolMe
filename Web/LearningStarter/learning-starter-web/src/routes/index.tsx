@@ -10,9 +10,10 @@ export const routes = {
   MessageListing: "/messages",
   MessageUpdate: "/messages/:id",
   GroupListing: "/group",
-  GroupUpdate: "/group/ :id",
+  GroupUpdate: "/group/:id",
   TestListing: "/tests",
-  TestUpdate: "/tests/ :id"
+  TestUpdate: "/tests/:id",
+  groupCreate: `/group/create`
 
   
 };
