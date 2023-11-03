@@ -49,11 +49,12 @@ export const GroupListing = () => {
               }}
             >
               <FontAwesomeIcon
-                className={classes.iconButton}
-                icon={faPen}
-                onClick={() => {
-                  navigate(routes.GroupUpdate.replace(":id", `${group.id}`));
-                }}
+              className={classes.iconButton}
+              icon={faPen}
+              onClick={(e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+              e.stopPropagation(); // Prevent the parent button's click handler from firing
+              navigate(routes.GroupUpdate.replace(":id", `${group.id}`));
+              }}
               />
               {group.groupName}
             </Button>

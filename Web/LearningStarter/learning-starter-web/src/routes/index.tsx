@@ -11,7 +11,7 @@ export const routes = {
   MessageUpdate: "/message/:id",
   GroupListing: "/group",
   GroupUpdate: "/group/:id",
-  TestListing: "/tests:id/:groupid",
+  TestListing: "/tests",
   TestUpdate: "/tests/:id",
   groupCreate: `/group/create`,
   GroupHome: '/GroupHome/:id'

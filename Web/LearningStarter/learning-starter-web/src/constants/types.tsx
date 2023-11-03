@@ -51,6 +51,8 @@ export type GroupGetDto = {
   groupName: string;
   description: string;
   messages: MessagesGetDto[];
+  tests: TestsGetDto[];
+  
 
 };
 
@@ -70,7 +72,7 @@ export type GroupUpdateDto = {
 };
 
 export type TestsGetDto = {
-  groupid: number;
+  groupId: number;
   id: number;
   testName: string;
 

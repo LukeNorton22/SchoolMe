@@ -59,7 +59,7 @@ export const TestListing =  () => {
                                 );
                             }}/></td>
                             <td>{tests.testName}</td>
-                            <td>{tests.groupid}</td>
+                            <td>{tests.groupId}</td>
                         </tr>
                     );
                 })}
