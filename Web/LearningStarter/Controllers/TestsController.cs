@@ -91,41 +91,41 @@ namespace LearningStarter.Controllers
             return Ok(response);
         }
 
-        [HttpGet("id")]
-        public IActionResult GetById(int id)
+        [HttpGet("{GroupId}")]
+        public IActionResult GetByGroupId(int GroupId)
         {
             var response = new Response();
 
-
             var data = _dataContext
                 .Set<Tests>()
-                .Select(Tests => new TestsGetDto
+                .Where(test => test.GroupId == GroupId) // Filter by GroupId
+                .Select(test => new TestsGetDto
                 {
-                    Id = Tests.Id,
-                    GroupId= Tests.GroupId,
-                    TestName = Tests.TestName,
-                    Questions = Tests.Questions.Select(x => new TestQuestionsGetDto
+                    Id = test.Id,
+                    GroupId = test.GroupId,
+                    TestName = test.TestName,
+                    Questions = test.Questions.Select(x => new TestQuestionsGetDto
                     {
-                        Id= x.Id,
+                        Id = x.Id,
                         TestId = x.TestId,
                         Question = x.Question,
                         Answer = x.Answer,
-
                     }).ToList(),
                 })
-                .FirstOrDefault(Tests => Tests.Id == id);
+                .ToList();
 
-            response.Data = data;
-            if (data == null)
+            if (data.Count == 0)
             {
-
-
-
-                response.AddError("id", "Test not found.");
+                response.AddError("GroupId", "No tests found for the specified GroupId.");
             }
-            return Ok(response);
+            else
+            {
+                response.Data = data;
+            }
 
+            return Ok(response);
         }
+
 
         [HttpPut("id")]
         public IActionResult Update([FromBody] TestsUpdateDto updateDto, int id)
