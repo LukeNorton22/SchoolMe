@@ -40,6 +40,7 @@ export type AssignmentGradeGetDto = {
 };
 
 export type MessagesGetDto = {
+  groupId: string;
   id: number;
   content: string;
   createdAt: string;
@@ -49,8 +50,17 @@ export type GroupGetDto = {
   id: number;
   groupName: string;
   description: string;
-  /**add lists */
+  messages: MessagesGetDto[];
 
+};
+
+export type MessagesCreateDto = {
+  content: string;
+};
+
+export type MessagesUpdateDto = {
+  content: string;
+  createdAt: string;
 };
 
 export type GroupUpdateDto = {
@@ -60,6 +70,7 @@ export type GroupUpdateDto = {
 };
 
 export type TestsGetDto = {
+  groupid: number;
   id: number;
   testName: string;
 

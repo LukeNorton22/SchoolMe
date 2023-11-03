@@ -70,27 +70,8 @@ const navigation: NavigationItem[] = [
       to: routes.user,
     },
   },
-  {
-    text: "FlashCards",
-    hide: false,
-    nav: {
-      to: routes.FlashCardListing,
-    },
-  },
-  {
-    text: "AssignmentGrades",
-    hide: false,
-    nav: {
-      to: routes.AssignmentGradeListing,
-    },
-  },
-  {
-    text: "Messages",
-    hide: false,
-    nav: {
-      to: routes.MessageListing,
-    },
-  },
+ 
+  
    {
     text: "Group",
     hide: false,
@@ -98,13 +79,6 @@ const navigation: NavigationItem[] = [
       to:routes.GroupListing,
     },
   },
-  {
-    text: "Tests",
-    hide: false,
-    nav: {
-      to:routes.TestListing
-    }
-  }
 
 ];
 

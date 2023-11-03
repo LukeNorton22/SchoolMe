@@ -126,6 +126,7 @@ public class GroupController : ControllerBase
                     FirstName = x.User.FirstName,
                     LastName = x.User.LastName,
                     UserName = x.User.UserName,
+                    
 
                 }).ToList(),
                 

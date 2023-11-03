@@ -7,13 +7,14 @@ export const routes = {
   FlashCardUpdate: "/flashcards/:id",
   AssignmentGradeListing: "/assignmentGrade",
   AssignmentGradeUpdate: "/assignmentGrade/:id",
-  MessageListing: "/messages",
-  MessageUpdate: "/messages/:id",
+  MessageListing: "/message",
+  MessageUpdate: "/message/:id",
   GroupListing: "/group",
   GroupUpdate: "/group/:id",
-  TestListing: "/tests",
+  TestListing: "/tests:id/:groupid",
   TestUpdate: "/tests/:id",
-  groupCreate: `/group/create`
+  groupCreate: `/group/create`,
+  GroupHome: '/GroupHome/:id'
 
   
 };

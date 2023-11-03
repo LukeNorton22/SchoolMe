@@ -16,8 +16,6 @@ public class Messages
     public String CreatedAt { get; set; } = DateTime.Now.ToString("hh:mm tt");
     public int GroupId { get; set; }
     public Group Group { get; set; }
-    public Messages Message { get; set; }
-
 
 
 }
@@ -34,8 +32,7 @@ public class MessagesGetDto
 public class MessagesCreateDto
 {
     public string Content { get; set; }
-    [JsonIgnore]
-    public String CreatedAt { get; set; } = DateTime.Now.ToString("hh:mm tt");
+    
 
 }
 

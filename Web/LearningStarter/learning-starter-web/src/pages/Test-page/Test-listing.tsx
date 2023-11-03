@@ -55,10 +55,11 @@ export const TestListing =  () => {
                              icon = {faTruckMonster} 
                              onClick={() =>{
                                 navigate(
-                                    routes.TestUpdate.replace(":id", "{test.id}")
+                                    routes.TestUpdate.replace(":id", `${tests.id}`)
                                 );
                             }}/></td>
                             <td>{tests.testName}</td>
+                            <td>{tests.groupid}</td>
                         </tr>
                     );
                 })}

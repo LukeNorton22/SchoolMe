@@ -8,7 +8,7 @@ using System.Linq;
 namespace LearningStarter.Controllers;
 
 [ApiController]
-[Route("api/messages")]
+[Route("api/Message")]
 
 
 public class MessageController : ControllerBase
@@ -89,7 +89,7 @@ public class MessageController : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("id")]
+    [HttpGet("{id}")]
     public IActionResult GetById(int id)
     {
         var response = new Response();
@@ -112,7 +112,7 @@ public class MessageController : ControllerBase
         return Ok(response);
     }
 
-    [HttpPut("id")]
+    [HttpPut("{id}")]
     public IActionResult Update([FromBody] MessagesUpdateDto updateDto, int id)
     {
         var response = new Response();

@@ -13,10 +13,11 @@ import { AssignmentGradeUpdate } from "../pages/assignmentgrade-page/assignmentg
 import { MessageListing } from "../pages/message-page/message-listing";
 import { MessageUpdate } from "../pages/message-page/message-update";
 import { GroupListing } from "../pages/Group-page/Group-listing";
-import { TestListing } from "../pages/Test-page/Test-listing";
 import { GroupUpdate } from "../pages/Group-page/Group-update";
 import { TestUpdate } from "../pages/Test-page/Test-update";
 import { GroupCreate } from "../pages/Group-page/Group-create";
+import {GroupHome} from "../pages/Group-page/Group-home";
+import {TestListing} from "../pages/Test-page/Test-listing";
 
 
 //This is where you will tell React Router what to render when the path matches the route specified.
@@ -32,20 +33,25 @@ export const Routes = () => {
           <Route path={routes.home} element={<LandingPage />} />
           {/* When path === /iser render UserPage */}
           <Route path={routes.user} element={<UserPage />} />
-          <Route
-            path={routes.FlashCardListing}
-            element={<FlashCardListing />}
-          />
           <Route path={routes.TestListing} element={<TestListing />} />
           <Route path={routes.TestUpdate} element={<TestUpdate />} />
+
           <Route path={routes.GroupListing} element = {<GroupListing/>} />
           <Route path={routes.GroupUpdate} element = {<GroupUpdate/>} />
+          <Route path={routes.GroupHome} element = {<GroupHome/>} />
           <Route path={routes.groupCreate} element = {<GroupCreate/>} />
+          <Route path="/group/:groupId" element={<GroupHome />} />
+          <Route path="/group/:groupId/tests" element={<TestListing />} />
+          <Route path="/group/:groupId/flashcards" element={<FlashCardListing />} />   
+
           <Route path={routes.AssignmentGradeListing} element={<AssignmentGradeListing />}/>
+          <Route path={routes.AssignmentGradeUpdate}  element={<AssignmentGradeUpdate />}/>
+
           <Route path={routes.MessageListing} element={<MessageListing />} />
           <Route path={routes.MessageUpdate} element={<MessageUpdate />} />
+
+          <Route path={routes.FlashCardListing} element={<FlashCardListing />} />
           <Route path={routes.FlashCardUpdate} element={<FlashCardUpdate />} />
-          <Route path={routes.AssignmentGradeUpdate}  element={<AssignmentGradeUpdate />}/>
           {/* Going to route "localhost:5001/" will go to homepage */}
           <Route path={routes.root} element={<Navigate to={routes.home} />} />
 
