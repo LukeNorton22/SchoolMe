@@ -129,7 +129,26 @@ public class GroupController : ControllerBase
                     
 
                 }).ToList(),
-                
+                Tests = group.Test.Select(test => new TestsGetDto
+                {
+                    Id = test.Id,
+                    TestName = test.TestName,
+                    // Add other test properties as needed
+                }).ToList(),
+                Messages = group.Messages.Select(Messages => new MessagesGetDto
+                {
+                    Id = Messages.Id,
+                    Content = Messages.Content,
+                    CreatedAt = Messages.CreatedAt
+
+                }).ToList(),
+                FlashCardSets = group.FlashCardSets.Select(flashcardset => new FlashCardSetsGetDto
+                {
+                    Id = flashcardset.Id,
+                    SetName = flashcardset.SetName,
+
+                }).ToList()
+
             }).ToList();
 
         response.Data = data;
@@ -157,7 +176,26 @@ public class GroupController : ControllerBase
 
 
                 }).ToList(),
-               
+                Tests = group.Test.Select(test => new TestsGetDto
+                {
+                    Id = test.Id,
+                    TestName = test.TestName,
+
+                }).ToList(),
+                Messages = group.Messages.Select(Messages => new MessagesGetDto
+                {
+                    Id = Messages.Id,
+                    Content = Messages.Content,
+                    CreatedAt = Messages.CreatedAt
+
+                }).ToList(),
+                FlashCardSets = group.FlashCardSets.Select(flashcardset => new FlashCardSetsGetDto
+                { 
+                    Id = flashcardset.Id,
+                    SetName = flashcardset.SetName,
+
+                }).ToList()
+
             })
             .FirstOrDefault(group  => group.Id == id);
 

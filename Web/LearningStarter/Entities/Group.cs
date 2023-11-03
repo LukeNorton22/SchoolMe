@@ -21,7 +21,7 @@ public class Group
     public List<Assignments> Assignments { get; set; }
     [JsonIgnore]
     public List<FlashCardSets> FlashCardSets { get; set; }
-    [JsonIgnore]
+    
     public List<Tests> Test { get; set; }
 }
 

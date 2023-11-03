@@ -18,17 +18,22 @@ export const GroupHome = () => {
   }, [id]);
 
   return (
-    <Container>
-      <Title order={3}></Title>
+    <div>
       {group && (
         <div>
-          <h2>Group Information</h2>
-          <p>Group Name: {group.groupName}</p>
+          <h1>Group Name: {group.groupName}</h1>
           <p>Description: {group.description}</p>
-          {/* Display other group information here */}
+          <h2>Tests for Group</h2>
+          <ul>
+            {group.tests.map((test) => (
+              <li key={test.id}>
+                <p>Test Name: {test.testName}</p>
+                {/* Display other test information here */}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
-      {/* Add other content for the GroupHome page */}
-    </Container>
+    </div>
   );
 };
