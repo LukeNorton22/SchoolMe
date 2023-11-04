@@ -24,24 +24,23 @@ public class TestQuestionsController : ControllerBase
         var response = new Response();
 
         var test = _dataContext.Set<Tests>().FirstOrDefault(x => x.Id == TestId);
-        if (createDto.Question == null)
-        {
-            response.AddError(nameof(createDto.Question), "Question can not be empty");
-        }
-        
+
         if (test == null)
         {
             return BadRequest("Test can not be found.");
         }
 
+        if (createDto.Question == null)
+        {
+            response.AddError(nameof(createDto.Question), "Question can not be empty");
+            return BadRequest(response);
+        }
 
         var TestQuestionsToCreate = new TestQuestions
         {
-
             TestId = TestId,
             Question = createDto.Question,
             Answer = createDto.Answer,
-
         };
 
         _dataContext.Set<TestQuestions>().Add(TestQuestionsToCreate);
@@ -57,8 +56,9 @@ public class TestQuestionsController : ControllerBase
 
         response.Data = TestQuestionsToReturn;
         return Created("", response);
-
     }
+
+
 
     [HttpGet]
     public IActionResult GetAll()

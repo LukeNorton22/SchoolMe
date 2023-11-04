@@ -79,6 +79,11 @@ export type TestsGetDto = {
 
 };
 
+export type QuestionUpdateDto = {
+    question: string;
+    answer: string;
+};
+
 export type QuestionGetDto = {
   id: number;
   testId: number;

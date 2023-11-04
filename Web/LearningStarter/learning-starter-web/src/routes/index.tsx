@@ -15,6 +15,7 @@ export const routes = {
   TestingPage: "/testing/:id",
   TestUpdate: "/tests/:id",
   groupCreate: `/group/create`,
+  QuestionCreate: `/question/create/:id`,
   GroupHome: '/GroupHome/:id'
 
   
