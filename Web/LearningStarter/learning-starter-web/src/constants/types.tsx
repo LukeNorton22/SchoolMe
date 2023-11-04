@@ -72,8 +72,16 @@ export type GroupUpdateDto = {
 };
 
 export type TestsGetDto = {
-  groupId: number;
   id: number;
+  groupId: number;
   testName: string;
+  questions: QuestionGetDto[];
 
+};
+
+export type QuestionGetDto = {
+  id: number;
+  testId: number;
+  question: string;
+  answer: string;
 };

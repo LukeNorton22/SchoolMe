@@ -71,12 +71,7 @@ const navigation: NavigationItem[] = [
     },
   },
  
-  {
-    text: "Tests",
-    hide: false,
-    nav: {to:routes.TestListing,
-    },
-  },
+ 
    {
     text: "Group",
     hide: false,

@@ -91,14 +91,16 @@ namespace LearningStarter.Controllers
             return Ok(response);
         }
 
-        [HttpGet("{GroupId}")]
-        public IActionResult GetByGroupId(int GroupId)
+
+
+        [HttpGet("{id}")]
+        public IActionResult GetById(int id)
         {
             var response = new Response();
 
             var data = _dataContext
                 .Set<Tests>()
-                .Where(test => test.GroupId == GroupId) // Filter by GroupId
+                .Where(test => test.Id == id) // Add a filter condition here
                 .Select(test => new TestsGetDto
                 {
                     Id = test.Id,
@@ -112,11 +114,11 @@ namespace LearningStarter.Controllers
                         Answer = x.Answer,
                     }).ToList(),
                 })
-                .ToList();
+                .SingleOrDefault(); // Use SingleOrDefault to fetch a single test or null
 
-            if (data.Count == 0)
+            if (data == null)
             {
-                response.AddError("GroupId", "No tests found for the specified GroupId.");
+                response.AddError("Id", "No test found for the specified Id.");
             }
             else
             {
@@ -125,6 +127,7 @@ namespace LearningStarter.Controllers
 
             return Ok(response);
         }
+
 
 
         [HttpPut("id")]

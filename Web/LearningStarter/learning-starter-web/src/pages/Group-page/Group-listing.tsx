@@ -26,8 +26,7 @@ export const GroupListing = () => {
   return (
     <Container>
       <Flex direction="row" justify={"space-between"}>
-        <Title order={3}>Group</Title>
-        <Button
+          <Button
           onClick={() => {
             navigate(routes.groupCreate);
           }}
