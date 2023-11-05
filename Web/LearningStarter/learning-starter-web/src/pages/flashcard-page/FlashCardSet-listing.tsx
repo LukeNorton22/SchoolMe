@@ -25,7 +25,7 @@ export const FlashCardSetListing = () => {
       async function fetchSet() {
         const response = await api.get<ApiResponse<FlashCardSetGetDto>>(`/api/FCSets/${id}`);
         if (response.data.hasErrors) {
-          // Handle errors here
+          
         } else {
           setFcset(response.data.data);
         }

@@ -21,35 +21,30 @@ namespace LearningStarter.Controllers
             _dataContext = dataContext;
         }
 
-        [HttpPost]
+        [HttpPost("{groupId}")]
         public IActionResult Create(int groupId, [FromBody] TestsCreateDto createDto)
         {
             var response = new Response();
 
-            var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
-            if (createDto.TestName == null)
+            if (string.IsNullOrEmpty(createDto.TestName))
             {
-                response.AddError(nameof(createDto.TestName), "Test Name can not be empty");
+                response.AddError(nameof(createDto.TestName), "Test Name cannot be empty");
+                return BadRequest(response); // Return a 400 response with validation errors
             }
+
+            var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
 
             if (group == null)
             {
-                return BadRequest("Group can not be found.");
+                response.AddError("GroupId", "Group not found.");
+                return BadRequest(response);
             }
 
             var TestsToCreate = new Tests
             {
                 GroupId = group.Id,
-                TestName = createDto.TestName      
+                TestName = createDto.TestName
             };
-
-
-            if (TestsToCreate == null)
-            {
-                return BadRequest("Test can not be found.");
-            }
-
-
 
             _dataContext.Set<Tests>().Add(TestsToCreate);
             _dataContext.SaveChanges();
@@ -64,6 +59,7 @@ namespace LearningStarter.Controllers
             response.Data = TestsToReturn;
             return Created("", response);
         }
+
 
         [HttpGet]
         public IActionResult GetAll()

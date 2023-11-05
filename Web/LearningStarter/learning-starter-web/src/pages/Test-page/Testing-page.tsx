@@ -30,7 +30,7 @@ export const TestingPage = () => {
     <Container>
        <Button
           onClick={() => {
-          navigate(routes.GroupHome.replace(":id", `${id}`));
+          navigate(routes.GroupHome.replace(":id", `${test?.groupId}`));
             }
           }           
               style={{

@@ -21,6 +21,7 @@ import {TestListing} from "../pages/Test-page/Test-listing";
 import { TestingPage } from "../pages/Test-page/Testing-page";
 import { FlashCardSetListing } from "../pages/flashcard-page/FlashCardSet-listing";
 import { QuestionCreate } from "../pages/Test-page/Test-Question-Create";
+import { TestCreate } from "../pages/Test-page/Test-Create";
 
 
 //This is where you will tell React Router what to render when the path matches the route specified.
@@ -38,6 +39,9 @@ export const Routes = () => {
           <Route path={routes.user} element={<UserPage />} />
           {/* <Route path={routes.TestUpdate} element={<TestUpdate />} /> */}
           <Route path={routes.TestingPage} element={<TestingPage />} /> 
+          <Route path={routes.TestCreate} element={<TestCreate />} /> 
+
+
           <Route path={routes.QuestionCreate} element = {<QuestionCreate/>} />
           <Route path={routes.FlashCardSetListing} element = {<FlashCardSetListing/>} />
 
@@ -48,7 +52,8 @@ export const Routes = () => {
           <Route path={routes.GroupUpdate} element = {<GroupUpdate/>} />
           <Route path={routes.GroupHome} element = {<GroupHome/>} />
           <Route path={routes.groupCreate} element = {<GroupCreate/>} />
-          <Route path="/group/:groupId" element={<GroupHome />} />
+          <Route path="/group/:id" element={<GroupHome />} />   
+
           <Route path="/group/:groupId/flashcards" element={<FlashCardListing />} />   
 
           <Route path={routes.AssignmentGradeListing} element={<AssignmentGradeListing />}/>

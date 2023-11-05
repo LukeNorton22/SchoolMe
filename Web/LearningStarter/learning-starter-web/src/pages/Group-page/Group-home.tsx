@@ -4,11 +4,11 @@ import { GroupGetDto, ApiResponse } from "../../constants/types";
 import { Button, Center, Container, Space, Title, createStyles, Navbar } from "@mantine/core";
 import api from "../../config/axios";
 import { routes } from "../../routes";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const GroupHome = () => {
-  const { id, groupName } = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
   const [group, setGroup] = useState<GroupGetDto | null>(null);
 
@@ -48,10 +48,20 @@ export const GroupHome = () => {
                  }}
                 > 
                  {test.testName}  
-                </Button> 
+                 </Button> 
                 <Space h="md" />
+                  
               </li>
-            ))}
+            ))           
+            }
+            <Button
+                  onClick={() => {
+                  navigate(routes.TestCreate.replace(":id", `${group.id}`));
+                  }}
+                >
+                <FontAwesomeIcon icon={faPlus} /> <Space w={8} />
+                  New Test
+                </Button>
           
           </ul>
           <h1>Flash Card Sets</h1>

@@ -1,5 +1,5 @@
 import { FormErrors, useForm } from "@mantine/form";
-import { ApiResponse, QuestionUpdateDto, TestsGetDto } from "../../constants/types";
+import { ApiResponse, QuestionUpdateDto, TestUpdateDto, TestsGetDto } from "../../constants/types";
 import { Button, Container, Flex, Space, TextInput } from "@mantine/core";
 import { routes } from "../../routes";
 import { useNavigate, useParams } from "react-router-dom";
@@ -7,19 +7,18 @@ import { showNotification } from "@mantine/notifications";
 import api from "../../config/axios";
 
 
-export const QuestionCreate = () => {
+export const TestCreate = () => {
   const navigate = useNavigate();
-  const { test, id } = useParams();
-  const mantineForm = useForm<QuestionUpdateDto>({
+  const { groupId, id } = useParams();
+  const mantineForm = useForm<TestUpdateDto>({
     initialValues: {
-      question: "",
-      answer: "",
+      testName: "",
     },
   });
 
-  const submitQuestion = async (values: QuestionUpdateDto) => {
-    const response = await api.post<ApiResponse<QuestionUpdateDto>>(
-      `/api/TestQuestions/${id}`, 
+  const submitTest = async (values: TestUpdateDto) => {
+    const response = await api.post<ApiResponse<TestUpdateDto>>(
+      `/api/Tests/${id}`, 
       values
     );
 
@@ -34,25 +33,19 @@ export const QuestionCreate = () => {
       mantineForm.setErrors(formErrors);
     }
     if (response.data.data) {
-      showNotification({ message: "New Question added", color: "purple" });
-      navigate(routes.TestingPage.replace(":id", `${id}`));
+      showNotification({ message: "New Test added", color: "purple" });
+      navigate(routes.GroupHome.replace(":id" , `${id}`));
     }
   };
 
   return (
     <Container>
-      <form onSubmit={mantineForm.onSubmit(submitQuestion)}>
+      <form onSubmit={mantineForm.onSubmit(submitTest)}>
         <TextInput
-          {...mantineForm.getInputProps("question")}
-          label="Question"
+          {...mantineForm.getInputProps("testName")}
+          label="Test Name"
           withAsterisk
         />
-        <TextInput
-          {...mantineForm.getInputProps("answer")}
-          label="Answer"
-          withAsterisk
-        />
-
         <Space h={18} />
         <Flex direction={"row"}>
           <Button type="submit">Submit</Button>
@@ -60,7 +53,7 @@ export const QuestionCreate = () => {
           <Button
             type="button"
             onClick={() => {
-              navigate(routes.TestingPage.replace(":id", `${id}`));
+              navigate(routes.GroupHome.replace(":id", `${id}`));
             }}
           >
             Cancel

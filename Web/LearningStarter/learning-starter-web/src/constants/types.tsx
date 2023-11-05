@@ -80,12 +80,17 @@ export type TestsGetDto = {
   
 };
 
+export type TestUpdateDto = {
+  testName: string;
+};
+
 export type FlashCardSetGetDto = {
   id: number;
   groupId: number;
   setName: string;
   flashCards: FlashCardsGetDto[];
 };
+
 export type QuestionUpdateDto = {
     question: string;
     answer: string;
