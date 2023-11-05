@@ -52,6 +52,7 @@ export type GroupGetDto = {
   description: string;
   messages: MessagesGetDto[];
   tests: TestsGetDto[];
+  flashCardSets: FlashCardSetGetDto[];
   
 
 };
@@ -76,10 +77,17 @@ export type TestsGetDto = {
   groupId: number;
   testName: string;
   questions: QuestionGetDto[];
-
+  
 };
 
+export type FlashCardSetGetDto = {
+  id: number;
+  groupId: number;
+  setName: string;
+  flashCards: FlashCardsGetDto[];
+};
 export type QuestionUpdateDto = {
+    testId: number;
     question: string;
     answer: string;
 };

@@ -20,6 +20,7 @@ import {GroupHome} from "../pages/Group-page/Group-home";
 import {TestListing} from "../pages/Test-page/Test-listing";
 import { TestingPage } from "../pages/Test-page/Testing-page";
 import { QuestionCreate } from "../pages/Test-page/Test-Question-Create";
+import { FlashCardSetListing } from "../pages/FlashCardSet-listing";
 
 
 //This is where you will tell React Router what to render when the path matches the route specified.
@@ -36,9 +37,10 @@ export const Routes = () => {
           {/* When path === /iser render UserPage */}
           <Route path={routes.user} element={<UserPage />} />
           {/* <Route path={routes.TestUpdate} element={<TestUpdate />} /> */}
-          {/* <Route path={routes.TestingPage} element={<TestingPage />} /> */}
-          <Route path="/testing/:id" element={<TestingPage />} />
+          <Route path={routes.TestingPage} element={<TestingPage />} /> 
           <Route path={routes.QuestionCreate} element = {<QuestionCreate/>} />
+          <Route path={routes.FlashCardSetListing} element = {<FlashCardSetListing/>} />
+
 
 
 

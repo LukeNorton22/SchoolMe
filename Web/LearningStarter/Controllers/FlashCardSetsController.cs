@@ -11,7 +11,7 @@ using Group = LearningStarter.Entities.Group;
 namespace LearningStarter.Controllers
 {
     [ApiController]
-    [Route("api/FlashCardSets")]
+    [Route("api/FCSets")]
 
     public class FlashCardSetsController : ControllerBase
     {
@@ -74,8 +74,7 @@ namespace LearningStarter.Controllers
                 .Select(FlashCardSets => new FlashCardSetsGetDto
                 {
                     Id = FlashCardSets.Id,
-                    GroupId = FlashCardSets.GroupId,
-                    
+                    GroupId = FlashCardSets.GroupId,                
                     SetName = FlashCardSets.SetName,
                     FlashCards = FlashCardSets.FlashCards.Select(x => new FlashCardsGetDto
                     {
@@ -91,7 +90,7 @@ namespace LearningStarter.Controllers
             return Ok(response);
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
             var response = new Response();
@@ -101,7 +100,7 @@ namespace LearningStarter.Controllers
                 .Set<FlashCardSets>()
                 .Select(FlashCardSets => new FlashCardSetsGetDto
                 {
-                    Id = FlashCardSets.Id,
+                  Id = FlashCardSets.Id,
                   GroupId= FlashCardSets.GroupId,
                     
                     SetName = FlashCardSets.SetName,

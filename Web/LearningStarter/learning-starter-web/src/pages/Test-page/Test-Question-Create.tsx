@@ -6,6 +6,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { showNotification } from "@mantine/notifications";
 import api from "../../config/axios";
 import { useEffect, useState } from "react";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const QuestionCreate = () => {
     const { id } = useParams();
@@ -14,6 +16,7 @@ export const QuestionCreate = () => {
     const navigate = useNavigate();
     const mantineForm = useForm<QuestionUpdateDto>({
         initialValues: {
+            testId: 0,
             question: "",
             answer: ""
         }
@@ -24,12 +27,8 @@ export const QuestionCreate = () => {
             return;
         }
 
-        const request = {
-            testId: test.id,
-            ...values,
-        };
 
-        const response = await api.post<ApiResponse<QuestionUpdateDto>>("/api/TestQuestions", request);
+        const response = await api.post<ApiResponse<QuestionUpdateDto>>("/api/TestQuestions", values);
 
         if (response.data.hasErrors) {
             const formErrors: FormErrors = response.data.errors.reduce(
@@ -72,6 +71,11 @@ export const QuestionCreate = () => {
                 <TextInput
                     {...mantineForm.getInputProps("answer")}
                     label="Answer"
+                    withAsterisk
+                />
+                <TextInput
+                    {...mantineForm.getInputProps("testId")}
+                    label="Test Id"
                     withAsterisk
                 />
                 <Space h={18} />

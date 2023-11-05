@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ApiResponse, TestsGetDto, QuestionGetDto } from "../../constants/types";
 import api from "../../config/axios";
-import { Center, Container, Flex, Header, Space, Table, Title, createStyles } from "@mantine/core";
-import { faTruckMonster } from "@fortawesome/free-solid-svg-icons";
+import { Button, Center, Container, Flex, Header, Space, Table, Title, createStyles } from "@mantine/core";
+import { faArrowLeft, faPlus, faTruckMonster } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { routes } from "../../routes";
 
@@ -28,6 +28,29 @@ export const TestingPage = () => {
 
   return (
     <Container>
+       <Button
+          onClick={() => {
+          navigate(routes.GroupHome.replace(":id", `${id}`));
+            }
+          }           
+              style={{
+              backgroundColor: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+            }}
+          >
+            <FontAwesomeIcon icon={faArrowLeft} size="xl" /> 
+          </Button>
+            <Flex direction="row" justify={"space-between"}>
+          <Button
+          onClick={() => {
+            navigate(routes.QuestionCreate.replace(":id", `${test?.id}`));
+          }}
+        >
+          <FontAwesomeIcon icon={faPlus} /> <Space w={8} />
+          Add Question
+        </Button>
+      </Flex>
     <Center>
       <Title >{test?.testName}</Title>
       <Space h="lg" />

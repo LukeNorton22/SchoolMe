@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { GroupGetDto, ApiResponse } from "../../constants/types";
-import { Button, Container, Space, Title, createStyles } from "@mantine/core";
+import { Button, Center, Container, Space, Title, createStyles, Navbar } from "@mantine/core";
 import api from "../../config/axios";
 import { routes } from "../../routes";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const GroupHome = () => {
   const { id, groupName } = useParams();
@@ -20,12 +22,23 @@ export const GroupHome = () => {
   }, [id]);
 
   return (
-    <div>
+    <Container>
       {group && (
         <div>
-          <h1>Group Name: {group.groupName}</h1>
-          <p>Description: {group.description}</p>
-          <h2>Tests for Group</h2>
+          <Button
+            onClick={() => navigate(routes.GroupListing)}
+            style={{
+              backgroundColor: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+            }}
+          >
+            <FontAwesomeIcon icon={faArrowLeft} size="xl" /> 
+          </Button> 
+         <Center>
+          <Title>{group.groupName}</Title>
+          </Center>
+          <h1>Tests</h1>
           <ul>
             {group.tests.map((test) => (
               <li key={test.id}>
@@ -39,9 +52,25 @@ export const GroupHome = () => {
                 <Space h="md" />
               </li>
             ))}
+          
+          </ul>
+          <h1>Flash Card Sets</h1>
+          <ul>
+            {group.flashCardSets.map((flashCardSet) => (
+              <li key={flashCardSet.id}>
+              <Button onClick={() => {
+               navigate(routes.FlashCardSetListing.replace(":id", `${flashCardSet.id}`))
+              
+               }}
+              > 
+               {flashCardSet.setName}
+              </Button> 
+              <Space h="md" />
+            </li>
+            ))}
           </ul>
         </div>
       )}
-    </div>
+    </Container>
   );
-};
+}; 
