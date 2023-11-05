@@ -87,7 +87,6 @@ export type FlashCardSetGetDto = {
   flashCards: FlashCardsGetDto[];
 };
 export type QuestionUpdateDto = {
-    testId: number;
     question: string;
     answer: string;
 };

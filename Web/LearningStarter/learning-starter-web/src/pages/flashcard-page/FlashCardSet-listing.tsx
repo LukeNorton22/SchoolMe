@@ -3,9 +3,9 @@ import { showNotification } from "@mantine/notifications";
 import { Button, Center, Container, Flex, Space, Table, Title, createStyles } from "@mantine/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate, useParams } from "react-router-dom";
-import { ApiResponse, FlashCardSetGetDto } from "../constants/types";
-import { routes } from "../routes";
-import api from "../config/axios";
+import { ApiResponse, FlashCardSetGetDto } from "../../constants/types";
+import { routes } from "../../routes";
+import api from "../../config/axios";
 import { faArrowLeft, faTruckMonster } from "@fortawesome/free-solid-svg-icons";
 import { group } from "console";
 

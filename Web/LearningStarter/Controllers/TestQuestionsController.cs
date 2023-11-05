@@ -18,7 +18,7 @@ public class TestQuestionsController : ControllerBase
         _dataContext = dataContext;
     }
 
-    [HttpPost]
+    [HttpPost("{TestId}")]
     public IActionResult Create(int TestId, [FromBody] TestQuestionsCreateDto createDto)
     {
         var response = new Response();
