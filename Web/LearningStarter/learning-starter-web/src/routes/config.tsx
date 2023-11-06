@@ -6,7 +6,7 @@ import { UserPage } from "../pages/user-page/user-page";
 import { PageWrapper } from "../components/page-wrapper/page-wrapper";
 import { routes } from ".";
 import { FlashCardListing } from "../pages/flashcard-page/flashcard-listing";
-import { FlashCardUpdate } from "../pages/flashcard-page/flashcard-update";
+import { FlashCardSetUpdate } from "../pages/flashcard-page/flashcard-update";
 import { AssignmentGradeListing } from "../pages/assignmentgrade-page/assignmentgrade-listing";
 import { AssignmentGradeUpdate } from "../pages/assignmentgrade-page/assignmentgrade-update";
 
@@ -39,7 +39,7 @@ export const Routes = () => {
           <Route path={routes.home} element={<LandingPage />} />
           {/* When path === /iser render UserPage */}
           <Route path={routes.user} element={<UserPage />} />
-          {/* <Route path={routes.TestUpdate} element={<TestUpdate />} /> */}
+          <Route path={routes.TestUpdate} element={<TestUpdate />} /> 
           <Route path={routes.TestingPage} element={<TestingPage />} /> 
           <Route path={routes.TestCreate} element={<TestCreate />} /> 
 
@@ -49,6 +49,8 @@ export const Routes = () => {
 
           <Route path={routes.FlashCardSetListing} element = {<FlashCardSetListing/>} />
           <Route path={routes.FCSetCreate} element={< FCSetCreate/>} /> 
+          <Route path={routes.FlashCardSetUpdate} element={< FlashCardSetUpdate/>} /> 
+
 
 
 
@@ -68,7 +70,7 @@ export const Routes = () => {
           <Route path={routes.MessageUpdate} element={<MessageUpdate />} />
 
           <Route path={routes.FlashCardListing} element={<FlashCardListing />} />
-          <Route path={routes.FlashCardUpdate} element={<FlashCardUpdate />} />
+          {/* <Route path={routes.FlashCardUpdate} element={<FlashCardUpdate />} /> */}
           {/* Going to route "localhost:5001/" will go to homepage */}
           <Route path={routes.root} element={<Navigate to={routes.home} />} />
 

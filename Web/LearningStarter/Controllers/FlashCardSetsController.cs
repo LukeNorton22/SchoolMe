@@ -127,24 +127,17 @@ namespace LearningStarter.Controllers
 
         }
 
-        [HttpPut("id")]
+        [HttpPut("{id}")]
         public IActionResult Update([FromBody] FlashCardSetsUpdateDto updateDto, int id)
         {
             var response = new Response();
 
-           
-            if (updateDto.SetName == null)
-            {
-                response.AddError(nameof(updateDto.SetName), "SetName can not be empty");
-            }
-           
+            var setToUpdate = _dataContext.Set<FlashCardSets>()
+                .FirstOrDefault(group => group.Id == id);
 
-            var FlashCardSetsToUpdate = _dataContext.Set<FlashCardSets>()
-                .FirstOrDefault(FlashCardSets => FlashCardSets.Id == id);
-
-            if (FlashCardSetsToUpdate == null)
+            if (setToUpdate == null)
             {
-                response.AddError("id", "FlashCard not found.");
+                response.AddError("id", "Set not found");
             }
 
             if (response.HasErrors)
@@ -152,20 +145,18 @@ namespace LearningStarter.Controllers
                 return BadRequest(response);
             }
 
-            FlashCardSetsToUpdate.SetName = updateDto.SetName;
-           
+            setToUpdate.SetName = updateDto.SetName;
 
             _dataContext.SaveChanges();
 
-            var FlashCardSetsToReturn = new FlashCardSetsGetDto
+            var setToReturn = new FlashCardSetsGetDto
             {
-                Id = FlashCardSetsToUpdate.Id,
-        
-                SetName = FlashCardSetsToUpdate.SetName,
-                
-
+                Id = setToUpdate.Id,
+                GroupId = setToUpdate.GroupId,
+                SetName = setToUpdate.SetName,
             };
-            response.Data = FlashCardSetsToReturn;
+
+            response.Data = setToReturn;
             return Ok(response);
         }
 

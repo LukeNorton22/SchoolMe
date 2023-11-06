@@ -126,25 +126,17 @@ namespace LearningStarter.Controllers
 
 
 
-        [HttpPut("id")]
+        [HttpPut("{id}")]
         public IActionResult Update([FromBody] TestsUpdateDto updateDto, int id)
         {
             var response = new Response();
 
-           
-           
-            if (updateDto.TestName == null)
+            var testToUpdate = _dataContext.Set<Tests>()
+                .FirstOrDefault(group => group.Id == id);
+
+            if (testToUpdate == null)
             {
-                response.AddError(nameof(updateDto.TestName), "Must enter a valid Name");
-            }
-
-
-            var TestsToUpdate = _dataContext.Set<Tests>()
-                .FirstOrDefault(Tests => Tests.Id == id);
-
-            if (TestsToUpdate == null)
-            {
-                response.AddError("id", "Test not found.");
+                response.AddError("id", "Test not found");
             }
 
             if (response.HasErrors)
@@ -152,16 +144,18 @@ namespace LearningStarter.Controllers
                 return BadRequest(response);
             }
 
+            testToUpdate.TestName = updateDto.TestName;
 
             _dataContext.SaveChanges();
 
-            var TestsToReturn = new TestsGetDto
+            var testToReturn = new TestsGetDto
             {
-               
-                TestName = TestsToUpdate.TestName,
-
+                Id = testToUpdate.Id,
+                GroupId = testToUpdate.GroupId,
+                TestName = testToUpdate.TestName,
             };
-            response.Data = TestsToReturn;
+
+            response.Data = testToReturn;
             return Ok(response);
         }
 
