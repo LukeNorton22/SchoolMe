@@ -17,7 +17,7 @@ public class FlashCardsController : ControllerBase
         _dataContext = dataContext;
     }
 
-    [HttpPost]
+    [HttpPost("{flashCardSetId}")]
     public IActionResult Create(int flashcardsetId, [FromBody] FlashCardsCreateDto createDto)
     {
         var response = new Response();

@@ -5,6 +5,7 @@ export const routes = {
   user: `/user`,
   FlashCardListing: "/flashcards",
   FlashCardUpdate: "/flashcards/:id",
+  FCSetCreate: "/flashcard-create/:id",
   FlashCardSetListing: "/FlashCardSets/:id",
   AssignmentGradeListing: "/assignmentGrade",
   AssignmentGradeUpdate: "/assignmentGrade/:id",
@@ -18,6 +19,8 @@ export const routes = {
   TestUpdate: "/tests/:id",
   groupCreate: `/group/create`,
   QuestionCreate: `/question/create/:id`,
+  FCQuestionCreate: `/fcquestion/create/:id`,
+
   GroupHome: '/GroupHome/:id'
 
   

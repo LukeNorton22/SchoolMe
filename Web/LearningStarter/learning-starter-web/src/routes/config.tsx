@@ -22,6 +22,8 @@ import { TestingPage } from "../pages/Test-page/Testing-page";
 import { FlashCardSetListing } from "../pages/flashcard-page/FlashCardSet-listing";
 import { QuestionCreate } from "../pages/Test-page/Test-Question-Create";
 import { TestCreate } from "../pages/Test-page/Test-Create";
+import { FCSetCreate } from "../pages/flashcard-page/FlashCardSet-Create";
+import { FCQuestionCreate } from "../pages/flashcard-page/FlashCard-Create";
 
 
 //This is where you will tell React Router what to render when the path matches the route specified.
@@ -43,7 +45,10 @@ export const Routes = () => {
 
 
           <Route path={routes.QuestionCreate} element = {<QuestionCreate/>} />
+          <Route path={routes.FCQuestionCreate} element = {<FCQuestionCreate/>} />
+
           <Route path={routes.FlashCardSetListing} element = {<FlashCardSetListing/>} />
+          <Route path={routes.FCSetCreate} element={< FCSetCreate/>} /> 
 
 
 

@@ -91,6 +91,11 @@ export type FlashCardSetGetDto = {
   flashCards: FlashCardsGetDto[];
 };
 
+export type FlashCardSetUpdateDto = {
+  setName: string;
+
+};
+
 export type QuestionUpdateDto = {
     question: string;
     answer: string;

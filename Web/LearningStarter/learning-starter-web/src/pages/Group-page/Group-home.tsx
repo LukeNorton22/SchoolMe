@@ -78,6 +78,14 @@ export const GroupHome = () => {
               <Space h="md" />
             </li>
             ))}
+            <Button
+                  onClick={() => {
+                  navigate(routes.FCSetCreate.replace(":id", `${group.id}`));
+                  }}
+                >
+                <FontAwesomeIcon icon={faPlus} /> <Space w={8} />
+                  New Set
+                </Button>
           </ul>
         </div>
       )}

@@ -5,7 +5,7 @@ import { Container } from "@mantine/core";
 import api from "../../config/axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faPen } from "@fortawesome/free-solid-svg-icons";
-import { Link, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { routes } from "../../routes";
 
 export const GroupListing = () => {

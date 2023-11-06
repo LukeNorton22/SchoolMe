@@ -1,23 +1,23 @@
 import { FormErrors, useForm } from "@mantine/form";
-import { ApiResponse, QuestionUpdateDto, TestUpdateDto, TestsGetDto } from "../../constants/types";
+import { ApiResponse, FlashCardSetUpdateDto, QuestionUpdateDto, TestUpdateDto, TestsGetDto } from "../../constants/types";
 import { Button, Container, Flex, Space, TextInput } from "@mantine/core";
 import { routes } from "../../routes";
 import { useNavigate, useParams } from "react-router-dom";
 import { showNotification } from "@mantine/notifications";
 import api from "../../config/axios";
 
-export const TestCreate = () => {
+export const FCSetCreate = () => {
   const navigate = useNavigate();
-  const { groupId, id } = useParams();
-  const mantineForm = useForm<TestUpdateDto>({
+  const {  id } = useParams();
+  const mantineForm = useForm<FlashCardSetUpdateDto>({
     initialValues: {
-      testName: "",
+      setName: "",
     },
   });
 
-  const submitTest = async (values: TestUpdateDto) => {
-    const response = await api.post<ApiResponse<TestUpdateDto>>(
-      `/api/Tests/${id}`, 
+  const submitSet = async (values: FlashCardSetUpdateDto) => {
+    const response = await api.post<ApiResponse<FlashCardSetUpdateDto>>(
+      `/api/FCSets/${id}`, 
       values
     );
 
@@ -32,17 +32,17 @@ export const TestCreate = () => {
       mantineForm.setErrors(formErrors);
     }
     if (response.data.data) {
-      showNotification({ message: "New Test added", color: "purple" });
+      showNotification({ message: "New set added", color: "purple" });
       navigate(routes.GroupHome.replace(":id" , `${id}`));
     }
   };
 
   return (
     <Container>
-      <form onSubmit={mantineForm.onSubmit(submitTest)}>
+      <form onSubmit={mantineForm.onSubmit(submitSet)}>
         <TextInput
-          {...mantineForm.getInputProps("testName")}
-          label="Test Name"
+          {...mantineForm.getInputProps("setName")}
+          label="Set Name"
           withAsterisk
         />
         <Space h={18} />

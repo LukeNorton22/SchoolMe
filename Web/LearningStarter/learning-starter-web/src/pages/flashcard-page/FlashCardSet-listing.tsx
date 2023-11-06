@@ -6,13 +6,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ApiResponse, FlashCardSetGetDto } from "../../constants/types";
 import { routes } from "../../routes";
 import api from "../../config/axios";
-import { faArrowLeft, faTruckMonster } from "@fortawesome/free-solid-svg-icons";
-import { group } from "console";
+import { faArrowLeft, faPlus, faTruckMonster } from "@fortawesome/free-solid-svg-icons";
 
-// Define the props for FlashCardSetListing component
-interface FlashCardSetListingProps {
-  // If there are any props to pass to this component, define them here
-}
+
 
 export const FlashCardSetListing = () => {
     const { id } = useParams();
@@ -36,7 +32,7 @@ export const FlashCardSetListing = () => {
       <Container>
           <Button
           onClick={() => {
-          navigate(routes.GroupHome.replace(":id", `${id}`));
+          navigate(routes.GroupHome.replace(":id", `${fcset?.groupId}`));
             }
           }           
               style={{
@@ -47,6 +43,14 @@ export const FlashCardSetListing = () => {
           >
             <FontAwesomeIcon icon={faArrowLeft} size="xl" /> 
           </Button>
+          <Button
+          onClick={() => {
+            navigate(routes.FCQuestionCreate.replace(":id", `${fcset?.id}`));
+          }}
+        >
+          <FontAwesomeIcon icon={faPlus} /> <Space w={8} />
+          Add Question
+        </Button>
       <Center>
         <Title >{fcset?.setName}</Title>
         <Space h="lg" />

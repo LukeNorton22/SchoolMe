@@ -21,7 +21,7 @@ namespace LearningStarter.Controllers
             _dataContext = dataContext;
         }
 
-        [HttpPost]
+        [HttpPost("{groupId}")]
         public IActionResult Create(int groupId, [FromBody] FlashCardSetsCreateDto createDto)
         {
             var response = new Response();
