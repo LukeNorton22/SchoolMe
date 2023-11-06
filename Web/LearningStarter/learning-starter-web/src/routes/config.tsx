@@ -9,7 +9,6 @@ import { FlashCardListing } from "../pages/flashcard-page/flashcard-listing";
 import { FlashCardSetUpdate } from "../pages/flashcard-page/flashcard-update";
 import { AssignmentGradeListing } from "../pages/assignmentgrade-page/assignmentgrade-listing";
 import { AssignmentGradeUpdate } from "../pages/assignmentgrade-page/assignmentgrade-update";
-
 import { MessageListing } from "../pages/message-page/message-listing";
 import { MessageUpdate } from "../pages/message-page/message-update";
 import { GroupListing } from "../pages/Group-page/Group-listing";
@@ -17,7 +16,6 @@ import { GroupUpdate } from "../pages/Group-page/Group-update";
 import { TestUpdate } from "../pages/Test-page/Test-update";
 import { GroupCreate } from "../pages/Group-page/Group-create";
 import {GroupHome} from "../pages/Group-page/Group-home";
-import {TestListing} from "../pages/Test-page/Test-listing";
 import { TestingPage } from "../pages/Test-page/Testing-page";
 import { FlashCardSetListing } from "../pages/flashcard-page/FlashCardSet-listing";
 import { QuestionCreate } from "../pages/Test-page/Test-Question-Create";
@@ -39,10 +37,10 @@ export const Routes = () => {
           <Route path={routes.home} element={<LandingPage />} />
           {/* When path === /iser render UserPage */}
           <Route path={routes.user} element={<UserPage />} />
+
           <Route path={routes.TestUpdate} element={<TestUpdate />} /> 
           <Route path={routes.TestingPage} element={<TestingPage />} /> 
           <Route path={routes.TestCreate} element={<TestCreate />} /> 
-
 
           <Route path={routes.QuestionCreate} element = {<QuestionCreate/>} />
           <Route path={routes.FCQuestionCreate} element = {<FCQuestionCreate/>} />
@@ -51,16 +49,11 @@ export const Routes = () => {
           <Route path={routes.FCSetCreate} element={< FCSetCreate/>} /> 
           <Route path={routes.FlashCardSetUpdate} element={< FlashCardSetUpdate/>} /> 
 
-
-
-
-
           <Route path={routes.GroupListing} element = {<GroupListing/>} />
           <Route path={routes.GroupUpdate} element = {<GroupUpdate/>} />
           <Route path={routes.GroupHome} element = {<GroupHome/>} />
           <Route path={routes.groupCreate} element = {<GroupCreate/>} />
           <Route path="/group/:id" element={<GroupHome />} />   
-
           <Route path="/group/:groupId/flashcards" element={<FlashCardListing />} />   
 
           <Route path={routes.AssignmentGradeListing} element={<AssignmentGradeListing />}/>

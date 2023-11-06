@@ -3,26 +3,32 @@ export const routes = {
   root: `/`,
   home: `/home`,
   user: `/user`,
-  FlashCardListing: "/flashcards",
-  FlashCardUpdate: "/flashcards/:id",
-  FlashCardSetUpdate: "/flashcardset-update/:id",
-  FCSetCreate: "/flashcard-create/:id",
-  FlashCardSetListing: "/FlashCardSets/:id",
+
   AssignmentGradeListing: "/assignmentGrade",
   AssignmentGradeUpdate: "/assignmentGrade/:id",
-  MessageListing: "/message/:id",
-  MessageUpdate: "/message/:id",
+
+  FCSetCreate: "/flashcard-create/:id",
+  FCQuestionCreate: `/fcquestion/create/:id`,
+  FlashCardSetListing: "/FlashCardSets/:id",
+  FlashCardSetUpdate: "/flashcardset-update/:id",
+  FlashCardUpdate: "/flashcards/:id",
+  FlashCardListing: "/flashcards",
+
   GroupListing: "/group",
   GroupUpdate: "/group/:id",
+  groupCreate: `/group/create`,
+  GroupHome: '/GroupHome/:id',
+
+  MessageListing: "/message/:id",
+  MessageUpdate: "/message/:id",
+
   TestListing: "/tests/:id",
   TestingPage: "/testing/:id",
   TestCreate: "/testCreate/:id",
   TestUpdate: "/testsupdate/:id",
-  groupCreate: `/group/create`,
-  QuestionCreate: `/question/create/:id`,
-  FCQuestionCreate: `/fcquestion/create/:id`,
 
-  GroupHome: '/GroupHome/:id'
+  QuestionCreate: `/question/create/:id`,
+
 
   
 };
