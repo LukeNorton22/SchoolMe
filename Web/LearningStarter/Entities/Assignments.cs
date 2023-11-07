@@ -12,7 +12,6 @@ namespace LearningStarter.Entities;
     public int Id { get; set; }
     public string AssignmentName { get; set; }
     public int GroupId { get; set; }
-    public int AverageGrade { get; set; }
     public Group Group { get; set; }
     
     public List<AssignmentGrade> Grade { get; set; }
@@ -27,7 +26,6 @@ public class AssignmentsGetDto
 {
     public int Id { get; set; }
     public int GroupId { get; set; }
-    public int AverageGrade { get; set; }
     public string AssignmentName { get; set; }
     public List<AssignmentGradeGetDto> Grade { get; set; }
 }

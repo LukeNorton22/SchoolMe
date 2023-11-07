@@ -95,6 +95,20 @@ export const GroupHome = () => {
             <Button onClick={() => {navigate(routes.FCSetCreate.replace(":id", `${group.id}`))}}>
             <FontAwesomeIcon icon={faPlus} /> <Space w={8} /> New Set </Button>
           </ul>
+          <h1>Assignments</h1>
+          <ul>
+            {group.assignments.map((assignment) => (
+              <li key={assignment.id}>
+              <Button onClick={() => { navigate(routes.AssignmentListing.replace(":id", `${assignment.id}`))}}> 
+               {assignment.assignmentName}
+              </Button> 
+               
+              <Space h="md" />
+            </li>
+            ))}
+            <Button onClick={() => {navigate(routes.AssignmentCreate.replace(":id", `${group.id}`))}}>
+            <FontAwesomeIcon icon={faPlus} /> <Space w={8} /> New Set </Button>
+          </ul>
         </div>
       )}
     </Container>

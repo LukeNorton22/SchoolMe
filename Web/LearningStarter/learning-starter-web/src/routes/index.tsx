@@ -4,8 +4,13 @@ export const routes = {
   home: `/home`,
   user: `/user`,
 
+  AssignmentListing: "/assignments/:id",
+  AssignmentCreate: "assignmentCreate/:id",
+  
+
   AssignmentGradeListing: "/assignmentGrade",
   AssignmentGradeUpdate: "/assignmentGrade/:id",
+  AssignmentGradeCreate: "/assignmentGradeCreate/:id",
 
   FCSetCreate: "/flashcard-create/:id",
   FCQuestionCreate: `/fcquestion/create/:id`,

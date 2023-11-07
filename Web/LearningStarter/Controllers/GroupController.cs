@@ -150,6 +150,13 @@ public class GroupController : ControllerBase
                     GroupId = flashcardset.GroupId,
                     SetName = flashcardset.SetName,
 
+                }).ToList(),
+                Assignments = group.Assignments.Select(assignments => new AssignmentsGetDto
+                {
+                    Id = assignments.Id,
+                    GroupId = assignments.GroupId,
+                    AssignmentName = assignments.AssignmentName
+
                 }).ToList()
 
             }).ToList();
@@ -199,6 +206,13 @@ public class GroupController : ControllerBase
                     Id = flashcardset.Id,
                     GroupId =flashcardset.Group.Id,
                     SetName = flashcardset.SetName,
+
+                }).ToList(),
+                Assignments = group.Assignments.Select(assignments => new AssignmentsGetDto 
+                { 
+                    Id =assignments.Id,
+                    GroupId = assignments.Group.Id,
+                    AssignmentName = assignments.AssignmentName
 
                 }).ToList()
 

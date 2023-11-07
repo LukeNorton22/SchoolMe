@@ -63,7 +63,6 @@ export const AssignmentGradeListing = () => {
                       }}
                     />
                   </td>
-                  <td>{assignmentgrade.creatorId}</td>
                   <td>{assignmentgrade.grade}</td>
                 </tr>
               );

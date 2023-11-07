@@ -280,7 +280,6 @@ public class Startup
         {
             GroupId = 1,
             AssignmentName = "Midterm Presentations",
-            AverageGrade = 100,
         };
 
         dataContext.Set<Assignments>().Add(seededAssignment1);
