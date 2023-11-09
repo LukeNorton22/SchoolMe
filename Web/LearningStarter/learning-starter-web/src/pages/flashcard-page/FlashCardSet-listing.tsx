@@ -6,28 +6,50 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ApiResponse, FlashCardSetGetDto } from "../../constants/types";
 import { routes } from "../../routes";
 import api from "../../config/axios";
-import { faArrowLeft, faPlus, faTruckMonster } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faPen, faPlus, faTrash,  } from "@fortawesome/free-solid-svg-icons";
 
 
 
 export const FlashCardSetListing = () => {
-    const { id } = useParams();
-    const navigate = useNavigate();
-    const [fcset, setFcset] = useState<FlashCardSetGetDto | null>(null);
-  
-    useEffect(() => {
-      fetchSet();
-  
-      async function fetchSet() {
-        const response = await api.get<ApiResponse<FlashCardSetGetDto>>(`/api/FCSets/${id}`);
-        if (response.data.hasErrors) {
-          
-        } else {
-          setFcset(response.data.data);
-          console.log(response.data.data);
-        }
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { classes } = useStyles();
+  const [fcset, setFCSet] = useState<FlashCardSetGetDto | null>(null);
+
+  async function fetchSets() {
+    try {
+      const response = await api.get<ApiResponse<FlashCardSetGetDto>>(`/api/FCSets/${id}`);
+      if (response.data.hasErrors) {
+        // Handle errors here
+      } else {
+        setFCSet(response.data.data);
       }
-    }, [id]);
+    } catch (error) {
+      console.error("Error fetching sets:", error);
+      showNotification({
+        title: "Error",
+        message: "Failed to fetch set details",
+      });
+    }
+  }
+
+  const handleFlashCardDelete = async (flashcardId: number) => {
+    try {
+      await api.delete(`/api/flashcards/${flashcardId}`);
+      showNotification({ message: "Flashcard has entered the trash" });
+      fetchSets();
+    } catch (error) {
+      console.error("Error deleting flashcard:", error);
+      showNotification({
+        title: "Error",
+        message: "Failed to delete the question",
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchSets();
+  }, [id]);
   
     return (
       <Container>
@@ -60,7 +82,7 @@ export const FlashCardSetListing = () => {
           <Table withBorder fontSize={15}>         
             <thead>
               <tr>
-                
+                <th></th>
                 <th>Questions</th>
                 <th>Answers</th>
               </tr>
@@ -68,11 +90,28 @@ export const FlashCardSetListing = () => {
             <tbody>
               {fcset.flashCards.map((flashCard, index) => (
                 <tr key={index}>
+                 
+                 <FontAwesomeIcon
+                    className={classes.iconButton}
+                    icon={faPen}
+                    onClick={() => {
+                      navigate(
+                        routes.FCUpdate.replace(":id", `${flashCard.id}`)
+                      );
+                    }}
+                  />
+                  <Button
+                    onClick={() => handleFlashCardDelete(flashCard.id)}
+                    color="red"
+                    variant="outline"
+                  >
+                    <FontAwesomeIcon icon={faTrash} />
+                  </Button>
+                 
                   <td>{flashCard.question}</td>
-                  <td>
+                  
                     <td>
                       {flashCard.answer}
-                    </td>
                   </td>
                 </tr>
               ))}

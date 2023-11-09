@@ -32,6 +32,8 @@ export type FlashCardsGetDto = {
   answer: string;
 };
 
+
+
 export type AssignmentGradeGetDto = {
   id: number;
   assignmentId: number;

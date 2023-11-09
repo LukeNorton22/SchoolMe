@@ -78,7 +78,7 @@ public class TestQuestionsController : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("id")]
+    [HttpGet("{id}")]
     public IActionResult GetById(int id)
     {
         var response = new Response();
@@ -88,7 +88,8 @@ public class TestQuestionsController : ControllerBase
             .Set<TestQuestions>()
             .Select(TestQuestions => new TestQuestionsGetDto
             {
-                Id = TestQuestions.Id,              
+                Id = TestQuestions.Id,    
+                TestId = TestQuestions.TestId,
                 Question = TestQuestions.Question,
                 Answer = TestQuestions.Answer,
             })
@@ -103,7 +104,7 @@ public class TestQuestionsController : ControllerBase
 
     }
 
-    [HttpPut("id")]
+    [HttpPut("{id}")]
     public IActionResult Update([FromBody] TestQuestionsUpdateDto updateDto, int id)
     {
         var response = new Response();
@@ -123,6 +124,7 @@ public class TestQuestionsController : ControllerBase
         }
 
         TestQuestionsToUpdate.Question = updateDto.Question;
+        TestQuestionsToUpdate.Answer = updateDto.Answer;
 
         _dataContext.SaveChanges();
 
@@ -137,7 +139,7 @@ public class TestQuestionsController : ControllerBase
         return Ok(response);
     }
 
-    [HttpDelete("id")]
+    [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
         var response = new Response();

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import {  useNavigate, useParams } from "react-router-dom";
 import { GroupGetDto, ApiResponse } from "../../constants/types";
-import { Button, Center, Container, Space, Title, createStyles, Navbar } from "@mantine/core";
+import { Button, Center, Container, Space, Title, createStyles,  } from "@mantine/core";
 import api from "../../config/axios";
 import { routes } from "../../routes";
 import { faArrowLeft, faPencil, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -31,7 +31,7 @@ export const GroupHome = () => {
       fetchGroup();
     } catch (error) {
       console.error('Error deleting test:', error);
-      showNotification({ title: 'Error', message: 'Failed to delete the test.' });
+      showNotification({ title: 'Error', message: 'Failed to delete the test' });
     }
   };
   const handleFcSetDelete = async (fcSetId: number) => {
@@ -48,7 +48,7 @@ export const GroupHome = () => {
   const handleAssignmentDelete = async (assignmentId: number) => {
     try {
       await api.delete(`/api/assignments/${assignmentId}`);
-      showNotification({ title: 'Assignment deleted', message: `Assignment ${assignmentId} has been deleted.` });
+      showNotification({ message: `Assignment has entered the trash` });
       fetchGroup();
     } catch (error) {
       console.error('Error deleting assignment:', error);
@@ -146,8 +146,19 @@ export const GroupHome = () => {
               <Button onClick={() => { navigate(routes.AssignmentGradeListingg.replace(":id", `${assignment.id}`))}}> 
                {assignment.assignmentName}
               </Button> 
-               
-              <Space h="md" />
+                 <FontAwesomeIcon
+                      className={classes.iconButton}
+                      icon={faPencil}
+                      onClick={() => {
+                        navigate(
+                          routes.AssignmentUpdate.replace(":id", `${assignment.id}`)
+                        );
+                      }}
+                    />
+                     <Button onClick={() => handleAssignmentDelete(assignment.id)} color="red" variant="outline">
+                  <FontAwesomeIcon icon={faTrash} />
+                </Button>
+                <Space h="md" />
             </li>
             ))}
             <Button onClick={() => {navigate(routes.AssignmentCreatee.replace(":id", `${group.id}`))}}>

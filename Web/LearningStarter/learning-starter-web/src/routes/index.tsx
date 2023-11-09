@@ -6,6 +6,7 @@ export const routes = {
 
   AssignmentListing: "/assignments/:id",
   AssignmentCreatee: "/assignmentCreatee/:id",
+  AssignmentUpdate: "/assignmentUpdate/:id",
 
   AssignmentGradeListingg: "/assignmentGradeListing/:id",
   AssignmentGradeUpdate: "/assignmentGrade/:id",
@@ -17,6 +18,7 @@ export const routes = {
   FlashCardSetUpdate: "/flashcardset-update/:id",
   FlashCardUpdate: "/flashcards/:id",
   FlashCardListing: "/flashcards",
+  FCUpdate: "/flashcard/update/:id",
 
   GroupListing: "/group",
   GroupUpdate: "/group/:id",
@@ -32,6 +34,7 @@ export const routes = {
   TestUpdate: "/testsupdate/:id",
 
   QuestionCreate: `/question/create/:id`,
+  QuestionUpdate: "/questionUpdate/:id"
 
 
   

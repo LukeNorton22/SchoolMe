@@ -1,11 +1,32 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ApiResponse, TestsGetDto, QuestionGetDto } from "../../constants/types";
+import {
+  ApiResponse,
+  TestsGetDto,
+  QuestionGetDto,
+} from "../../constants/types";
 import api from "../../config/axios";
-import { Button, Center, Container, Flex, Header, Space, Table, Title, createStyles } from "@mantine/core";
-import { faArrowLeft, faPlus, faTruckMonster } from "@fortawesome/free-solid-svg-icons";
+import {
+  Button,
+  Center,
+  Container,
+  Flex,
+  Header,
+  Space,
+  Table,
+  Title,
+  createStyles,
+} from "@mantine/core";
+import {
+  faArrowLeft,
+  faPen,
+  faPlus,
+  faTrash,
+  faTruckMonster,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { routes } from "../../routes";
+import { showNotification } from "@mantine/notifications";
 
 export const TestingPage = () => {
   const { id } = useParams();
@@ -13,36 +34,57 @@ export const TestingPage = () => {
   const { classes } = useStyles();
   const [test, setTest] = useState<TestsGetDto | null>(null);
 
-  useEffect(() => {
-    fetchTests();
-
-    async function fetchTests() {
+  async function fetchTests() {
+    try {
       const response = await api.get<ApiResponse<TestsGetDto>>(`/api/Tests/${id}`);
       if (response.data.hasErrors) {
         // Handle errors here
       } else {
         setTest(response.data.data);
       }
+    } catch (error) {
+      console.error("Error fetching tests:", error);
+      showNotification({
+        title: "Error",
+        message: "Failed to fetch test details",
+      });
     }
+  }
+
+  const handleQuestionDelete = async (questionId: number) => {
+    try {
+      await api.delete(`/api/TestQuestions/${questionId}`);
+      showNotification({ message: "Question has entered the trash" });
+      fetchTests();
+    } catch (error) {
+      console.error("Error deleting question:", error);
+      showNotification({
+        title: "Error",
+        message: "Failed to delete the question",
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchTests();
   }, [id]);
 
   return (
     <Container>
-       <Button
-          onClick={() => {
+      <Button
+        onClick={() => {
           navigate(routes.GroupHome.replace(":id", `${test?.groupId}`));
-            }
-          }           
-              style={{
-              backgroundColor: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-            }}
-          >
-            <FontAwesomeIcon icon={faArrowLeft} size="xl" /> 
-          </Button>
-            <Flex direction="row" justify={"space-between"}>
-          <Button
+        }}
+        style={{
+          backgroundColor: "transparent",
+          border: "none",
+          cursor: "pointer",
+        }}
+      >
+        <FontAwesomeIcon icon={faArrowLeft} size="xl" />
+      </Button>
+      <Flex direction="row" justify={"space-between"}>
+        <Button
           onClick={() => {
             navigate(routes.QuestionCreate.replace(":id", `${test?.id}`));
           }}
@@ -51,12 +93,12 @@ export const TestingPage = () => {
           Add Question
         </Button>
       </Flex>
-    <Center>
-      <Title >{test?.testName}</Title>
-      <Space h="lg" />
+      <Center>
+        <Title>{test?.testName}</Title>
+        <Space h="lg" />
       </Center>
       {test && (
-        <Table withBorder fontSize={15}>         
+        <Table withBorder fontSize={15}>
           <thead>
             <tr>
               <th></th>
@@ -70,18 +112,23 @@ export const TestingPage = () => {
                 <td>
                   <FontAwesomeIcon
                     className={classes.iconButton}
-                    icon={faTruckMonster}
+                    icon={faPen}
                     onClick={() => {
-                      navigate(routes.TestUpdate.replace(":id", `${test.id}`));
+                      navigate(
+                        routes.QuestionUpdate.replace(":id", `${question.id}`)
+                      );
                     }}
                   />
+                  <Button
+                    onClick={() => handleQuestionDelete(question.id)}
+                    color="red"
+                    variant="outline"
+                  >
+                    <FontAwesomeIcon icon={faTrash} />
+                  </Button>
                 </td>
                 <td>{question.question}</td>
-                <td>
-                  <td>
-                    {question.answer}
-                  </td>
-                </td>
+                <td>{question.answer}</td>
               </tr>
             ))}
           </tbody>

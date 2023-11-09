@@ -33,13 +33,12 @@ public class AssignmentGradeController : ControllerBase
             return BadRequest("Assignment can not be found.");
         }
 
-       
 
         var AssignmentGradesToCreate = new AssignmentGrade
         {
             AssignmentId = AssignmentId,
             Grades = createDto.Grades,
-            
+
         };
 
         _dataContext.Set<AssignmentGrade>().Add(AssignmentGradesToCreate);
@@ -55,6 +54,8 @@ public class AssignmentGradeController : ControllerBase
         response.Data = TestQuestionsToReturn;
         return Created("", response);
     }
+
+
 
     [HttpGet]
     public IActionResult GetAll()

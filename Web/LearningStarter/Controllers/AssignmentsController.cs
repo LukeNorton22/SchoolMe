@@ -66,13 +66,13 @@ namespace LearningStarter.Controllers
             var response = new Response();
             var data = _dataContext
                 .Set<Assignments>()
-                .Include(x => x.Grade)
+                .Include(x => x.Grades)
                 .Select(assignment => new AssignmentsGetDto
                 {
                     Id = assignment.Id,
                     GroupId =assignment.GroupId,
                     AssignmentName = assignment.AssignmentName,
-                    Grade = assignment.Grade.Select(x => new AssignmentGradeGetDto
+                    Grades = assignment.Grades.Select(x => new AssignmentGradeGetDto
                     {
                         Id=x.Id,
                         AssignmentId=assignment.Id,
@@ -98,7 +98,7 @@ namespace LearningStarter.Controllers
                     Id = assignment.Id,
                     GroupId = assignment.GroupId,
                     AssignmentName = assignment.AssignmentName,
-                    Grade = assignment.Grade.Select(x => new AssignmentGradeGetDto
+                    Grades = assignment.Grades.Select(x => new AssignmentGradeGetDto
                     {
                         Id = x.Id,
                         AssignmentId = x.AssignmentId,
@@ -154,7 +154,7 @@ namespace LearningStarter.Controllers
             return Ok(response);
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             var response = new Response();

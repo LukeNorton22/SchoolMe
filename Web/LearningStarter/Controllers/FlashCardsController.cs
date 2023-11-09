@@ -80,7 +80,7 @@ public class FlashCardsController : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("id")]
+    [HttpGet("{id}")]
     public IActionResult GetById(int id)
     {
         var response = new Response();
@@ -91,6 +91,7 @@ public class FlashCardsController : ControllerBase
             .Select(FlashCards => new FlashCardsGetDto
             {
                 Id = FlashCards.Id,
+                FlashCardSetId=FlashCards.FlashCardSetId,
                 Question = FlashCards.Question,
                 Answer = FlashCards.Answer,
             })
@@ -102,13 +103,13 @@ public class FlashCardsController : ControllerBase
 
 
 
-            response.AddError("id", "FlashCard not found.");
+            response.AddError("{id}", "FlashCard not found.");
         }
         return Ok(response);
 
     }   
 
-    [HttpPut("id")]
+    [HttpPut("{id}")]
     public IActionResult Update([FromBody] FlashCardsUpdateDto updateDto, int id)
     {
         var response = new Response();
@@ -154,7 +155,7 @@ public class FlashCardsController : ControllerBase
         return Ok(response);
     }
 
-    [HttpDelete("id")]
+    [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
         var response = new Response();
