@@ -11,7 +11,6 @@ public class User : IdentityUser<int>
    
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    public List<AssignmentGrade> assignmentGrades { get; set; }
     public List<UserRole> UserRoles { get; set; } = new();
 }
 
@@ -54,6 +53,5 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
         builder.Property(x => x.UserName)
             .IsRequired();
 
-        builder.HasMany(x => x.assignmentGrades).WithOne(x => x.User);
     }
 }

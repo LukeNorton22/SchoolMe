@@ -12,7 +12,7 @@ export const GradeCreate = () => {
     const {  id } = useParams();
     const mantineForm = useForm<AssignmentGradeUpdateDto>({
       initialValues: {
-        grade: 0
+        grade: ""
       },
     });
   
@@ -34,7 +34,7 @@ export const GradeCreate = () => {
       }
       if (response.data.data) {
         showNotification({ message: "New grade added", color: "purple" });
-        navigate(routes.AssignmentListing.replace(":id", `${id}`));
+        navigate(routes.AssignmentGradeListingg.replace(":id", `${id}`));
       }
     };
 
@@ -54,7 +54,7 @@ export const GradeCreate = () => {
           <Button
             type="button"
             onClick={() => {
-              navigate(routes.AssignmentListing.replace(":id", `${id}`));
+              navigate(routes.AssignmentGradeListingg.replace(":id", `${id}`));
             }}
           >
             Cancel

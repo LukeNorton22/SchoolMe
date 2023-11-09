@@ -295,9 +295,8 @@ public class Startup
 
         var seededAssignmentGrade1 = new AssignmentGrade
         {
-            CreatorId = 1,
             AssignmentId = 1,
-            Grade = 100,
+            Grades = 100
         };
 
         dataContext.Set<AssignmentGrade>().Add(seededAssignmentGrade1);

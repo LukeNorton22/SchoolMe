@@ -10,7 +10,7 @@ using static System.Net.Mime.MediaTypeNames;
 namespace LearningStarter.Controllers
 {
     [ApiController]
-    [Route("api/Assignments")]
+    [Route("api/assignments")]
 
     public class AssignmentsController : ControllerBase
     {
@@ -43,7 +43,7 @@ namespace LearningStarter.Controllers
             {
                 GroupId = group.Id,
                 AssignmentName = createDto.AssignmentName,
-
+                
             };
 
             _dataContext.Set<Assignments>().Add(AssignmentsToCreate);
@@ -70,13 +70,13 @@ namespace LearningStarter.Controllers
                 .Select(assignment => new AssignmentsGetDto
                 {
                     Id = assignment.Id,
-                    GroupId = assignment.GroupId,
+                    GroupId =assignment.GroupId,
                     AssignmentName = assignment.AssignmentName,
                     Grade = assignment.Grade.Select(x => new AssignmentGradeGetDto
                     {
-                        Id = x.Id,
-                        AssignmentId = assignment.Id,
-                        Grade = x.Grade
+                        Id=x.Id,
+                        AssignmentId=assignment.Id,
+                        Grades = x.Grades   
 
                     }).ToList(),
                 })
@@ -92,7 +92,7 @@ namespace LearningStarter.Controllers
 
             var data = _dataContext
                 .Set<Assignments>()
-                .Where(assignment => assignment.Id == id) // Add a filter condition here
+                .Where(assignment => assignment.Id == id) 
                 .Select(assignment => new AssignmentsGetDto
                 {
                     Id = assignment.Id,
@@ -102,11 +102,11 @@ namespace LearningStarter.Controllers
                     {
                         Id = x.Id,
                         AssignmentId = x.AssignmentId,
-                        Grade = x.Grade,
-
+                        Grades = x.Grades,
+                        
                     }).ToList(),
                 })
-                .SingleOrDefault(); // Use SingleOrDefault to fetch a single test or null
+                .SingleOrDefault(); 
 
             if (data == null)
             {

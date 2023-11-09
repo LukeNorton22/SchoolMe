@@ -24,6 +24,7 @@ export const FlashCardSetListing = () => {
           
         } else {
           setFcset(response.data.data);
+          console.log(response.data.data);
         }
       }
     }, [id]);

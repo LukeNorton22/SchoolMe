@@ -42,10 +42,9 @@ public class AssignmentEntityTypeConfiguration : IEntityTypeConfiguration<Assign
     {
         builder.ToTable("Assignments");
 
+        builder.HasOne(x => x.Group).WithMany(x => x.Assignments);
         builder.HasMany(x => x.Grade).WithOne(x => x.Assignments);
 
-        builder.HasOne(x => x.Group)
-               .WithMany(x => x.Assignments);
     }
 }
 

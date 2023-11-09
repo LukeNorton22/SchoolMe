@@ -4,8 +4,10 @@ import { GroupGetDto, ApiResponse } from "../../constants/types";
 import { Button, Center, Container, Space, Title, createStyles, Navbar } from "@mantine/core";
 import api from "../../config/axios";
 import { routes } from "../../routes";
-import { faArrowLeft, faPencil, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faPencil, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { showNotification } from "@mantine/notifications";
+
 
 export const GroupHome = () => {
   const { id } = useParams();
@@ -13,13 +15,49 @@ export const GroupHome = () => {
   const navigate = useNavigate();
   const [group, setGroup] = useState<GroupGetDto | null>(null);
 
-  useEffect(() => {
-    fetchGroup();
-
-    async function fetchGroup() {
+  const fetchGroup = async () => {
+    try {
       const response = await api.get<ApiResponse<GroupGetDto>>(`/api/Groups/${id}`);
       setGroup(response.data.data);
+    } catch (error) {
+      console.error('Error fetching group:', error);
     }
+  };
+
+  const handleTestDelete = async (testId: number) => {
+    try {
+      await api.delete(`/api/Tests/${testId}`);
+      showNotification({  message: `Test has entered the trash` });
+      fetchGroup();
+    } catch (error) {
+      console.error('Error deleting test:', error);
+      showNotification({ title: 'Error', message: 'Failed to delete the test.' });
+    }
+  };
+  const handleFcSetDelete = async (fcSetId: number) => {
+    try {
+      await api.delete(`/api/FCSets/${fcSetId}`);
+      showNotification({  message: `Flashcard set has entered the trash` });
+      fetchGroup();
+    } catch (error) {
+      console.error('Error deleting flashcard set:', error);
+      showNotification({ title: 'Error', message: 'Failed to delete the flashcard set.' });
+    }
+  };
+
+  const handleAssignmentDelete = async (assignmentId: number) => {
+    try {
+      await api.delete(`/api/assignments/${assignmentId}`);
+      showNotification({ title: 'Assignment deleted', message: `Assignment ${assignmentId} has been deleted.` });
+      fetchGroup();
+    } catch (error) {
+      console.error('Error deleting assignment:', error);
+      showNotification({ title: 'Error', message: 'Failed to delete the assignment.' });
+    }
+  };
+
+  useEffect(() => {
+    fetchGroup();
   }, [id]);
 
   return (
@@ -58,6 +96,9 @@ export const GroupHome = () => {
                         );
                       }}
                     />
+                     <Button onClick={() => handleTestDelete(test.id)} color="red" variant="outline">
+                  <FontAwesomeIcon icon={faTrash} />
+                </Button>
                 <Space h="md" />
                     
               </li>
@@ -89,6 +130,9 @@ export const GroupHome = () => {
                       );
                     }}
                 />
+                <Button onClick={() => handleFcSetDelete(flashCardSet.id)} color="red" variant="outline">
+                  <FontAwesomeIcon icon={faTrash} />
+                </Button>
               <Space h="md" />
             </li>
             ))}
@@ -99,14 +143,14 @@ export const GroupHome = () => {
           <ul>
             {group.assignments.map((assignment) => (
               <li key={assignment.id}>
-              <Button onClick={() => { navigate(routes.AssignmentListing.replace(":id", `${assignment.id}`))}}> 
+              <Button onClick={() => { navigate(routes.AssignmentGradeListingg.replace(":id", `${assignment.id}`))}}> 
                {assignment.assignmentName}
               </Button> 
                
               <Space h="md" />
             </li>
             ))}
-            <Button onClick={() => {navigate(routes.AssignmentCreate.replace(":id", `${group.id}`))}}>
+            <Button onClick={() => {navigate(routes.AssignmentCreatee.replace(":id", `${group.id}`))}}>
             <FontAwesomeIcon icon={faPlus} /> <Space w={8} /> New Set </Button>
           </ul>
         </div>

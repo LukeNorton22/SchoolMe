@@ -5,10 +5,9 @@ export const routes = {
   user: `/user`,
 
   AssignmentListing: "/assignments/:id",
-  AssignmentCreate: "assignmentCreate/:id",
-  
+  AssignmentCreatee: "/assignmentCreatee/:id",
 
-  AssignmentGradeListing: "/assignmentGrade",
+  AssignmentGradeListingg: "/assignmentGradeListing/:id",
   AssignmentGradeUpdate: "/assignmentGrade/:id",
   AssignmentGradeCreate: "/assignmentGradeCreate/:id",
 

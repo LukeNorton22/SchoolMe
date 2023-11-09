@@ -7,6 +7,7 @@ import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 import { routes } from "../../routes";
+
 export {};
 export const FlashCardListing = () => {
   const [flashcards, setFlashCards] = useState<FlashCardsGetDto[]>();

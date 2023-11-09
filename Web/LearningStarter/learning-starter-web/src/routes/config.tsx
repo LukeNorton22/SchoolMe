@@ -7,7 +7,7 @@ import { PageWrapper } from "../components/page-wrapper/page-wrapper";
 import { routes } from ".";
 import { FlashCardListing } from "../pages/flashcard-page/flashcard-listing";
 import { FlashCardSetUpdate } from "../pages/flashcard-page/flashcard-update";
-import { AssignmentGradeListing } from "../pages/assignmentgrade-page/assignmentgrade-listing";
+import {   GradePage } from "../pages/assignmentgrade-page/assignmentgrade-listing";
 import { AssignmentGradeUpdate } from "../pages/assignmentgrade-page/assignmentgrade-update";
 import { MessageListing } from "../pages/message-page/message-listing";
 import { MessageUpdate } from "../pages/message-page/message-update";
@@ -23,7 +23,8 @@ import { TestCreate } from "../pages/Test-page/Test-Create";
 import { FCSetCreate } from "../pages/flashcard-page/FlashCardSet-Create";
 import { FCQuestionCreate } from "../pages/flashcard-page/FlashCard-Create";
 import { AssignmentListing } from "../pages/Assignments/Assignment-listing";
-import { AssignmentCreate } from "../pages/Assignments/Assignment-create";
+import {  AssignmentCreatee } from "../pages/Assignments/Assignment-create";
+import { GradeCreate } from "../pages/assignmentgrade-page/grade-create";
 
 
 //This is where you will tell React Router what to render when the path matches the route specified.
@@ -55,14 +56,14 @@ export const Routes = () => {
           <Route path={routes.GroupUpdate} element = {<GroupUpdate/>} />
           <Route path={routes.GroupHome} element = {<GroupHome/>} />
           <Route path={routes.groupCreate} element = {<GroupCreate/>} />
-          <Route path="/group/:id" element={<GroupHome />} />   
-          <Route path="/group/:groupId/flashcards" element={<FlashCardListing />} />   
 
           <Route path={routes.AssignmentListing} element={<AssignmentListing />}/>
-          <Route path={routes.AssignmentCreate} element={<AssignmentCreate />}/>
+          <Route path="/assignmentCreatee/:id" element={<AssignmentCreatee />} />
 
-          <Route path={routes.AssignmentGradeListing} element={<AssignmentGradeListing />}/>
+          <Route path={routes.AssignmentGradeListingg} element={<GradePage />}/>
           <Route path={routes.AssignmentGradeUpdate}  element={<AssignmentGradeUpdate />}/>
+          <Route path={routes.AssignmentGradeCreate}  element={<GradeCreate />}/>
+
 
           <Route path={routes.MessageListing} element={<MessageListing />} />
           <Route path={routes.MessageUpdate} element={<MessageUpdate />} />

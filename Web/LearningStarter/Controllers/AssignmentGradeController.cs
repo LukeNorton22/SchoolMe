@@ -21,49 +21,38 @@ public class AssignmentGradeController : ControllerBase
         _dataContext = dataContext;
     }
 
-    [HttpPost]
-    public IActionResult Create(int assignmentId, int creatorId, [FromBody] AssignmentGradeCreateDto createDto)
+    [HttpPost("{AssignmentId}")]
+    public IActionResult Create(int AssignmentId, [FromBody] AssignmentGradeCreateDto createDto)
     {
         var response = new Response();
-        var assignment = _dataContext.Set<Assignments>().FirstOrDefault(x => x.Id == assignmentId);
-        if (createDto.Grade <0)
-        {
-            response.AddError(nameof(createDto.Grade), "Must enter a valid Grade");
-        }
+
+        var assignment = _dataContext.Set<Tests>().FirstOrDefault(x => x.Id == AssignmentId);
+
         if (assignment == null)
         {
             return BadRequest("Assignment can not be found.");
         }
-        var creator = _dataContext.Set<User>().FirstOrDefault(y => y.Id == creatorId);
-        if (creator == null)
+
+       
+
+        var AssignmentGradesToCreate = new AssignmentGrade
         {
-            return BadRequest("Creator user not found.");
-        }
-
-        var AssignmentGradeToCreate = new AssignmentGrade 
-        {
-
-            AssignmentId = assignment.Id,
-            CreatorId = creatorId,
-            Grade = createDto.Grade,
-
+            AssignmentId = AssignmentId,
+            Grades = createDto.Grades,
+            
         };
-        if (AssignmentGradeToCreate == null)
-        {
-            return BadRequest("AssignmentGrade can not be found.");
-        }
-        _dataContext.Set<AssignmentGrade>().Add(AssignmentGradeToCreate);
+
+        _dataContext.Set<AssignmentGrade>().Add(AssignmentGradesToCreate);
         _dataContext.SaveChanges();
-        var AssignmentGradeToReturn = new AssignmentGradeGetDto
+
+        var TestQuestionsToReturn = new AssignmentGradeGetDto
         {
-           Id = AssignmentGradeToCreate.Id,
-           CreatorId=creator.Id,
-           AssignmentId = assignment.Id,
-           Grade = AssignmentGradeToCreate.Grade, 
+            Id = AssignmentGradesToCreate.Id,
+            AssignmentId = AssignmentId,
+            Grades = createDto.Grades,
         };
 
-        response.Data = AssignmentGradeToReturn;
-
+        response.Data = TestQuestionsToReturn;
         return Created("", response);
     }
 
@@ -76,9 +65,8 @@ public class AssignmentGradeController : ControllerBase
             .Select(AssignmentGrade => new AssignmentGradeGetDto
             {
                 Id = AssignmentGrade.Id,
-                CreatorId = AssignmentGrade.CreatorId,
                 AssignmentId=AssignmentGrade.AssignmentId,
-                Grade = AssignmentGrade.Grade,               
+                Grades = AssignmentGrade.Grades,               
             })
             .ToList();
 
@@ -96,9 +84,8 @@ public class AssignmentGradeController : ControllerBase
             .Select(assignmentGrade => new AssignmentGradeGetDto
             {
                 Id = assignmentGrade.Id,    
-                CreatorId = assignmentGrade.CreatorId,
                 AssignmentId= assignmentGrade.AssignmentId,
-                Grade = assignmentGrade.Grade,
+                Grades = assignmentGrade.Grades,
               
 
             })
@@ -131,7 +118,7 @@ public class AssignmentGradeController : ControllerBase
         }
 
         
-        AssignmentGradeToUpdate.Grade = updateDto.Grade;
+        AssignmentGradeToUpdate.Grades = updateDto.Grade;
         
 
         _dataContext.SaveChanges();
@@ -139,9 +126,8 @@ public class AssignmentGradeController : ControllerBase
         var AssignmentGradeToReturn = new AssignmentGradeGetDto
         {
             Id = AssignmentGradeToUpdate.Id,
-            CreatorId = AssignmentGradeToUpdate.CreatorId,
             AssignmentId = AssignmentGradeToUpdate.AssignmentId,
-            Grade = AssignmentGradeToUpdate.Grade,
+            Grades = AssignmentGradeToUpdate.Grades,
             
         };
 
