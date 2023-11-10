@@ -32,6 +32,7 @@ export const routes = {
   TestingPage: "/testing/:id",
   TestCreate: "/testCreate/:id",
   TestUpdate: "/testsupdate/:id",
+  TestTaking: "/testTake/:id",
 
   QuestionCreate: `/question/create/:id`,
   QuestionUpdate: "/questionUpdate/:id"

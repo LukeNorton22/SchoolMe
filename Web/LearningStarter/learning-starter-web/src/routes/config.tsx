@@ -28,6 +28,7 @@ import { GradeCreate } from "../pages/assignmentgrade-page/grade-create";
 import { AssignmentUpdate } from "../pages/Assignments/Assignment-Update";
 import { TestQuestionUpdate } from "../pages/Test-page/TestQuestion-Update";
 import { FCUpdate } from "../pages/flashcard-page/FCupdate";
+import {TestQuestionsDisplay} from "../pages/Test-page/TestTaking";
 
 
 //This is where you will tell React Router what to render when the path matches the route specified.
@@ -47,6 +48,7 @@ export const Routes = () => {
           <Route path={routes.TestUpdate} element={<TestUpdate />} /> 
           <Route path={routes.TestingPage} element={<TestingPage />} /> 
           <Route path={routes.TestCreate} element={<TestCreate />} /> 
+          <Route path={routes.TestTaking} element={<TestQuestionsDisplay />} /> 
 
           <Route path={routes.QuestionCreate} element = {<QuestionCreate/>} />
           <Route path={routes.QuestionUpdate} element = {<TestQuestionUpdate/>} />

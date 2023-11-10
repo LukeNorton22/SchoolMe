@@ -8,31 +8,23 @@ import {
 import api from "../../config/axios";
 import {
   Button,
-  Center,
   Container,
-  Flex,
-  Header,
-  Space,
+  Input,
   Table,
-  Title,
   createStyles,
+  Space,
 } from "@mantine/core";
-import {
-  faArrowLeft,
-  faPen,
-  faPlus,
-  faTrash,
-  faTruckMonster,
-} from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { routes } from "../../routes";
 import { showNotification } from "@mantine/notifications";
 
-export const TestingPage = () => {
+export const TestQuestionsDisplay = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { classes } = useStyles();
   const [test, setTest] = useState<TestsGetDto | null>(null);
+  const [userAnswers, setUserAnswers] = useState<{ [key: number]: string }>({});
 
   async function fetchTests() {
     try {
@@ -65,6 +57,30 @@ export const TestingPage = () => {
     }
   };
 
+  const handleInputChange = (questionId: number, answer: string) => {
+    setUserAnswers((prevAnswers) => ({
+      ...prevAnswers,
+      [questionId]: answer,
+    }));
+  };
+
+  const isAnswerCorrect = (questionId: number): boolean => {
+    const userAnswer = userAnswers[questionId] || "";
+    const correctAnswer = test?.questions.find((q) => q.id === questionId)?.answer || "";
+
+    // Convert both answers to lowercase for case-insensitive comparison
+    const userAnswerLower = userAnswer.trim().toLowerCase();
+    const correctAnswerLower = correctAnswer.trim().toLowerCase();
+
+    // Handle numeric comparison separately
+    if (!isNaN(Number(userAnswerLower)) && !isNaN(Number(correctAnswerLower))) {
+      return Number(userAnswerLower) === Number(correctAnswerLower);
+    }
+
+    // For non-numeric answers, use regular string comparison
+    return userAnswerLower === correctAnswerLower;
+  };
+
   useEffect(() => {
     fetchTests();
   }, [id]);
@@ -73,19 +89,7 @@ export const TestingPage = () => {
     <Container>
       <Button
         onClick={() => {
-          navigate(routes.TestTaking.replace(":id", `${test?.id}`));
-        }}
-        style={{
-          backgroundColor: "transparent",
-          border: "none",
-          cursor: "pointer",
-        }}
-      >
-        take test
-      </Button>
-      <Button
-        onClick={() => {
-          navigate(routes.GroupHome.replace(":id", `${test?.groupId}`));
+          navigate(routes.TestingPage.replace(":id", `${test?.id}`));
         }}
         style={{
           backgroundColor: "transparent",
@@ -95,52 +99,27 @@ export const TestingPage = () => {
       >
         <FontAwesomeIcon icon={faArrowLeft} size="xl" />
       </Button>
-      <Flex direction="row" justify={"space-between"}>
-        <Button
-          onClick={() => {
-            navigate(routes.QuestionCreate.replace(":id", `${test?.id}`));
-          }}
-        >
-          <FontAwesomeIcon icon={faPlus} /> <Space w={8} />
-          Add Question
-        </Button>
-      </Flex>
-      <Center>
-        <Title>{test?.testName}</Title>
-        <Space h="lg" />
-      </Center>
+
       {test && (
         <Table withBorder fontSize={15}>
           <thead>
             <tr>
-              <th></th>
               <th>Questions</th>
-              <th>Answers</th>
+              <th>Your Answer</th>
+              <th>Check</th>
             </tr>
           </thead>
           <tbody>
-            {test.questions.map((question, index) => (
-              <tr key={index}>
-                <td>
-                  <FontAwesomeIcon
-                    className={classes.iconButton}
-                    icon={faPen}
-                    onClick={() => {
-                      navigate(
-                        routes.QuestionUpdate.replace(":id", `${question.id}`)
-                      );
-                    }}
-                  />
-                  <Button
-                    onClick={() => handleQuestionDelete(question.id)}
-                    color="red"
-                    variant="outline"
-                  >
-                    <FontAwesomeIcon icon={faTrash} />
-                  </Button>
-                </td>
+            {test.questions.map((question) => (
+              <tr key={question.id}>
                 <td>{question.question}</td>
-                <td>{question.answer}</td>
+                <td>
+                  <Input
+                    placeholder="Answer"
+                    onChange={(event) => handleInputChange(question.id, event.currentTarget.value)}
+                  />
+                </td>
+                <td>{isAnswerCorrect(question.id) ? "✅" : ""}</td>
               </tr>
             ))}
           </tbody>
