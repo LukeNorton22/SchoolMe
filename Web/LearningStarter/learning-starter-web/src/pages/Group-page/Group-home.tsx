@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from "react";
-import {  useNavigate, useParams } from "react-router-dom";
-import { GroupGetDto, ApiResponse } from "../../constants/types";
-import { Button, Center, Container, Space, Title, createStyles,  } from "@mantine/core";
-import api from "../../config/axios";
-import { routes } from "../../routes";
-import { faArrowLeft, faPencil, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Container, Menu, Button, createStyles, Title } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import api from "../../config/axios";
+import { GroupGetDto, ApiResponse } from "../../constants/types";
+import { routes } from "../../routes";
 
 export const GroupHome = () => {
   const { id } = useParams();
@@ -24,36 +23,53 @@ export const GroupHome = () => {
     }
   };
 
-  const handleTestDelete = async (testId: number) => {
+  const handleTestDelete = async (testId: number, groupId: number) => {
     try {
       await api.delete(`/api/Tests/${testId}`);
-      showNotification({  message: `Test has entered the trash` });
-      fetchGroup();
+      showNotification({ message: `Test has entered the trash` });
     } catch (error) {
       console.error('Error deleting test:', error);
       showNotification({ title: 'Error', message: 'Failed to delete the test' });
     }
   };
-  const handleFcSetDelete = async (fcSetId: number) => {
+
+  const handleAssignmentDelete = async (assignmentId: number, groupId: number) => {
+    try {
+      await api.delete(`/api/assignments/${assignmentId}`);
+      showNotification({ message: `Assignment has entered the trash` });
+    } catch (error) {
+      console.error('Error deleting assignment:', error);
+      showNotification({ title: 'Error', message: 'Failed to delete the assignment.' });
+    }
+  };
+
+  const handleFcSetDelete = async (fcSetId: number, groupId: number) => {
     try {
       await api.delete(`/api/FCSets/${fcSetId}`);
-      showNotification({  message: `Flashcard set has entered the trash` });
-      fetchGroup();
+      showNotification({ message: `Flashcard set has entered the trash` });
     } catch (error) {
       console.error('Error deleting flashcard set:', error);
       showNotification({ title: 'Error', message: 'Failed to delete the flashcard set.' });
     }
   };
 
-  const handleAssignmentDelete = async (assignmentId: number) => {
-    try {
-      await api.delete(`/api/assignments/${assignmentId}`);
-      showNotification({ message: `Assignment has entered the trash` });
-      fetchGroup();
-    } catch (error) {
-      console.error('Error deleting assignment:', error);
-      showNotification({ title: 'Error', message: 'Failed to delete the assignment.' });
+  const handleDeleteAndNavigate = async (itemId: number, groupId: number, itemType: string) => {
+    switch (itemType) {
+      case 'test':
+        await handleTestDelete(itemId, groupId);
+        break;
+      case 'assignment':
+        await handleAssignmentDelete(itemId, groupId);
+        break;
+      case 'fcSet':
+        await handleFcSetDelete(itemId, groupId);
+        break;
+      default:
+        return;
     }
+
+    fetchGroup(); // Ensure that the group is updated after deletion
+    navigate(routes.GroupHome.replace(":id", `${groupId}`));
   };
 
   useEffect(() => {
@@ -62,113 +78,152 @@ export const GroupHome = () => {
 
   return (
     <Container>
-      {group && (
-        <div>
-          <Button
-            onClick={() => navigate(routes.GroupListing)}
-            style={{
-              backgroundColor: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-            }}
-          >
-            <FontAwesomeIcon icon={faArrowLeft} size="xl" /> 
-          </Button> 
-         <Center>
-          <Title>{group.groupName}</Title>
-          </Center>
-          <h1>Tests</h1>
-          <ul>
-            {group.tests.map((test) => (
-              <li key={test.id}>
-                <Button onClick={() => {
-                 navigate(routes.TestingPage.replace(":id", `${test.id}`))
-                 }}
-                > 
-                 {test.testName}  
-                 </Button> 
-                 <FontAwesomeIcon
-                      className={classes.iconButton}
-                      icon={faPencil}
-                      onClick={() => {
-                        navigate(
-                          routes.TestUpdate.replace(":id", `${test.id}`)
-                        );
-                      }}
-                    />
-                     <Button onClick={() => handleTestDelete(test.id)} color="red" variant="outline">
-                  <FontAwesomeIcon icon={faTrash} />
-                </Button>
-                <Space h="md" />
-                    
-              </li>
-            ))           
-            }
-            <Button
-                  onClick={() => {
-                  navigate(routes.TestCreate.replace(":id", `${group.id}`));
-                  }}
-                >
-                <FontAwesomeIcon icon={faPlus} /> <Space w={8} />
-                  New Test
-                </Button>
-          
-          </ul>
-          <h1>Flash Card Sets</h1>
-          <ul>
-            {group.flashCardSets.map((flashCardSet) => (
-              <li key={flashCardSet.id}>
-              <Button onClick={() => { navigate(routes.FlashCardSetListing.replace(":id", `${flashCardSet.id}`))}}> 
-               {flashCardSet.setName}
-              </Button> 
+      {/* Group Title */}
+      <Title order={1}  align="center" style={{ marginBottom: '20px' }}>
+        {group?.groupName || 'Loading...'}
+      </Title>
+      {/* Tests Menu */}
+      <Menu trigger="hover" openDelay={100} closeDelay={400}>
+        <Menu.Target>
+          <Button size="sm" color="transparent" style={{ border: 'none', marginRight: '8px' }}>
+            Tests
+          </Button>
+        </Menu.Target>
+        <Menu.Dropdown>
+          {group?.tests.map((test) => (
+            <Menu.Item key={test.id}>
+              <div
+                style={{
+                  whiteSpace: 'nowrap',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <span style={{ marginRight: '8px' }}>{test.testName}</span>
                 <FontAwesomeIcon
-                    className={classes.iconButton}
-                    icon={faPencil}
-                    onClick={() => {
-                      navigate(
-                        routes.FlashCardSetUpdate.replace(":id", `${flashCardSet.id}`)
-                      );
-                    }}
+                  className={classes.iconButton}
+                  icon={faPen}
+                  onClick={() => navigate(routes.TestUpdate.replace(":id", `${test.id}`))}
                 />
-                <Button onClick={() => handleFcSetDelete(flashCardSet.id)} color="red" variant="outline">
-                  <FontAwesomeIcon icon={faTrash} />
-                </Button>
-              <Space h="md" />
-            </li>
-            ))}
-            <Button onClick={() => {navigate(routes.FCSetCreate.replace(":id", `${group.id}`))}}>
-            <FontAwesomeIcon icon={faPlus} /> <Space w={8} /> New Set </Button>
-          </ul>
-          <h1>Assignments</h1>
-          <ul>
-            {group.assignments.map((assignment) => (
-              <li key={assignment.id}>
-              <Button onClick={() => { navigate(routes.AssignmentGradeListingg.replace(":id", `${assignment.id}`))}}> 
-               {assignment.assignmentName}
-              </Button> 
-                 <FontAwesomeIcon
-                      className={classes.iconButton}
-                      icon={faPencil}
-                      onClick={() => {
-                        navigate(
-                          routes.AssignmentUpdate.replace(":id", `${assignment.id}`)
-                        );
-                      }}
-                    />
-                     <Button onClick={() => handleAssignmentDelete(assignment.id)} color="red" variant="outline">
-                  <FontAwesomeIcon icon={faTrash} />
-                </Button>
-                <Space h="md" />
-            </li>
-            ))}
-            <Button onClick={() => {navigate(routes.AssignmentCreatee.replace(":id", `${group.id}`))}}>
-            <FontAwesomeIcon icon={faPlus} /> <Space w={8} /> New Set </Button>
-          </ul>
-        </div>
-      )}
+                <FontAwesomeIcon
+                  className={classes.iconButton}
+                  icon={faTrash}
+                  color="red"
+                  size="sm"
+                  onClick={() => handleDeleteAndNavigate(test.id, test.groupId, 'test')}
+                  style={{ cursor: 'pointer', marginLeft: '8px' }}
+                />
+              </div>
+            </Menu.Item>
+          ))}
+          <Button
+            size="sm"
+            color="transparent"
+            style={{ border: 'none', marginTop: '8px' }}
+            onClick={() => navigate(routes.TestCreate.replace(":id", `${group?.id}`))}
+          >
+            Create New Test
+          </Button>
+        </Menu.Dropdown>
+      </Menu>
+
+      {/* Flash Card Sets Menu */}
+      <Menu trigger="hover" openDelay={100} closeDelay={400}>
+        <Menu.Target>
+          <Button size="sm" color="transparent" style={{ border: 'none', marginRight: '8px' }}>
+            Flash Card Sets
+          </Button>
+        </Menu.Target>
+        <Menu.Dropdown>
+          {group?.flashCardSets.map((flashCardSet) => (
+            <Menu.Item key={flashCardSet.id}>
+              <div
+                style={{
+                  whiteSpace: 'nowrap',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <span style={{ marginRight: '8px' }}>{flashCardSet.setName}</span>
+                <FontAwesomeIcon
+                  className={classes.iconButton}
+                  icon={faPen}
+                  onClick={() => navigate(routes.FlashCardSetUpdate.replace(":id", `${flashCardSet.id}`))}
+                />
+                <FontAwesomeIcon
+                  className={classes.iconButton}
+                  icon={faTrash}
+                  color="red"
+                  size="sm"
+                  onClick={() => handleDeleteAndNavigate(flashCardSet.id, flashCardSet.groupId, 'fcSet')}
+                  style={{ cursor: 'pointer', marginLeft: '8px' }}
+                />
+              </div>
+            </Menu.Item>
+          ))}
+          <Button
+            size="sm"
+            color="transparent"
+            style={{ border: 'none', marginTop: '8px' }}
+            onClick={() => navigate(routes.FCSetCreate.replace(":id", `${group?.id}`))}
+          >
+            Create New Flash Card Set
+          </Button>
+        </Menu.Dropdown>
+      </Menu>
+
+      {/* Assignments Menu */}
+      <Menu trigger="hover" openDelay={100} closeDelay={400}>
+        <Menu.Target>
+          <Button size="sm" color="transparent" style={{ border: 'none', marginRight: '8px' }}>
+            Assignments
+          </Button>
+        </Menu.Target>
+        <Menu.Dropdown>
+          {group?.assignments.map((assignment) => (
+            <Menu.Item key={assignment.id}>
+              <div
+                style={{
+                  whiteSpace: 'nowrap',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <span style={{ marginRight: '8px' }}>{assignment.assignmentName}</span>
+                <FontAwesomeIcon
+                  className={classes.iconButton}
+                  icon={faPen}
+                  onClick={() => navigate(routes.AssignmentUpdate.replace(":id", `${assignment.id}`))}
+                />
+                <FontAwesomeIcon
+                  className={classes.iconButton}
+                  icon={faTrash}
+                  color="red"
+                  size="sm"
+                  onClick={() => handleDeleteAndNavigate(assignment.id, assignment.groupId, 'assignment')}
+                  style={{ cursor: 'pointer', marginLeft: '8px' }}
+                />
+              </div>
+            </Menu.Item>
+          ))}
+          <Button
+            size="sm"
+            color="transparent"
+            style={{ border: 'none', marginTop: '8px' }}
+            onClick={() => navigate(routes.AssignmentCreatee.replace(":id", `${group?.id}`))}
+          >
+            Create New Assignment
+          </Button>
+        </Menu.Dropdown>
+      </Menu>
+
+      {/* The rest of your code... */}
     </Container>
   );
-}; 
+};
 
 const useStyles = createStyles(() => {
   return {

@@ -72,7 +72,7 @@ export const FlashCardSetListing = () => {
           }}
         >
           <FontAwesomeIcon icon={faPlus} /> <Space w={8} />
-          Add Question
+          Add Flashcard
         </Button>
       <Center>
         <Title >{fcset?.setName}</Title>
