@@ -1,12 +1,14 @@
-import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
+//poop
+import { faArrowLeft, faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Container, Menu, Button, createStyles, Title } from "@mantine/core";
+import { Container, createStyles, Title, Tabs, Button, Menu } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../../config/axios";
 import { GroupGetDto, ApiResponse } from "../../constants/types";
 import { routes } from "../../routes";
+import { icon } from "@fortawesome/fontawesome-svg-core";
 
 export const GroupHome = () => {
   const { id } = useParams();
@@ -78,147 +80,175 @@ export const GroupHome = () => {
 
   return (
     <Container>
+      {/* Back Button */}
+      <Button
+        onClick={() => {
+          navigate(routes.GroupListing);
+        }}
+        style={{
+          backgroundColor: 'transparent',
+          border: 'none',
+          cursor: 'pointer',
+          position: 'absolute',
+          top: '80px',
+          left: '80px',
+        }}
+      >
+        <FontAwesomeIcon icon={faArrowLeft} size="xl" />
+      </Button>
+
       {/* Group Title */}
-      <Title order={1}  align="center" style={{ marginBottom: '20px' }}>
+      <Title order={1} align="center" style={{ marginBottom: '20px' }}>
         {group?.groupName || 'Loading...'}
       </Title>
-      {/* Tests Menu */}
-      <Menu trigger="hover" openDelay={100} closeDelay={400}>
-        <Menu.Target>
-          <Button size="sm" color="transparent" style={{ border: 'none', marginRight: '8px' }}>
-            Tests
-          </Button>
-        </Menu.Target>
-        <Menu.Dropdown>
-          {group?.tests.map((test) => (
-            <Menu.Item key={test.id}>
-              <div
-                style={{
-                  whiteSpace: 'nowrap',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <span style={{ marginRight: '8px' }}>{test.testName}</span>
-                <FontAwesomeIcon
-                  className={classes.iconButton}
-                  icon={faPen}
-                  onClick={() => navigate(routes.TestUpdate.replace(":id", `${test.id}`))}
-                />
-                <FontAwesomeIcon
-                  className={classes.iconButton}
-                  icon={faTrash}
-                  color="red"
-                  size="sm"
-                  onClick={() => handleDeleteAndNavigate(test.id, test.groupId, 'test')}
-                  style={{ cursor: 'pointer', marginLeft: '8px' }}
-                />
-              </div>
-            </Menu.Item>
-          ))}
-          <Button
-            size="sm"
-            color="transparent"
-            style={{ border: 'none', marginTop: '8px' }}
-            onClick={() => navigate(routes.TestCreate.replace(":id", `${group?.id}`))}
-          >
-            Create New Test
-          </Button>
-        </Menu.Dropdown>
-      </Menu>
 
-      {/* Flash Card Sets Menu */}
-      <Menu trigger="hover" openDelay={100} closeDelay={400}>
-        <Menu.Target>
-          <Button size="sm" color="transparent" style={{ border: 'none', marginRight: '8px' }}>
-            Flash Card Sets
-          </Button>
-        </Menu.Target>
-        <Menu.Dropdown>
-          {group?.flashCardSets.map((flashCardSet) => (
-            <Menu.Item key={flashCardSet.id}>
-              <div
-                style={{
-                  whiteSpace: 'nowrap',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <span style={{ marginRight: '8px' }}>{flashCardSet.setName}</span>
-                <FontAwesomeIcon
-                  className={classes.iconButton}
-                  icon={faPen}
-                  onClick={() => navigate(routes.FlashCardSetUpdate.replace(":id", `${flashCardSet.id}`))}
-                />
-                <FontAwesomeIcon
-                  className={classes.iconButton}
-                  icon={faTrash}
-                  color="red"
-                  size="sm"
-                  onClick={() => handleDeleteAndNavigate(flashCardSet.id, flashCardSet.groupId, 'fcSet')}
-                  style={{ cursor: 'pointer', marginLeft: '8px' }}
-                />
-              </div>
-            </Menu.Item>
-          ))}
-          <Button
-            size="sm"
-            color="transparent"
-            style={{ border: 'none', marginTop: '8px' }}
-            onClick={() => navigate(routes.FCSetCreate.replace(":id", `${group?.id}`))}
-          >
-            Create New Flash Card Set
-          </Button>
-        </Menu.Dropdown>
-      </Menu>
+      {/* Tabs */}
+      <Tabs  color ="teal"defaultValue="Tests">
+        <Tabs.List grow >
+          <Tabs.Tab value="Tests">Tests</Tabs.Tab>
+          <Tabs.Tab value="Flashcard Sets">Flashcard Sets</Tabs.Tab>
+          <Tabs.Tab value="Assignments">Assignments</Tabs.Tab>
+        </Tabs.List>
 
-      {/* Assignments Menu */}
-      <Menu trigger="hover" openDelay={100} closeDelay={400}>
-        <Menu.Target>
-          <Button size="sm" color="transparent" style={{ border: 'none', marginRight: '8px' }}>
-            Assignments
-          </Button>
-        </Menu.Target>
-        <Menu.Dropdown>
-          {group?.assignments.map((assignment) => (
-            <Menu.Item key={assignment.id}>
-              <div
-                style={{
-                  whiteSpace: 'nowrap',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <span style={{ marginRight: '8px' }}>{assignment.assignmentName}</span>
-                <FontAwesomeIcon
-                  className={classes.iconButton}
-                  icon={faPen}
-                  onClick={() => navigate(routes.AssignmentUpdate.replace(":id", `${assignment.id}`))}
-                />
-                <FontAwesomeIcon
-                  className={classes.iconButton}
-                  icon={faTrash}
-                  color="red"
-                  size="sm"
-                  onClick={() => handleDeleteAndNavigate(assignment.id, assignment.groupId, 'assignment')}
-                  style={{ cursor: 'pointer', marginLeft: '8px' }}
-                />
-              </div>
-            </Menu.Item>
-          ))}
-          <Button
-            size="sm"
-            color="transparent"
-            style={{ border: 'none', marginTop: '8px' }}
-            onClick={() => navigate(routes.AssignmentCreatee.replace(":id", `${group?.id}`))}
-          >
-            Create New Assignment
-          </Button>
-        </Menu.Dropdown>
-      </Menu>
+        <Tabs.Panel value="Tests">
+          {/* Tests Content */}
+          
+              {group?.tests.map((test) => (
+                  <div
+                    style={{
+                      whiteSpace: 'nowrap',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Button 
+                    variant="subtle" 
+                    color="gray" 
+                    size="sm" 
+                    radius="xs" 
+                    onClick={ () => navigate(routes.TestingPage.replace(":id", `${test.id}`))}> 
+                    {test.testName}
+                    </Button>
+                   
+                    <FontAwesomeIcon
+                      className={classes.iconButton}
+                      icon={faPen}
+                      onClick={() => navigate(routes.TestUpdate.replace(":id", `${test.id}`))}
+                    />
+                    <FontAwesomeIcon
+                      className={classes.iconButton}
+                      icon={faTrash}
+                      color="red"
+                      size="sm"
+                      onClick={() => handleDeleteAndNavigate(test.id, test.groupId, 'test')}
+                      style={{ cursor: 'pointer', marginLeft: '8px' }}
+                    />
+                  </div>
+              ))}
+            <Button 
+            variant="subtle" 
+            color="gray" 
+            size="sm" 
+            radius="xs" 
+            onClick={ () => navigate(routes.TestCreate.replace(":id", `${group?.id}`))}>
+              Create Test
+            </Button>  
+        </Tabs.Panel>
+
+        <Tabs.Panel value="Flashcard Sets">
+          {/* Flashcard Sets Content */}
+         
+              {group?.flashCardSets.map((flashCardSet) => (
+                  <div
+                    style={{
+                      whiteSpace: 'nowrap',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                     <Button 
+                    variant="subtle" 
+                    color="gray" 
+                    size="sm" 
+                    radius="xs" 
+                    onClick={ () => navigate(routes.FlashCardListing.replace(":id", `${flashCardSet.id}`))}> 
+                    {flashCardSet.setName}
+                    </Button>
+
+                    <span style={{ marginRight: '8px' }}></span>
+                    <FontAwesomeIcon
+                      className={classes.iconButton}
+                      icon={faPen}
+                      onClick={() => navigate(routes.FlashCardSetUpdate.replace(":id", `${flashCardSet.id}`))}
+                    />
+                    <FontAwesomeIcon
+                      className={classes.iconButton}
+                      icon={faTrash}
+                      color="red"
+                      size="sm"
+                      onClick={() => handleDeleteAndNavigate(flashCardSet.id, flashCardSet.groupId, 'fcSet')}
+                      style={{ cursor: 'pointer', marginLeft: '8px' }}
+                    />
+                  </div>
+              ))}
+                 <Button 
+            variant="subtle" 
+            color="gray" 
+            size="sm" 
+            radius="xs" 
+            onClick={ () => navigate(routes.FCSetCreate.replace(":id", `${group?.id}`))}>
+              Create Set
+            </Button> 
+        </Tabs.Panel>
+
+        <Tabs.Panel value="Assignments">
+          {/* Assignments Content */}
+         
+              {group?.assignments.map((assignment) => (
+                  <div
+                    style={{
+                      whiteSpace: 'nowrap',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                      <Button 
+                    variant="subtle" 
+                    color="gray" 
+                    size="sm" 
+                    radius="xs" 
+                    onClick={ () => navigate(routes.AssignmentGradeListingg.replace(":id", `${assignment.id}`))}> 
+                    {assignment.assignmentName}
+                    </Button>
+
+                    <FontAwesomeIcon
+                      className={classes.iconButton}
+                      icon={faPen}
+                      onClick={() => navigate(routes.AssignmentUpdate.replace(":id", `${assignment.id}`))}
+                    />
+                    <FontAwesomeIcon
+                      className={classes.iconButton}
+                      icon={faTrash}
+                      color="red"
+                      size="sm"
+                      onClick={() => handleDeleteAndNavigate(assignment.id, assignment.groupId, 'assignment')}
+                      style={{ cursor: 'pointer', marginLeft: '8px' }}
+                    />
+                  </div>
+              ))}
+                 <Button 
+            variant="subtle" 
+            color="gray" 
+            size="sm" 
+            radius="xs" 
+            onClick={ () => navigate(routes.AssignmentCreatee.replace(":id", `${group?.id}`))}>
+              Create Assignment
+            </Button>
+        </Tabs.Panel>
+      </Tabs>
 
       {/* The rest of your code... */}
     </Container>
