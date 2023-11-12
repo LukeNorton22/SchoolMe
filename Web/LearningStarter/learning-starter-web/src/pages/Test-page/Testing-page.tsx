@@ -71,44 +71,45 @@ export const TestingPage = () => {
 
   return (
     <Container>
-      <Button
-        onClick={() => {
-          navigate(routes.TestTaking.replace(":id", `${test?.id}`));
-        }}
-        style={{
-          backgroundColor: "transparent",
-          border: "none",
-          cursor: "pointer",
-        }}
-      >
-        take test
-      </Button>
-      <Button
-        onClick={() => {
-          navigate(routes.GroupHome.replace(":id", `${test?.groupId}`));
-        }}
-        style={{
-          backgroundColor: "transparent",
-          border: "none",
-          cursor: "pointer",
-        }}
-      >
-        <FontAwesomeIcon icon={faArrowLeft} size="xl" />
-      </Button>
-      <Flex direction="row" justify={"space-between"}>
-        <Button
-          onClick={() => {
-            navigate(routes.QuestionCreate.replace(":id", `${test?.id}`));
-          }}
-        >
-          <FontAwesomeIcon icon={faPlus} /> <Space w={8} />
-          Add Question
-        </Button>
+      <Flex direction="row" justify="space-between">
+        <Flex>
+          <Button
+            onClick={() => {
+              navigate(routes.GroupHome.replace(":id", `${test?.groupId}`));
+            }}
+            style={{
+              backgroundColor: "transparent",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            <FontAwesomeIcon icon={faArrowLeft} size="xl" />
+          </Button>
+          <Button
+            onClick={() => {
+              navigate(routes.QuestionCreate.replace(":id", `${test?.id}`));
+            }}
+          >
+            <FontAwesomeIcon icon={faPlus} /> <Space w={8} />
+            Add Question
+          </Button>
+        </Flex>
+        <Flex>
+          <Button
+            onClick={() => {
+              navigate(routes.TestTaking.replace(":id", `${test?.id}`));
+            }} 
+          >
+            Take Test
+          </Button>
+        </Flex>
       </Flex>
+  
       <Center>
         <Title>{test?.testName}</Title>
         <Space h="lg" />
       </Center>
+  
       {test && (
         <Table withBorder fontSize={15}>
           <thead>
@@ -122,22 +123,25 @@ export const TestingPage = () => {
             {test.questions.map((question, index) => (
               <tr key={index}>
                 <td>
+                  {/* Edit Icon */}
                   <FontAwesomeIcon
                     className={classes.iconButton}
                     icon={faPen}
                     onClick={() => {
-                      navigate(
-                        routes.QuestionUpdate.replace(":id", `${question.id}`)
-                      );
+                      navigate(routes.QuestionUpdate.replace(":id", `${question.id}`));
                     }}
+                    style={{ cursor: 'pointer', marginRight: '8px' }}
                   />
-                  <Button
-                    onClick={() => handleQuestionDelete(question.id)}
+
+                  {/* Delete Icon */}
+                  <FontAwesomeIcon
+                    className={classes.iconButton}
+                    icon={faTrash}
                     color="red"
-                    variant="outline"
-                  >
-                    <FontAwesomeIcon icon={faTrash} />
-                  </Button>
+                    size="sm"
+                    onClick={() => handleQuestionDelete(question.id)}
+                    style={{ cursor: 'pointer' }}
+                  />
                 </td>
                 <td>{question.question}</td>
                 <td>{question.answer}</td>
@@ -148,6 +152,7 @@ export const TestingPage = () => {
       )}
     </Container>
   );
+  
 };
 
 const useStyles = createStyles(() => {

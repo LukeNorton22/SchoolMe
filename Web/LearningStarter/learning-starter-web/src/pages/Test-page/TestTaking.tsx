@@ -12,7 +12,6 @@ import {
   Input,
   Table,
   createStyles,
-  Space,
 } from "@mantine/core";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -25,6 +24,7 @@ export const TestQuestionsDisplay = () => {
   const { classes } = useStyles();
   const [test, setTest] = useState<TestsGetDto | null>(null);
   const [userAnswers, setUserAnswers] = useState<{ [key: number]: string }>({});
+  const [result, setResult] = useState<{ [key: number]: boolean }>({});
 
   async function fetchTests() {
     try {
@@ -64,21 +64,30 @@ export const TestQuestionsDisplay = () => {
     }));
   };
 
-  const isAnswerCorrect = (questionId: number): boolean => {
-    const userAnswer = userAnswers[questionId] || "";
-    const correctAnswer = test?.questions.find((q) => q.id === questionId)?.answer || "";
+  const checkAnswers = () => {
+    const newResult: { [key: number]: boolean } = {};
+    Object.keys(userAnswers).forEach((questionId) => {
+      const userAnswer = userAnswers[questionId] || "";
+      const correctAnswer =
+        test?.questions.find((q) => q.id === parseInt(questionId))?.answer || "";
 
-    // Convert both answers to lowercase for case-insensitive comparison
-    const userAnswerLower = userAnswer.trim().toLowerCase();
-    const correctAnswerLower = correctAnswer.trim().toLowerCase();
+      // Convert both answers to lowercase for case-insensitive comparison
+      const userAnswerLower = userAnswer.trim().toLowerCase();
+      const correctAnswerLower = correctAnswer.trim().toLowerCase();
 
-    // Handle numeric comparison separately
-    if (!isNaN(Number(userAnswerLower)) && !isNaN(Number(correctAnswerLower))) {
-      return Number(userAnswerLower) === Number(correctAnswerLower);
-    }
-
-    // For non-numeric answers, use regular string comparison
-    return userAnswerLower === correctAnswerLower;
+      // Handle numeric comparison separately
+      if (
+        !isNaN(Number(userAnswerLower)) &&
+        !isNaN(Number(correctAnswerLower))
+      ) {
+        newResult[questionId] =
+          Number(userAnswerLower) === Number(correctAnswerLower);
+      } else {
+        // For non-numeric answers, use regular string comparison
+        newResult[questionId] = userAnswerLower === correctAnswerLower;
+      }
+    });
+    setResult(newResult);
   };
 
   useEffect(() => {
@@ -101,29 +110,38 @@ export const TestQuestionsDisplay = () => {
       </Button>
 
       {test && (
-        <Table withBorder fontSize={15}>
-          <thead>
-            <tr>
-              <th>Questions</th>
-              <th>Your Answer</th>
-              <th>Check</th>
-            </tr>
-          </thead>
-          <tbody>
-            {test.questions.map((question) => (
-              <tr key={question.id}>
-                <td>{question.question}</td>
-                <td>
-                  <Input
-                    placeholder="Answer"
-                    onChange={(event) => handleInputChange(question.id, event.currentTarget.value)}
-                  />
-                </td>
-                <td>{isAnswerCorrect(question.id) ? "✅" : ""}</td>
+        <>
+          <Table withBorder fontSize={15}>
+            <thead>
+              <tr>
+                <th>Questions</th>
+                <th>Your Answer</th>
+                <th>Result</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {test.questions.map((question) => (
+                <tr key={question.id}>
+                  <td>{question.question}</td>
+                  <td>
+                    <Input
+                      placeholder="Answer"
+                      onChange={(event) =>
+                        handleInputChange(
+                          question.id,
+                          event.currentTarget.value
+                        )
+                      }
+                    />
+                  </td>
+                  <td>{result[question.id] ? "✅" : result[question.id] !== undefined ? "❌" : ""}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+
+          <Button onClick={checkAnswers}>Finish Attempt</Button>
+        </>
       )}
     </Container>
   );
