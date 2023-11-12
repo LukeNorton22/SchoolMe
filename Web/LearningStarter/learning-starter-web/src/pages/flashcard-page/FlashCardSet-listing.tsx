@@ -7,6 +7,7 @@ import { ApiResponse, FlashCardSetGetDto } from "../../constants/types";
 import { routes } from "../../routes";
 import api from "../../config/axios";
 import { faArrowLeft, faPen, faPlus, faTrash,  } from "@fortawesome/free-solid-svg-icons";
+import Flashcard from "../../Flashcard";
 
 
 
@@ -78,46 +79,21 @@ export const FlashCardSetListing = () => {
         <Title >{fcset?.setName}</Title>
         <Space h="lg" />
         </Center>
-        {fcset && (
-          <Table withBorder fontSize={15}>         
-            <thead>
-              <tr>
-                <th></th>
-                <th>Questions</th>
-                <th>Answers</th>
-              </tr>
-            </thead>
-            <tbody>
-              {fcset.flashCards.map((flashCard, index) => (
-                <tr key={index}>
-                 
-                 <FontAwesomeIcon
-                    className={classes.iconButton}
-                    icon={faPen}
-                    onClick={() => {
-                      navigate(
-                        routes.FCUpdate.replace(":id", `${flashCard.id}`)
-                      );
-                    }}
-                  />
-                  <Button
-                    onClick={() => handleFlashCardDelete(flashCard.id)}
-                    color="red"
-                    variant="outline"
-                  >
-                    <FontAwesomeIcon icon={faTrash} />
-                  </Button>
-                 
-                  <td>{flashCard.question}</td>
-                  
-                    <td>
-                      {flashCard.answer}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        )}
+       
+              {fcset && (
+        <div>
+          {fcset.flashCards.map((flashCard, index) => (
+            <Flashcard
+              key={index}
+              question={flashCard.question}
+              answer={flashCard.answer}
+            />
+          ))}
+        </div>
+              )}
+           
+         
+        
       </Container>
     );
   };

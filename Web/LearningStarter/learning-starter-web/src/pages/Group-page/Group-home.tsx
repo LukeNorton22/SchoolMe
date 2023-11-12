@@ -219,7 +219,7 @@ export const GroupHome = () => {
                 radius="xs"
                 onClick={() =>
                   navigate(
-                    routes.FlashCardListing.replace(":id", `${flashCardSet.id}`)
+                    routes.FlashCardSetListing.replace(":id", `${flashCardSet.id}`)
                   )
                 }
               >
@@ -336,7 +336,7 @@ export const GroupHome = () => {
         </Tabs.Panel>
       </Tabs>
       <Container>
-        <Header height={32}>FlashCards</Header>
+       
         <Space h="md" />
         {group && (
           <Table withBorder striped>
