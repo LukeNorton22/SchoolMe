@@ -6,7 +6,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { showNotification } from "@mantine/notifications";
 import { FormErrors, useForm } from "@mantine/form";
 import { routes } from "../../routes";
-import { FlashCardListing } from "./flashcard-listing";
 
 export const FCUpdate = () => {
     const [flashcard, setFlashCard] = useState<FlashCardsGetDto>();

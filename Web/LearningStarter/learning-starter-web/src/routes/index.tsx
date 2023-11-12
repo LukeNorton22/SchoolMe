@@ -17,7 +17,7 @@ export const routes = {
   FlashCardSetListing: "/FlashCardSets/:id",
   FlashCardSetUpdate: "/flashcardset-update/:id",
   FlashCardUpdate: "/flashcards/:id",
-  FlashCardListing: "/flashcards",
+  FlashCardListing: "/flashcards/:id",
   FCUpdate: "/flashcard/update/:id",
 
   GroupListing: "/group",

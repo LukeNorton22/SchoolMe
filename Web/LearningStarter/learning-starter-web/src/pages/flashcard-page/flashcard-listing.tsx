@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { routes } from "../../routes";
 
 export {};
-export const FlashCardListing = () => {
+export const FlasCardListing = () => {
   const [flashcards, setFlashCards] = useState<FlashCardsGetDto[]>();
   const navigate = useNavigate();
   const { classes } = useStyles();
