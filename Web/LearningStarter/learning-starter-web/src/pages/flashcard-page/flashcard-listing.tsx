@@ -53,9 +53,9 @@ export const FlashCardListing = () => {
                       icon={faPencil}
                       onClick={() => {
                         navigate(
-                          routes.FlashCardUpdate.replace(
+                          routes.FCUpdate.replace(
                             ":id",
-                            "{flashcard.id}"
+                            `${flashcard.id}`
                           )
                         );
                       }}
