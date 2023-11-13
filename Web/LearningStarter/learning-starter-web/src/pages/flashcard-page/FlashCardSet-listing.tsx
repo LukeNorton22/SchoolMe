@@ -93,53 +93,46 @@ export const FlashCardListing: React.FC = () => {
                 onClick={() => setIsFlipped(!isFlipped)}
               >
               <div className="front">
-        <Flashcard
-          question={fcset.flashCards[currentCardIndex].question}
-          answer={fcset.flashCards[currentCardIndex].answer}
-          isFlipped={isFlipped}
-          onClick={() => setIsFlipped(!isFlipped)}
-        />
-      </div>
-      <div className="back">
-        <Flashcard
-          question={fcset.flashCards[currentCardIndex].question}
-          answer={fcset.flashCards[currentCardIndex].answer}
-          isFlipped={isFlipped}
-          onClick={() => setIsFlipped(!isFlipped)}
-        />
-        </div>
-        <Space h = {18} />
-
-               
+                  <Flashcard
+                    question={fcset.flashCards[currentCardIndex].question}
+                    isFlipped={isFlipped}
+                    onClick={() => setIsFlipped(!isFlipped)} answer={""}/>
+              </div>
+              <div className="back">
+                  <Flashcard
+      
+                    answer={fcset.flashCards[currentCardIndex].answer}
+                    isFlipped={isFlipped}
+                    onClick={() => setIsFlipped(!isFlipped)} question={""}/>
+              </div>
+              <Space h = {18} />
               </div>
               <Button
-  onClick={() => {
-    setCurrentCardIndex((prevIndex) =>
-      prevIndex > 0 ? prevIndex - 1 : prevIndex
-    );
-  }}
-  className={classes.iconButton}
-  style={{ background: "transparent", border: "none" }}
->
-  {"<"}
-</Button>
-<span style={{ margin: "0 16px", fontSize: "18px" }}>
-  Card {currentCardIndex + 1} of {fcset.flashCards.length}
-</span>
-<Button
-  onClick={() => {
-    setCurrentCardIndex((prevIndex) =>
-      prevIndex < fcset.flashCards.length - 1 ? prevIndex + 1 : prevIndex
-    );
-  }}
-  className={classes.iconButton}
-  style={{ background: "transparent", border: "none" }}
->
-  {">"}
-</Button>
-
+                onClick={() => {
+                setCurrentCardIndex((prevIndex) =>
+                prevIndex > 0 ? prevIndex - 1 : prevIndex
+               );
+              }}
+              className={classes.iconButton}
+              style={{ background: "transparent", border: "none" }}
+              >
+               {"<"}
+              </Button>
+              <span style={{ margin: "0 16px", fontSize: "18px" }}>
+                Card {currentCardIndex + 1} of {fcset.flashCards.length}
+              </span>
+              <Button
+                onClick={() => {
+                  setCurrentCardIndex((prevIndex) =>
+                    prevIndex < fcset.flashCards.length - 1 ? prevIndex + 1 : prevIndex
+                  );
+                }}
+                className={classes.iconButton}
+                style={{ background: "transparent", border: "none" }}
+              >
+                {">"}
+              </Button>
               <Space h = {18} />
-
             </div>
           )}
           {fcset && (
