@@ -16,9 +16,10 @@ import {
   Table,
   Header,
   Space,
+  Input,
 } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../../config/axios";
 import { GroupGetDto, ApiResponse } from "../../constants/types";
@@ -31,6 +32,9 @@ export const GroupHome = () => {
   const { classes } = useStyles();
   const navigate = useNavigate();
   const [group, setGroup] = useState<GroupGetDto | null>(null);
+  const [newMessage, setNewMessage] = useState("");
+  const tableRef = useRef<HTMLDivElement | null>(null);
+
 
   const fetchGroup = async () => {
     try {
@@ -108,13 +112,44 @@ export const GroupHome = () => {
     navigate(routes.GroupHome.replace(":id", `${groupId}`));
   };
 
+  const handleSendMessage = async () => {
+    try {
+      // Assuming you have an API endpoint to send messages
+      await api.post(`/api/Message/${id}`, {
+        groupId: group?.id,
+        content: newMessage,
+      });
+
+      setNewMessage(""); // Clear the input after sending the message
+      fetchGroup(); // Refresh the messages after sending
+      scrollTableToBottom(); // After sending a message, scroll the table to the bottom
+
+    } catch (error) {
+      console.error("Error sending message:", error);
+      showNotification({
+        title: "Error",
+        message: "Failed to send the message",
+      });
+    }
+  };
+
   useEffect(() => {
     fetchGroup();
   }, [id]);
 
+  useEffect(() => {
+    scrollTableToBottom(); // Scroll to the bottom when the component mounts or when messages change
+  }, [group?.messages]);
+
+  const scrollTableToBottom = () => {
+    if (tableRef.current) {
+      tableRef.current.scrollTop = tableRef.current.scrollHeight;
+    }
+  };
+
   return (
     <Container>
-      {/* Back Button */}
+    {/* Back Button */}
       <Button
         onClick={() => {
           navigate(routes.GroupListing);
@@ -137,8 +172,9 @@ export const GroupHome = () => {
       </Title>
 
       {/* Tabs */}
-      <Tabs color="teal" defaultValue="Tests">
+      <Tabs orientation = "horizontal" color="teal" defaultValue="Chat">
         <Tabs.List grow>
+          <Tabs.Tab value="Chat">Chat</Tabs.Tab>
           <Tabs.Tab value="Tests">Tests</Tabs.Tab>
           <Tabs.Tab value="Flashcard Sets">Flashcard Sets</Tabs.Tab>
           <Tabs.Tab value="Assignments">Assignments</Tabs.Tab>
@@ -202,7 +238,6 @@ export const GroupHome = () => {
 
         <Tabs.Panel value="Flashcard Sets">
           {/* Flashcard Sets Content */}
-
           {group?.flashCardSets.map((flashCardSet) => (
             <div
               style={{
@@ -270,7 +305,6 @@ export const GroupHome = () => {
 
         <Tabs.Panel value="Assignments">
           {/* Assignments Content */}
-
           {group?.assignments.map((assignment) => (
             <div
               style={{
@@ -334,23 +368,29 @@ export const GroupHome = () => {
             Create Assignment
           </Button>
         </Tabs.Panel>
-      </Tabs>
-      <Container>
-       
-        <Space h="md" />
+     
+        <Tabs.Panel value="Chat">
         {group && (
-          <Table withBorder striped>
-            <thead>
-              <tr>
-                <th></th>
-                <th>Messages</th>
-                <th>Created At</th>
-              </tr>
-            </thead>
-            <tbody>
-              {group.messages.map((messages) => {
-                return (
-                  <tr>
+          <div style={{ position: 'fixed', bottom: 70, left: 120, right: 120, padding: '0px', backgroundColor: '' }}>
+            <Input
+              size="md"
+              placeholder="Type your message..."
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+            />
+            <Space h={8}></Space>
+            <Button variant="outline" color="teal" onClick={handleSendMessage}>
+              Send
+            </Button>
+          </div>
+        )}
+
+        <div style={{left: "120", right: "120", maxHeight: "385px",  overflowY: "auto" }} ref={tableRef}> {/* Set your desired max height */}
+          {group && (
+            <Table striped>
+              <tbody>
+                {group.messages.map((message) => (
+                  <tr key={message.id}>
                     <td>
                       <FontAwesomeIcon
                         className={classes.iconButton}
@@ -359,26 +399,26 @@ export const GroupHome = () => {
                           navigate(
                             routes.MessageUpdate.replace(
                               ":id",
-                              `${messages.id}`
+                              `${message.id}`
                             )
                           );
                         }}
                       />
                     </td>
-                    <td>{messages.content}</td>
-                    <td>{messages.createdAt}</td>
+                    <td>{message.content}<Space></Space>{message.createdAt}</td>
                   </tr>
-                );
-              })}
-              
-            </tbody>
-          </Table>
-        )}{" "}
-      </Container>
-      {/* The rest of your code... */}
+                ))}
+              </tbody>
+            </Table>
+          )}
+        </div>
+      </Tabs.Panel>
+      </Tabs>
     </Container>
+   
   );
 };
+
 
 const useStyles = createStyles(() => {
   return {

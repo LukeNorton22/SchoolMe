@@ -19,53 +19,44 @@ public class MessageController : ControllerBase
         _dataContext = dataContext;
     }
 
-    [HttpPost]
+    [HttpPost("{groupId}")]
     public IActionResult Create(int groupId, [FromBody] MessagesCreateDto createDto)
     {
         var response = new Response();
 
-        var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
-        if (createDto.Content == null)
+        if (string.IsNullOrEmpty(createDto.Content))
         {
-            response.AddError(nameof(createDto.Content), "Content can not be empty");
+            response.AddError(nameof(createDto.Content), "Test Name cannot be empty");
+            return BadRequest(response); // Return a 400 response with validation errors
         }
+
+        var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
 
         if (group == null)
         {
-            return BadRequest("Group can not be found.");
+            response.AddError("GroupId", "Group not found.");
+            return BadRequest(response);
         }
 
-
-        var MessagesToCreate = new Messages
+        var MessageToCreate = new Messages
         {
             GroupId = group.Id,
-            Content = createDto.Content,
-
+            Content = createDto.Content
         };
-        
 
-        if (MessagesToCreate == null)
-        {
-            return BadRequest("Message can not be found.");
-        }
-       
-        _dataContext.Set<Messages>().Add(MessagesToCreate);
+        _dataContext.Set<Messages>().Add(MessageToCreate);
         _dataContext.SaveChanges();
-
-        MessagesToCreate.CreatedAt = DateTime.Now.ToString("hh:mm tt"); 
-
 
         var MessagesToReturn = new MessagesGetDto
         {
-            Id = MessagesToCreate.Id,
-            GroupId = MessagesToCreate.GroupId,
-            Content =MessagesToCreate.Content,
-            CreatedAt = MessagesToCreate.CreatedAt 
+            Id = MessageToCreate.Id,
+            GroupId = MessageToCreate.GroupId,
+            Content = MessageToCreate.Content,
+            CreatedAt = MessageToCreate.CreatedAt
         };
 
         response.Data = MessagesToReturn;
         return Created("", response);
-
     }
 
     [HttpGet]

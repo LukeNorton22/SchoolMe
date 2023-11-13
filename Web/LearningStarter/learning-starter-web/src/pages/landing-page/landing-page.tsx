@@ -6,7 +6,7 @@ export const LandingPage = () => {
   const { classes } = useStyles();
   return (
     <Container className={classes.homePageContainer}>
-      <Text size="lg">Home Page</Text>
+      <Text size="lg">Welcome to SchoolMe</Text>
     </Container>
   );
 };
