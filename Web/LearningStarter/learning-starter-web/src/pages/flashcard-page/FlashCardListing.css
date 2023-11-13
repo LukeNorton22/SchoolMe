@@ -1,0 +1,27 @@
+.flashcard {
+  width: 600px;
+  height: 400px;
+  margin: auto;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.5s;
+}
+
+.flipped {
+  transform: rotateY(180deg);
+}
+
+.front,
+.back {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back {
+  transform: rotateY(180deg);
+}
