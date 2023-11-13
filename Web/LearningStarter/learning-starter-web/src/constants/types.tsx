@@ -65,6 +65,7 @@ export type AssignmentGradeUpdateDto = {
 
 }
 export type GroupGetDto = {
+ 
   id: number;
   groupName: string;
   description: string;

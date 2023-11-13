@@ -1,0 +1,49 @@
+.flashcard {
+    width: 200px;
+    height: 300px;
+    perspective: 1000px;
+    cursor: pointer;
+    margin: 10px;
+  }
+  
+  .card {
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    align-items: center;
+    transition: transform 0.5s;
+    border-radius: .25 rem;
+   
+    position: relative;
+  }
+  
+  .card-front,
+  .card-back {
+    width: 100%;
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    backface-visibility: hidden;
+  }
+  
+  .card-front {
+    background-color: #fbfcfd;
+    color: #fff;
+  }
+  .card-front p,
+  .card-back p{
+    
+    color: #080101;
+  }
+  .card-back {
+    background-color: #f8faf9;
+    color: #fff;
+    transform: rotateY(180deg);
+  }
+  
+  .card.flip {
+    transform: rotateY(180deg);
+  }
+  

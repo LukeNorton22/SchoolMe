@@ -27,6 +27,7 @@ export const routes = {
 
   MessageListing: "/message/:id",
   MessageUpdate: "/message/:id",
+  MessagingPage: "/messaging/:id",
 
   TestListing: "/tests/:id",
   TestingPage: "/testing/:id",
