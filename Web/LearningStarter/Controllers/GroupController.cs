@@ -136,14 +136,18 @@ public class GroupController : ControllerBase
                     TestName = test.TestName,
                     // Add other test properties as needed
                 }).ToList(),
+
                 Messages = group.Messages.Select(Messages => new MessagesGetDto
                 {
                     Id = Messages.Id,
                     GroupId= Messages.GroupId,
                     Content = Messages.Content,
-                    CreatedAt = Messages.CreatedAt
+                    CreatedAt = Messages.CreatedAt,
+                    UserId = Messages.UserId,
+                    UserName = Messages.User.UserName,
 
                 }).ToList(),
+
                 FlashCardSets = group.FlashCardSets.Select(flashcardset => new FlashCardSetsGetDto
                 {
                     Id = flashcardset.Id,
@@ -198,8 +202,9 @@ public class GroupController : ControllerBase
                     Id = Messages.Id,
                     Content = Messages.Content,
                     GroupId = Messages.Group.Id,
-                    CreatedAt = Messages.CreatedAt
-
+                    CreatedAt = Messages.CreatedAt,
+                    UserName = Messages.User.UserName,
+                    UserId = Messages.User.Id,
                 }).ToList(),
                 FlashCardSets = group.FlashCardSets.Select(flashcardset => new FlashCardSetsGetDto
                 { 

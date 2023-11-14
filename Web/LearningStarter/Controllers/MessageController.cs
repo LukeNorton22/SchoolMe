@@ -19,15 +19,15 @@ public class MessageController : ControllerBase
         _dataContext = dataContext;
     }
 
-    [HttpPost("{groupId}")]
-    public IActionResult Create(int groupId, [FromBody] MessagesCreateDto createDto)
+    [HttpPost("{groupId}/{userId}")]
+    public IActionResult Create(int groupId, int userId, [FromBody] MessagesCreateDto createDto)
     {
         var response = new Response();
 
         if (string.IsNullOrEmpty(createDto.Content))
         {
             response.AddError(nameof(createDto.Content), "Test Name cannot be empty");
-            return BadRequest(response); // Return a 400 response with validation errors
+            return BadRequest(response);
         }
 
         var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
@@ -38,10 +38,19 @@ public class MessageController : ControllerBase
             return BadRequest(response);
         }
 
+        var user = _dataContext.Set<User>().FirstOrDefault(x => x.Id == userId);
+
+        if (user == null)
+        {
+            response.AddError("UserId", "User not found.");
+            return BadRequest(response);
+        }
+
         var MessageToCreate = new Messages
         {
             GroupId = group.Id,
-            Content = createDto.Content
+            Content = createDto.Content,
+            UserId = user.Id
         };
 
         _dataContext.Set<Messages>().Add(MessageToCreate);
@@ -50,10 +59,14 @@ public class MessageController : ControllerBase
         var MessagesToReturn = new MessagesGetDto
         {
             Id = MessageToCreate.Id,
+            UserId = MessageToCreate.UserId,
             GroupId = MessageToCreate.GroupId,
             Content = MessageToCreate.Content,
-            CreatedAt = MessageToCreate.CreatedAt
+            CreatedAt = MessageToCreate.CreatedAt,
+            UserName = user.UserName
+
         };
+       
 
         response.Data = MessagesToReturn;
         return Created("", response);
@@ -71,6 +84,8 @@ public class MessageController : ControllerBase
                 GroupId=usermessage.GroupId,
                 Content = usermessage.Content,
                 CreatedAt = usermessage.CreatedAt, 
+                UserName = usermessage.UserName,
+                UserId =usermessage.UserId
 
             })
             .ToList();
@@ -93,6 +108,8 @@ public class MessageController : ControllerBase
                 GroupId=usermessage.GroupId,
                 Content = usermessage.Content,
                 CreatedAt = usermessage.CreatedAt,
+                UserId = usermessage.UserId,
+                UserName=usermessage.UserName
 
 
             })

@@ -10,6 +10,7 @@ import {
   Button,
   Container,
   Input,
+  Space,
   Table,
   createStyles,
 } from "@mantine/core";
@@ -108,6 +109,7 @@ export const TestQuestionsDisplay = () => {
       >
         <FontAwesomeIcon icon={faArrowLeft} size="xl" />
       </Button>
+      <Space h = {8}></Space>
 
       {test && (
         <>
@@ -139,8 +141,8 @@ export const TestQuestionsDisplay = () => {
               ))}
             </tbody>
           </Table>
-
-          <Button onClick={checkAnswers}>Finish Attempt</Button>
+          <Space h ={18}></Space>
+          <Button onClick={checkAnswers}>Check Answers</Button>
         </>
       )}
     </Container>

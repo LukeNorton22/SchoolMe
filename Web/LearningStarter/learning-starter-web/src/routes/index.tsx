@@ -16,7 +16,7 @@ export const routes = {
   FCQuestionCreate: `/fcquestion/create/:id`,
   FlashCardSetListing: "/FlashCardSets/:id",
   FlashCardSetUpdate: "/flashcardset-update/:id",
-  FlashCardUpdate: "/flashcards/:id",
+  FlashCardUpdate: "/flashcardUpdate/:id",
   FlashCardListing: "/flashcards/:id",
   FCUpdate: "/flashcard/update/:id",
 

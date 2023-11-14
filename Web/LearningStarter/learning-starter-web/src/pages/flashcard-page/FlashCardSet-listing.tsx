@@ -154,7 +154,7 @@ export const FlashCardListing: React.FC = () => {
                         icon={faPen}
                         onClick={() => {
                           navigate(
-                            routes.FlashCardUpdate.replace(":id", `${flashcard.id}`)
+                            routes.FCUpdate.replace(":id", `${flashcard.id}`)
                           );
                         }}
                         style={{ cursor: "pointer", marginRight: "8px" }}

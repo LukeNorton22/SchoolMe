@@ -42,10 +42,18 @@ id: number;
 
 export type MessagesGetDto = {
   groupId: number;
+  userId: number;
   id: number;
   content: string;
   createdAt: string;
+  userName: string;
 };
+
+export type UserGetDto = {
+  userName: string;
+};
+
+
 
 export type AssignmentGetDto = {
   id: number;

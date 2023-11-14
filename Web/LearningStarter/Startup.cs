@@ -152,6 +152,7 @@ public class Startup
         var userManager = scope.ServiceProvider.GetService<UserManager<User>>();
 
         SeedUsers(dataContext, userManager).Wait();
+        SeedsUsers(dataContext, userManager).Wait();
         SeedGroup(dataContext);
         SeedMessage(dataContext);
         SeedFlasCardSet(dataContext);
@@ -192,6 +193,8 @@ public class Startup
             GroupId = 1,
             Content = "What is up guys! So glad to be in CMPS 285!",
             CreatedAt = "12:52 pm",
+            UserId = 1,
+            
         };
 
         dataContext.Set<Messages>().Add(seededMessage1);
@@ -327,4 +330,23 @@ public class Startup
             await dataContext.SaveChangesAsync();
         }
     }
+
+
+private static async Task SeedsUsers(DataContext dataContext, UserManager<User> userManager)
+{
+    var numUsers = dataContext.Users.Count();
+
+    
+        var seededUser = new User
+        {
+            FirstName = "Luke",
+            LastName = "Norton",
+            UserName = "LukeNorton",
+
+        };
+
+        await userManager.CreateAsync(seededUser, "Password");
+        await dataContext.SaveChangesAsync();
+    
+   }
 }

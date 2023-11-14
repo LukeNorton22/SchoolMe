@@ -16,6 +16,9 @@ public class Messages
     public String CreatedAt { get; set; } = DateTime.Now.ToString("hh:mm tt");
     public int GroupId { get; set; }
     public Group Group { get; set; }
+    public int UserId { get; set; }
+    public string UserName { get; set; }
+    public User User { get; set; }
 
 
 }
@@ -26,13 +29,16 @@ public class MessagesGetDto
     public int GroupId { get; set; }
     public string Content { get; set; }   
     public String CreatedAt { get; set; } = DateTime.Now.ToString("hh:mm tt");
+    public int UserId { get; set; }
+    public string UserName { get; set; }
+    public User User { get; set; }
+
 
 }
 
 public class MessagesCreateDto
 {
-    public string Content { get; set; }
-    
+    public string Content { get; set; }    
 
 }
 
@@ -50,7 +56,8 @@ public class MessagesEntityTypeConfiguration : IEntityTypeConfiguration<Messages
         builder.ToTable("Messages");
 
         builder.HasOne(x => x.Group).WithMany(x => x.Messages);
-        
+
+        builder.HasOne(x => x.User);
     }
 
 }

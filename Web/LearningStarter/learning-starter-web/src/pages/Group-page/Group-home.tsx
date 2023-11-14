@@ -1,40 +1,30 @@
 //poop
 import {
-  faArrowLeft,
-  faPen,
-  faPencil,
-  faTrash,
+  faArrowLeft,  faPen, faPencil, faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  Container,
-  createStyles,
-  Title,
-  Tabs,
-  Button,
-  Menu,
-  Table,
-  Header,
-  Space,
-  Input,
+  Container, Title, Tabs, Button, Table, Space, Input,
 } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../../config/axios";
-import { GroupGetDto, ApiResponse } from "../../constants/types";
+import { GroupGetDto, ApiResponse, MessagesGetDto } from "../../constants/types";
 import { routes } from "../../routes";
-import { icon } from "@fortawesome/fontawesome-svg-core";
-import { groupCollapsed } from "console";
+import { createStyles } from "@mantine/core";
+import { useUser } from "../../authentication/use-auth";
+
 
 export const GroupHome = () => {
-  const { id } = useParams();
+  const { id, userId} = useParams();
   const { classes } = useStyles();
   const navigate = useNavigate();
   const [group, setGroup] = useState<GroupGetDto | null>(null);
   const [newMessage, setNewMessage] = useState("");
   const tableRef = useRef<HTMLDivElement | null>(null);
-
+  const {  theme } = useStyles();
+  const user = useUser();
 
   const fetchGroup = async () => {
     try {
@@ -127,15 +117,26 @@ export const GroupHome = () => {
     navigate(routes.GroupHome.replace(":id", `${groupId}`));
   };
 
+  console.log(user);
+
   const handleSendMessage = async () => {
     try {
+      console.log("user.userName:", user.userName);
+
+      console.log("userId:", user.id);
+
+      const userId = user.id;
+
       // Assuming you have an API endpoint to send messages
-      await api.post(`/api/Message/${id}`, {
+      await api.post(`/api/Message/${id}/${userId}`, {
         groupId: group?.id,
         content: newMessage,
+        userId: user.id,
+        userName: user.userName
       });
-
-      setNewMessage(""); // Clear the input after sending the message
+      // Fetch the updated group information, including the new message
+     
+      setNewMessage("");
       fetchGroup(); // Refresh the messages after sending
       scrollTableToBottom(); // After sending a message, scroll the table to the bottom
 
@@ -146,6 +147,7 @@ export const GroupHome = () => {
         message: "Failed to send the message",
       });
     }
+
   };
 
   useEffect(() => {
@@ -162,8 +164,12 @@ export const GroupHome = () => {
     }
   };
 
+  console.log("Group messages:", group?.messages);
+  console.log("user:", user);
+
+
   return (
-    <Container>
+    <Container style={{ width: "220%" }}>
     {/* Back Button */}
       <Button
         onClick={() => {
@@ -188,7 +194,7 @@ export const GroupHome = () => {
 
       {/* Tabs */}
       <Tabs orientation = "horizontal" color="teal" defaultValue="Chat">
-        <Tabs.List grow>
+      <Tabs.List grow>
           <Tabs.Tab value="Chat">Chat</Tabs.Tab>
           <Tabs.Tab value="Tests">Tests</Tabs.Tab>
           <Tabs.Tab value="Flashcard Sets">Flashcard Sets</Tabs.Tab>
@@ -386,27 +392,33 @@ export const GroupHome = () => {
      
         <Tabs.Panel value="Chat">
         {group && (
-          <div style={{ position: 'fixed', bottom: 70, left: 120, right: 120, padding: '0px', backgroundColor: '' }}>
+          <div style={{ position: 'fixed', bottom: 70, left: 170, right: 170, padding: '0px', backgroundColor: '' }}>
             <Input
               size="md"
               placeholder="Type your message..."
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
+              style={{ borderColor: theme.colors.teal[6], color: theme.black }}
+
             />
             <Space h={8}></Space>
-            <Button variant="outline" color="teal" onClick={handleSendMessage}>
+            <Button variant="filled" color="teal" onClick={handleSendMessage}>
               Send
             </Button>
           </div>
         )}
 
-        <div style={{left: "120", right: "120", maxHeight: "385px",  overflowY: "auto" }} ref={tableRef}> {/* Set your desired max height */}
+        <div style={{left: "120", right: "120", maxHeight: "385px",  overflowY: "auto", width: "100%"}} ref={tableRef}> {/* Set your desired max height */}
           {group && (
-            <Table striped>
-              <tbody>
+            <Table style={{ borderColor: theme.colors.teal[6], width: "100%", tableLayout: "fixed" }}>
+            <colgroup>
+              <col style={{ width: "10%" }} /> {/* Adjust the width of the first column as needed */}
+              <col style={{ width: "90%" }} /> {/* Adjust the width of the second column as needed */}
+            </colgroup>
+            <tbody>
                 {group.messages.map((message) => (
                   <tr key={message.id}>
-                    <td>
+                    <td style={{ textAlign: 'left' }}> {/* Add this style to align messages to the left */}
                       <FontAwesomeIcon
                         className={classes.iconButton}
                         icon={faPencil}
@@ -429,9 +441,12 @@ export const GroupHome = () => {
                 }
                 style={{ cursor: "pointer", marginLeft: "8px" }}
               />
-                    </td>
-                    <td>{message.content}<Space></Space>{message.createdAt}</td>
-                  </tr>
+                </td>
+                    
+                <td style={{ textAlign: 'left' }}> {/* Add this style to align messages to the left */}
+                {message.userName}<Space></Space>{message.content}<Space></Space>{message.createdAt}
+                </td>   
+                </tr>
                 ))}
               </tbody>
             </Table>
@@ -445,7 +460,7 @@ export const GroupHome = () => {
 };
 
 
-const useStyles = createStyles(() => {
+const useStyles = createStyles((theme) => {
   return {
     iconButton: {
       cursor: "pointer",
