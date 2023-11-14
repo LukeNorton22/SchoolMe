@@ -76,7 +76,7 @@ public class AssignmentGradeController : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("id")]
+    [HttpGet("{id}")]
     public IActionResult GetById(int id)
     {
         var response = new Response();
@@ -100,7 +100,7 @@ public class AssignmentGradeController : ControllerBase
         return Ok(response);
     }
 
-    [HttpPut("id")]
+    [HttpPut("{id}")]
     public IActionResult Update([FromBody] AssignmentGradeUpdateDto updateDto, int id)
     {
         var response = new Response();
@@ -119,7 +119,7 @@ public class AssignmentGradeController : ControllerBase
         }
 
         
-        AssignmentGradeToUpdate.Grades = updateDto.Grade;
+        AssignmentGradeToUpdate.Grades = updateDto.Grades;
         
 
         _dataContext.SaveChanges();

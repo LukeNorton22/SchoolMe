@@ -31,7 +31,7 @@ public class AssignmentGradeGetDto
 
 public class AssignmentGradeUpdateDto
 {
-    public int Grade { get; set; }
+    public int Grades { get; set; }
 
 }
 

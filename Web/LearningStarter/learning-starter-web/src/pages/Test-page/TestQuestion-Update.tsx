@@ -27,7 +27,7 @@ export const TestQuestionUpdate = () => {
                showNotification({message: "Error finding question", color: "red"});
                
             }
-
+            console.log("API Response:", response.data.data);
             if(response.data.data){
                 setQuestion(response.data.data);
                 mantineForm.setValues(response.data.data);

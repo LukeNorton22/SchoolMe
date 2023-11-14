@@ -1,6 +1,6 @@
 import { Button, Container, Flex, Space, TextInput } from "@mantine/core"
 import { useEffect, useState } from "react"
-import { ApiResponse, GroupUpdateDto, GroupGetDto, AssignmentGradeGetDto, AssignmentGradeUpdateDto } from "../../constants/types"
+import { ApiResponse, AssignmentGradeGetDto, AssignmentGradeUpdateDto, FlashCardSetGetDto, FlashCardSetUpdateDto, QuestionGetDto, QuestionUpdateDto } from "../../constants/types"
 import api from "../../config/axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { showNotification } from "@mantine/notifications";
@@ -8,34 +8,38 @@ import { FormErrors, useForm } from "@mantine/form";
 import { routes } from "../../routes";
 
 export const AssignmentGradeUpdate = () => {
-    const [AssignmentGrades, setAssignmentGrades] = useState<AssignmentGradeGetDto>();
+    const [assignmentGrade, setAssignmentGrade] = useState<AssignmentGradeGetDto>();
     const navigate = useNavigate();
     const {id} = useParams();
 
+   
+
     const mantineForm = useForm<AssignmentGradeGetDto>({
-        initialValues: AssignmentGrades
+        initialValues: assignmentGrade,
+        
     });
 
     useEffect(() => {
-        fetchAssignmentGrades();
-
-        async function fetchAssignmentGrades(){
+        fetchAssignmentGrade();
+        async function fetchAssignmentGrade(){
             const response = await api.get<ApiResponse<AssignmentGradeGetDto>>(`/api/assignmentGrade/${id}`);
 
             if(response.data.hasErrors) {
-               showNotification({message: "Error finding AssignmentGrades", color: "red"});
+               showNotification({message: "Error finding assignment grade", color: "red"});
                
             }
 
             if(response.data.data){
-                setAssignmentGrades(response.data.data);
+                setAssignmentGrade(response.data.data);
                 mantineForm.setValues(response.data.data);
                 mantineForm.resetDirty();
             };
-        };
+        
+      
+        }
     }, [id]);
 
-    const submitAssignmentGrades = async (values: AssignmentGradeUpdateDto) => {
+    const submitAssignmentGrade = async (values: AssignmentGradeUpdateDto) => {
         const response = await api.put<ApiResponse<AssignmentGradeGetDto>>(`/api/assignmentGrade/${id}`, values);
 
         if(response.data.hasErrors) {
@@ -51,28 +55,28 @@ export const AssignmentGradeUpdate = () => {
         }
 
         if(response.data.data){
-            showNotification({message: "AssignmentGrades successfully updated", color: "green"});
-            navigate(routes.GroupHome.replace(":id", `${AssignmentGrades?.assignmentId}`));
+            showNotification({message: "Question successfully updated", color: "green"});
+            navigate(routes.AssignmentListing.replace(":id", `${assignmentGrade?.assignmentId}`));
         }
 
     };
 
     return (
         <Container>
-          {AssignmentGrades && (
-            <form onSubmit={mantineForm.onSubmit(submitAssignmentGrades)}>
+          {assignmentGrade && (
+            <form onSubmit={mantineForm.onSubmit(submitAssignmentGrade)}>
                 <TextInput 
                     {...mantineForm.getInputProps("grades")} 
-                    label = "Assignment Grade"
+                    label = "Grade"
                     withAsterisk
                 />
-               
+                
+                
                 <Space h = {18} />
                 <Flex direction={"row"}>
                     <Button type="submit">Submit</Button>
                     <Space w={10} />
-                    <Button type="button" onClick={ () => navigate(routes.GroupHome.replace(":id", `${AssignmentGrades.assignmentId}`))}
-
+                    <Button type="button" onClick={ () => navigate(routes.AssignmentListing.replace(":id", `${assignmentGrade.assignmentId}`))}
                     >
                     Cancel
                     </Button>
