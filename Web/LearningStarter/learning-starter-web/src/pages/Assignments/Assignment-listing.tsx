@@ -24,7 +24,15 @@ export const AssignmentListing = () => {
           setAssignment(response.data.data);
           setLoading(false);
       }
+      const calculateAverageGrade = () => {
+        if (!assignment || !assignment.grades || assignment.grades.length === 0) {
+          return "N/A"; 
+        }
     
+        const totalGrades = assignment.grades.reduce((sum, grade) => sum + Number(grade.grades), 0);
+        const average = totalGrades / assignment.grades.length;
+        return average.toFixed(2); // Return the average grade rounded to 2 decimal places
+      };
     const handleGradeDelete = async (gradeId: number) => {
       try {
         await api.delete(`/api/assignmentGrade/${id}`);
@@ -73,45 +81,46 @@ export const AssignmentListing = () => {
         <Space h="lg" />
         </Center>
         {assignment && (
-          <Table withBorder fontSize={15}>         
+          <><Table withBorder fontSize={15}>
             <thead>
               <tr>
-               
+
                 <th>Grades</th>
               </tr>
             </thead>
             <tbody>
               {assignment.grades.map((grade) => (
-                <tr >
-                  
+                <tr>
+
 
                   <td>
-                  <FontAwesomeIcon
-                     className={classes.iconButton}
-                    icon={faPen}
-                    onClick={() => {
-                      navigate(routes.AssignmentGradeUpdate.replace(":id", `${grade.id}`));
-                    }}
-                    style={{ cursor: 'pointer', marginRight: '8px' }}
-                  />
-                  <FontAwesomeIcon
-                    className={classes.iconButton}
-                    icon={faTrash}
-                    color="red"
-                    size="sm"
-                    onClick={() => handleGradeDelete(grade.id)}
-                    style={{ cursor: 'pointer' }}
-                  />
+                    <FontAwesomeIcon
+                      className={classes.iconButton}
+                      icon={faPen}
+                      onClick={() => {
+                        navigate(routes.AssignmentGradeUpdate.replace(":id", `${grade.id}`));
+                      } }
+                      style={{ cursor: 'pointer', marginRight: '8px' }} />
+                    <FontAwesomeIcon
+                      className={classes.iconButton}
+                      icon={faTrash}
+                      color="red"
+                      size="sm"
+                      onClick={() => handleGradeDelete(grade.id)}
+                      style={{ cursor: 'pointer' }} />
                     {grade.grades}</td>
                 </tr>
               ))}
             </tbody>
-          </Table>
-        )}
-      </Container>
-    );
-  };
-  
+          </Table><div>
+              <strong>Average Grade:</strong> {calculateAverageGrade()}
+            </div></>
+      
+    )}
+  </Container>
+);
+};
+        
   const useStyles = createStyles(() => {
     return {
       iconButton: {

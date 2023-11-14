@@ -20,7 +20,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  
 }
+
+
+
 
 .back {
   transform: rotateY(180deg);
