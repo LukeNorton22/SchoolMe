@@ -136,7 +136,7 @@ public class AssignmentGradeController : ControllerBase
         return Ok(response);
     }
 
-    [HttpDelete("id")]
+    [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
         var response = new Response();

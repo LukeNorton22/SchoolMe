@@ -9,7 +9,7 @@ export const routes = {
   AssignmentUpdate: "/assignmentUpdate/:id",
 
   AssignmentGradeListing: "/assignmentGrade/:id",
-  AssignmentGradeUpdate: "/assignmentGrade/:id",
+  AssignmentGradeUpdate: "/assignmentGrade/update/:id",
   AssignmentGradeCreate: "/assignmentGradeCreate/:id",
 
   FCSetCreate: "/flashcard-create/:id",

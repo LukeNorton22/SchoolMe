@@ -6,25 +6,42 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ApiResponse, AssignmentGetDto, FlashCardSetGetDto } from "../../constants/types";
 import { routes } from "../../routes";
 import api from "../../config/axios";
-import { faArrowLeft, faPlus, faTruckMonster } from "@fortawesome/free-solid-svg-icons";
+
+import { faArrowLeft, faPen, faPlus, faTrash, faTruckMonster } from "@fortawesome/free-solid-svg-icons";
 
 
 
 export const AssignmentListing = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { classes } = useStyles();
     const [assignment, setAssignment] = useState<AssignmentGetDto | null>(null);
     const [loading, setLoading] = useState(true);
-    useEffect(() => {
-      fetchAssignment();
-  
-      async function fetchAssignment() {
+   
+    async function fetchAssignment() {
         const response = await api.get<ApiResponse<AssignmentGetDto>>(`/api/assignments/${id}`);
        
           setAssignment(response.data.data);
           setLoading(false);
       }
+    
+    const handleGradeDelete = async (gradeId: number) => {
+      try {
+        await api.delete(`/api/assignmentGrade/${id}`);
+        showNotification({ message: "grade has entered the trash" });
+        fetchAssignment();
+      } catch (error) {
+        console.error("Error deleting grade:", error);
+        showNotification({
+          title: "Error",
+          message: "Failed to delete the grade",
+        });
+      }
+    };
+    useEffect(() => {
+      fetchAssignment();
     }, [id]);
+
     if (loading) {
       return <div>Loading...</div>; // Render a loading indicator
     }
@@ -59,13 +76,33 @@ export const AssignmentListing = () => {
           <Table withBorder fontSize={15}>         
             <thead>
               <tr>
+               
                 <th>Grades</th>
               </tr>
             </thead>
             <tbody>
               {assignment.grades.map((grade) => (
                 <tr >
-                  <td>{grade.grades}</td>
+                  
+
+                  <td>
+                  <FontAwesomeIcon
+                     className={classes.iconButton}
+                    icon={faPen}
+                    onClick={() => {
+                      navigate(routes.AssignmentGradeUpdate.replace(":id", `${grade.id}`));
+                    }}
+                    style={{ cursor: 'pointer', marginRight: '8px' }}
+                  />
+                  <FontAwesomeIcon
+                    className={classes.iconButton}
+                    icon={faTrash}
+                    color="red"
+                    size="sm"
+                    onClick={() => handleGradeDelete(grade.id)}
+                    style={{ cursor: 'pointer' }}
+                  />
+                    {grade.grades}</td>
                 </tr>
               ))}
             </tbody>

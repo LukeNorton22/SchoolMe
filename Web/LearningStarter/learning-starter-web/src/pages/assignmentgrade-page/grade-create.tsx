@@ -12,7 +12,7 @@ export const GradeCreate = () => {
     const {  id } = useParams();
     const mantineForm = useForm<AssignmentGradeUpdateDto>({
       initialValues: {
-        grade: 0
+        grades: 0
       },
     });
   

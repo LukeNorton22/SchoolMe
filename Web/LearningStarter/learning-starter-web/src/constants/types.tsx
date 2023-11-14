@@ -61,7 +61,7 @@ export type AssignmentUpdateDto = {
 
 export type AssignmentGradeUpdateDto = {
   
-  grade: number;
+  grades: number;
 
 }
 export type GroupGetDto = {
