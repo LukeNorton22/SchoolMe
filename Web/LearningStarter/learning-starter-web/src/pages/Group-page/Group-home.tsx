@@ -59,6 +59,18 @@ export const GroupHome = () => {
       });
     }
   };
+  const handleMessageDelete = async (messageId: number, groupId: number) => {
+    try {
+      await api.delete(`/api/Message/${messageId}`);
+      showNotification({ message: `Message has entered the trash` });
+    } catch (error) {
+      console.error("Error deleting message:", error);
+      showNotification({
+        title: "Error",
+        message: "Failed to delete the message",
+      });
+    }
+  };
 
   const handleAssignmentDelete = async (
     assignmentId: number,
@@ -97,6 +109,9 @@ export const GroupHome = () => {
     switch (itemType) {
       case "test":
         await handleTestDelete(itemId, groupId);
+        break;
+        case "message":
+        await handleMessageDelete(itemId, groupId);
         break;
       case "assignment":
         await handleAssignmentDelete(itemId, groupId);
@@ -321,7 +336,7 @@ export const GroupHome = () => {
                 radius="xs"
                 onClick={() =>
                   navigate(
-                    routes.AssignmentGradeListingg.replace(
+                    routes.AssignmentListing.replace(
                       ":id",
                       `${assignment.id}`
                     )
@@ -404,6 +419,16 @@ export const GroupHome = () => {
                           );
                         }}
                       />
+                       <FontAwesomeIcon
+                className={classes.iconButton}
+                icon={faTrash}
+                color="red"
+                size="sm"
+                onClick={() =>
+                  handleDeleteAndNavigate(message.id, message.groupId, "message")
+                }
+                style={{ cursor: "pointer", marginLeft: "8px" }}
+              />
                     </td>
                     <td>{message.content}<Space></Space>{message.createdAt}</td>
                   </tr>

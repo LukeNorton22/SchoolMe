@@ -8,7 +8,7 @@ export const routes = {
   AssignmentCreatee: "/assignmentCreatee/:id",
   AssignmentUpdate: "/assignmentUpdate/:id",
 
-  AssignmentGradeListingg: "/assignmentGradeListing/:id",
+  AssignmentGradeListing: "/assignmentGrade/:id",
   AssignmentGradeUpdate: "/assignmentGrade/:id",
   AssignmentGradeCreate: "/assignmentGradeCreate/:id",
 
@@ -23,10 +23,10 @@ export const routes = {
   GroupListing: "/group",
   GroupUpdate: "/group/:id",
   groupCreate: `/group/create`,
-  GroupHome: '/GroupHome/:id',
+  GroupHome: "/GroupHome/:id",
 
-  MessageListing: "/message/:id",
-  MessageUpdate: "/message/:id",
+  MessageListing: "/messages/:id",
+  MessageUpdate: "/messages/update/:id",
   MessagingPage: "/messaging/:id",
 
   TestListing: "/tests/:id",
@@ -36,8 +36,5 @@ export const routes = {
   TestTaking: "/testTake/:id",
 
   QuestionCreate: `/question/create/:id`,
-  QuestionUpdate: "/questionUpdate/:id"
-
-
-  
+  QuestionUpdate: "/questionUpdate/:id",
 };

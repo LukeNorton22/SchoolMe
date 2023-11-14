@@ -9,7 +9,7 @@ import { FlashCardSetUpdate } from "../pages/flashcard-page/flashcard-update";
 import {   GradePage } from "../pages/assignmentgrade-page/assignmentgrade-listing";
 import { AssignmentGradeUpdate } from "../pages/assignmentgrade-page/assignmentgrade-update";
 import { MessageListing } from "../pages/message-page/message-listing";
-import { MessageUpdate } from "../pages/message-page/message-update";
+import { MessageUpdate} from "../pages/message-page/message-update";
 import { GroupListing } from "../pages/Group-page/Group-listing";
 import { GroupUpdate } from "../pages/Group-page/Group-update";
 import { TestUpdate } from "../pages/Test-page/Test-update";
@@ -70,7 +70,7 @@ export const Routes = () => {
           <Route path={routes.AssignmentUpdate} element={<AssignmentUpdate />}/>
 
 
-          <Route path={routes.AssignmentGradeListingg} element={<GradePage />}/>
+          <Route path={routes.AssignmentGradeListing} element={<GradePage />}/>
           <Route path={routes.AssignmentGradeUpdate}  element={<AssignmentGradeUpdate />}/>
           <Route path={routes.AssignmentGradeCreate}  element={<GradeCreate />}/>
 

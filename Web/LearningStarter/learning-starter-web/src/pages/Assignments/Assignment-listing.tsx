@@ -14,20 +14,20 @@ export const AssignmentListing = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [assignment, setAssignment] = useState<AssignmentGetDto | null>(null);
-  
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
       fetchAssignment();
   
       async function fetchAssignment() {
-        const response = await api.get<ApiResponse<AssignmentGetDto>>(`/api/Assignments/${id}`);
-        if (response.data.hasErrors) {
-          
-        } else {
+        const response = await api.get<ApiResponse<AssignmentGetDto>>(`/api/assignments/${id}`);
+       
           setAssignment(response.data.data);
-        }
+          setLoading(false);
       }
     }, [id]);
-  
+    if (loading) {
+      return <div>Loading...</div>; // Render a loading indicator
+    }
     return (
       <Container>
           <Button
@@ -49,7 +49,7 @@ export const AssignmentListing = () => {
           }}
         >
           <FontAwesomeIcon icon={faPlus} /> <Space w={8} />
-          Add Question
+          Add Grade
         </Button>
       <Center>
         <Title >{assignment?.assignmentName}</Title>
@@ -59,14 +59,13 @@ export const AssignmentListing = () => {
           <Table withBorder fontSize={15}>         
             <thead>
               <tr>
-                
                 <th>Grades</th>
               </tr>
             </thead>
             <tbody>
-              {assignment.assignmentGrade.map((grade, index) => (
-                <tr key={index}>
-                  <td>{grade.grade}</td>
+              {assignment.grades.map((grade) => (
+                <tr >
+                  <td>{grade.grades}</td>
                 </tr>
               ))}
             </tbody>

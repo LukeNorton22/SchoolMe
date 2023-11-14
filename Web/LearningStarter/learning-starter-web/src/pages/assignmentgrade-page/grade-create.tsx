@@ -34,7 +34,7 @@ export const GradeCreate = () => {
       }
       if (response.data.data) {
         showNotification({ message: "New grade added", color: "purple" });
-        navigate(routes.AssignmentGradeListingg.replace(":id", `${id}`));
+        navigate(routes.AssignmentListing.replace(":id", `${id}`));
       }
     };
 
@@ -42,7 +42,7 @@ export const GradeCreate = () => {
     <Container>
       <form onSubmit={mantineForm.onSubmit(submitGrade)}>
         <TextInput
-          {...mantineForm.getInputProps("grade")}
+          {...mantineForm.getInputProps("grades")}
           label="Grade"
           withAsterisk
         />
@@ -54,7 +54,7 @@ export const GradeCreate = () => {
           <Button
             type="button"
             onClick={() => {
-              navigate(routes.AssignmentGradeListingg.replace(":id", `${id}`));
+              navigate(routes.AssignmentListing.replace(":id", `${id}`));
             }}
           >
             Cancel

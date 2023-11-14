@@ -75,7 +75,7 @@ namespace LearningStarter.Controllers
                     Grades = assignment.Grades.Select(x => new AssignmentGradeGetDto
                     {
                         Id=x.Id,
-                        AssignmentId=assignment.Id,
+                        AssignmentId=x.Id,
                         Grades = x.Grades   
 
                     }).ToList(),

@@ -35,13 +35,13 @@ export type FlashCardsGetDto = {
 
 
 export type AssignmentGradeGetDto = {
-  id: number;
   assignmentId: number;
-  grade: number;
+id: number;
+  grades: number;
 };
 
 export type MessagesGetDto = {
-  groupId: string;
+  groupId: number;
   id: number;
   content: string;
   createdAt: string;
@@ -51,7 +51,7 @@ export type AssignmentGetDto = {
   id: number;
   groupId: number;
   assignmentName: string;
-  assignmentGrade: AssignmentGradeGetDto[];
+  grades: AssignmentGradeGetDto[];
 
 };
 

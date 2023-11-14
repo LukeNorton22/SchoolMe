@@ -14,13 +14,11 @@ export const GradePage = () => {
   const [assignment, setAssignment] = useState<AssignmentGetDto | null>(null);
 
   
-  useEffect(() => {
-    fetchAssignment();
-
+  
     async function fetchAssignment() {
       try {
         const response = await api.get<ApiResponse<AssignmentGetDto>>(`/api/assignments/${id}`);
-        console.log("API Response:", response);
+        
         if (response.data.hasErrors) {
           // Handle errors here
         } else {
@@ -30,8 +28,10 @@ export const GradePage = () => {
         console.error("Error fetching assignment:", error);
       }
     }
+  
+  useEffect(() => {
+    fetchAssignment();
   }, [id]);
-  console.log("Assignment state:", assignment);
 
   return (
     <Container>
@@ -59,7 +59,7 @@ export const GradePage = () => {
         <Space h="lg" />
       </Center>
 
-      {assignment && assignment.assignmentGrade ? (
+      {assignment &&(
         <Table withBorder fontSize={15}>
           <thead>
             <tr>
@@ -68,23 +68,16 @@ export const GradePage = () => {
             </tr>
           </thead>
           <tbody>
-            {assignment.assignmentGrade.map((grade, index) => (
+            {assignment.grades.map((grade, index) => (
               <tr key={index}>
-                <td>
-                  <FontAwesomeIcon
-                    className={classes.iconButton}
-                    icon={faTruckMonster}
-                    onClick={() => navigate(routes.AssignmentGradeUpdate.replace(":id", `${assignment.id}`))}
-                  />
-                </td>
-                <td>{grade.grade}</td>
+                
+                <td>{grade.grades}</td>
               </tr>
             ))}
           </tbody>
         </Table>
-      ) : (
-        <p>No grades available</p>
-      )}
+      ) }
+      
     </Container>
   );
 };

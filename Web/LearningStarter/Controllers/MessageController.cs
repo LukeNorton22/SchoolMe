@@ -137,7 +137,7 @@ public class MessageController : ControllerBase
         return Ok(response);
     }
 
-    [HttpDelete("id")]
+    [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
         var response = new Response();
