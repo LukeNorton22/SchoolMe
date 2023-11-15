@@ -32,6 +32,14 @@ public class AssignmentGradeController : ControllerBase
         {
             return BadRequest("Assignment can not be found.");
         }
+        if (createDto.Grades > 100)
+        {
+            return BadRequest("Grade must be between 0-100.");
+        }
+        if (createDto.Grades < 0)
+        {
+            return BadRequest("Grade must be between 0-100.");
+        }
 
 
         var AssignmentGradesToCreate = new AssignmentGrade

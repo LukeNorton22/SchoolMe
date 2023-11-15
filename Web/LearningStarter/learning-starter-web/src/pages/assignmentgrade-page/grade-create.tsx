@@ -17,7 +17,7 @@ export const GradeCreate = () => {
     });
   
     const submitGrade = async (values: AssignmentGradeUpdateDto) => {
-      const response = await api.post<ApiResponse<AssignmentGradeUpdateDto>>(
+      try{const response = await api.post<ApiResponse<AssignmentGradeUpdateDto>>(
         `/api/assignmentGrade/${id}`, 
         values
       );
@@ -36,6 +36,16 @@ export const GradeCreate = () => {
         showNotification({ message: "New grade added", color: "purple" });
         navigate(routes.AssignmentListing.replace(":id", `${id}`));
       }
+    }
+    catch(error) {
+      console.error("Error submitting grade:", error);
+      showNotification({
+        title: "Error",
+        message: "Failed to submit grade",
+        color: "red",
+      });
+
+    }
     };
 
   return (

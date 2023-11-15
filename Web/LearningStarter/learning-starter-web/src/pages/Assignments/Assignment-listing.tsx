@@ -1,131 +1,222 @@
 import React, { useEffect, useState } from "react";
 import { showNotification } from "@mantine/notifications";
-import { Button, Center, Container, Flex, Space, Table, Title, createStyles } from "@mantine/core";
+import { Button, Card, Center, Container, Flex, Space, Table, Title, createStyles } from "@mantine/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate, useParams } from "react-router-dom";
-import { ApiResponse, AssignmentGetDto, FlashCardSetGetDto } from "../../constants/types";
+import { ApiResponse, AssignmentGetDto } from "../../constants/types";
 import { routes } from "../../routes";
 import api from "../../config/axios";
-
-import { faArrowLeft, faPen, faPlus, faTrash, faTruckMonster } from "@fortawesome/free-solid-svg-icons";
-
-
+import "./Card.css";
+import { faArrowLeft, faPen, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 export const AssignmentListing = () => {
-    const { id } = useParams();
-    const navigate = useNavigate();
-    const { classes } = useStyles();
-    const [assignment, setAssignment] = useState<AssignmentGetDto | null>(null);
-    const [loading, setLoading] = useState(true);
-   
-    async function fetchAssignment() {
-        const response = await api.get<ApiResponse<AssignmentGetDto>>(`/api/assignments/${id}`);
-       
-          setAssignment(response.data.data);
-          setLoading(false);
-      }
-      const calculateAverageGrade = () => {
-        if (!assignment || !assignment.grades || assignment.grades.length === 0) {
-          return "N/A"; 
-        }
-    
-        const totalGrades = assignment.grades.reduce((sum, grade) => sum + Number(grade.grades), 0);
-        const average = totalGrades / assignment.grades.length;
-        return average.toFixed(2); // Return the average grade rounded to 2 decimal places
-      };
-    const handleGradeDelete = async (gradeId: number) => {
-      try {
-        await api.delete(`/api/assignmentGrade/${id}`);
-        showNotification({ message: "grade has entered the trash" });
-        fetchAssignment();
-      } catch (error) {
-        console.error("Error deleting grade:", error);
-        showNotification({
-          title: "Error",
-          message: "Failed to delete the grade",
-        });
-      }
-    };
-    useEffect(() => {
-      fetchAssignment();
-    }, [id]);
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { classes } = useStyles();
+  const [assignment, setAssignment] = useState<AssignmentGetDto | null>(null);
+  const [loading, setLoading] = useState(true);
 
-    if (loading) {
-      return <div>Loading...</div>; // Render a loading indicator
+  async function fetchAssignment() {
+    try {
+      const response = await api.get<ApiResponse<AssignmentGetDto>>(`/api/assignments/${id}`);
+      setAssignment(response.data.data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching assignment:", error);
+      showNotification({
+        title: "Error",
+        message: "Failed to fetch the assignment",
+      });
     }
-    return (
-      <Container>
-          <Button
-          onClick={() => {
+  }
+
+  const calculateAverageGrade = () => {
+    if (!assignment || !assignment.grades || assignment.grades.length === 0) {
+      return "N/A";
+    }
+
+    const totalGrades = assignment.grades.reduce((sum, grade) => sum + Number(grade.grades), 0);
+    const average = totalGrades / assignment.grades.length;
+    return average.toFixed(2);
+  };
+
+  const handleGradeDelete = async (gradeId: number) => {
+    try {
+      await api.delete(`/api/assignmentGrade/${id}`);
+      showNotification({ message: "Grade has been deleted" });
+      fetchAssignment();
+    } catch (error) {
+      console.error("Error deleting grade:", error);
+      showNotification({
+        title: "Error",
+        message: "Failed to delete the grade",
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchAssignment();
+  }, [id]);
+
+  if (loading) {
+    return <div>Loading...</div>; // Render a loading indicator
+  }
+
+  return (
+    <Container>
+      <Button
+        onClick={() => {
           navigate(routes.GroupHome.replace(":id", `${assignment?.groupId}`));
-            }
-          }           
-              style={{
-              backgroundColor: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-            }}
-          >
-            <FontAwesomeIcon icon={faArrowLeft} size="xl" /> 
-          </Button>
-          <Button
-          onClick={() => {
-            navigate(routes.AssignmentGradeCreate.replace(":id", `${assignment?.id}`));
-          }}
-        >
-          <FontAwesomeIcon icon={faPlus} /> <Space w={8} />
-          Add Grade
-        </Button>
+        }}
+        style={{
+          backgroundColor: 'transparent',
+          border: 'none',
+          cursor: 'pointer',
+        }}
+      >
+        <FontAwesomeIcon icon={faArrowLeft} size="xl" />
+      </Button>
+      <Button
+        onClick={() => {
+          
+          navigate(routes.AssignmentGradeCreate.replace(":id", `${assignment?.id}`));
+        }}
+      >
+        <FontAwesomeIcon icon={faPlus} /> <Space w={8} />
+        Add Grade
+      </Button>
       <Center>
-        <Title >{assignment?.assignmentName}</Title>
+        <Title>{assignment?.assignmentName}</Title>
         <Space h="lg" />
-        </Center>
-        {assignment && (
-          <><Table withBorder fontSize={15}>
+      </Center>
+
+      {assignment && (
+        <Flex>
+          <Table withBorder fontSize={15}>
             <thead>
               <tr>
-
                 <th>Grades</th>
               </tr>
             </thead>
             <tbody>
               {assignment.grades.map((grade) => (
-                <tr>
-
-
+                <tr key={grade.id}>
                   <td>
                     <FontAwesomeIcon
                       className={classes.iconButton}
                       icon={faPen}
                       onClick={() => {
                         navigate(routes.AssignmentGradeUpdate.replace(":id", `${grade.id}`));
-                      } }
-                      style={{ cursor: 'pointer', marginRight: '8px' }} />
+                      }}
+                      style={{ cursor: 'pointer', marginRight: '8px' }}
+                    />
                     <FontAwesomeIcon
                       className={classes.iconButton}
                       icon={faTrash}
                       color="red"
                       size="sm"
                       onClick={() => handleGradeDelete(grade.id)}
-                      style={{ cursor: 'pointer' }} />
-                    {grade.grades}</td>
+                      style={{ cursor: 'pointer' }}
+                    />
+                    {grade.grades}
+                  </td>
                 </tr>
               ))}
             </tbody>
-          </Table><div>
-              <strong>Average Grade:</strong> {calculateAverageGrade()}
-            </div></>
-      
-    )}
-  </Container>
-);
+          </Table>
+
+          <Space h="lg" />
+
+          <Card
+            shadow="sm"
+            className="custom-card"
+            style={{
+              marginLeft: '70px', // Adjust the margin as needed
+            }}
+          >
+            <Card.Section>
+              <Center>
+                <Title order={4}>Average Grade</Title>
+              </Center>
+            </Card.Section>
+            <Card.Section>
+              <Center>
+                <Title
+                  order={2}
+                  style={{
+                    color: calculateLetterGradeColor(calculateAverageGrade()),
+                  }}
+                >
+                  {calculateLetterGrade(calculateAverageGrade())}
+                </Title>
+              </Center>
+            </Card.Section>
+            <Card.Section>
+              <Center>
+                <Title order={3}>{calculateAverageGrade()}</Title>
+              </Center>
+            </Card.Section>
+          </Card>
+        </Flex>
+      )}
+    </Container>
+  );
 };
-        
-  const useStyles = createStyles(() => {
-    return {
-      iconButton: {
-        cursor: "pointer",
-      },
-    };
-  });
-  
+
+const calculateLetterGrade = (averageGrade) => {
+  if (averageGrade >= 97 && averageGrade <= 100) {
+    return "A+";
+  } 
+  if (averageGrade >= 93 && averageGrade <= 96) {
+    return "A";
+  }
+  if (averageGrade >= 90 && averageGrade <= 92) {
+    return "A-";
+  }else if (averageGrade >= 87 && averageGrade < 90) {
+    return "B+";
+  } 
+  else if (averageGrade >= 83 && averageGrade < 87) {
+    return "B";
+  }
+  else if (averageGrade >= 80 && averageGrade < 83) {
+    return "B-";
+  }else if (averageGrade >= 77 && averageGrade < 80) {
+    return "C+";
+  }
+  else if (averageGrade >= 73 && averageGrade < 77) {
+    return "C";
+  } else if (averageGrade >= 70 && averageGrade < 73) {
+    return "C-";
+  }  else if (averageGrade >= 67 && averageGrade < 70) {
+    return "D+";
+  }
+  else if (averageGrade >= 65 && averageGrade < 67) {
+    return "D";
+  } else if (averageGrade < 65) {
+    return "F";
+  }
+};
+
+const calculateLetterGradeColor = (averageGrade) => {
+  if (averageGrade >= 90 && averageGrade <= 100) {
+    return "green"; // Set your desired color for grade A
+  } else if (averageGrade >= 80 && averageGrade < 90) {
+    return "lightgreen"; // Set your desired color for grade B
+  } else if (averageGrade >= 70 && averageGrade < 80) {
+    return "yellow"; // Set your desired color for grade C
+  } else if (averageGrade >= 60 && averageGrade < 70) {
+    return "orange"; // Set your desired color for grade D
+  } else if (averageGrade < 60) {
+    return "red"; // Set your desired color for grade F
+  }
+
+  return "black"; // Default color
+};
+
+const useStyles = createStyles(() => {
+  return {
+    iconButton: {
+      cursor: "pointer",
+    },
+  };
+});
