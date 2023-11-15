@@ -3,17 +3,19 @@ import { showNotification } from "@mantine/notifications";
 import { Button, Card, Center, Container, Flex, Space, Table, Title, createStyles } from "@mantine/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate, useParams } from "react-router-dom";
-import { ApiResponse, AssignmentGetDto } from "../../constants/types";
+import { ApiResponse, AssignmentGetDto, AssignmentGradeGetDto } from "../../constants/types";
 import { routes } from "../../routes";
 import api from "../../config/axios";
 import "./Card.css";
 import { faArrowLeft, faPen, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { GradeCreate } from "../assignmentgrade-page/grade-create";
 
 export const AssignmentListing = () => {
-  const { id } = useParams();
+  const { id, gradeId } = useParams();
   const navigate = useNavigate();
   const { classes } = useStyles();
   const [assignment, setAssignment] = useState<AssignmentGetDto | null>(null);
+  const [grade, setGrade] = useState<AssignmentGradeGetDto | null>(null);
   const [loading, setLoading] = useState(true);
 
   async function fetchAssignment() {
@@ -30,6 +32,19 @@ export const AssignmentListing = () => {
     }
   }
 
+  async function fetchGrades() {
+    try {
+      const response = await api.get<ApiResponse<AssignmentGradeGetDto>>(`/api/assignmentGrade/${gradeId}`);
+      setGrade(response.data.data);
+    } catch (error) {
+      console.error("Error fetching grades:", error);
+      showNotification({
+        title: "Error",
+        message: "Failed to fetch grades",
+      });
+    }
+  }
+
   const calculateAverageGrade = () => {
     if (!assignment || !assignment.grades || assignment.grades.length === 0) {
       return "N/A";
@@ -42,7 +57,8 @@ export const AssignmentListing = () => {
 
   const handleGradeDelete = async (gradeId: number) => {
     try {
-      await api.delete(`/api/assignmentGrade/${id}`);
+      
+      await api.delete(`/api/assignmentGrade/${gradeId}`);
       showNotification({ message: "Grade has been deleted" });
       fetchAssignment();
     } catch (error) {
@@ -55,6 +71,7 @@ export const AssignmentListing = () => {
   };
 
   useEffect(() => {
+    fetchGrades();
     fetchAssignment();
   }, [id]);
 

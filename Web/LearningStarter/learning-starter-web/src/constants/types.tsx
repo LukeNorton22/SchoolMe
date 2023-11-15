@@ -36,7 +36,7 @@ export type FlashCardsGetDto = {
 
 export type AssignmentGradeGetDto = {
   assignmentId: number;
-id: number;
+  id: number;
   grades: number;
 };
 
