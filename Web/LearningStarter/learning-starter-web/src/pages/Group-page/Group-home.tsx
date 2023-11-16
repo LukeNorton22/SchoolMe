@@ -416,38 +416,38 @@ export const GroupHome = () => {
               <col style={{ width: "90%" }} /> {/* Adjust the width of the second column as needed */}
             </colgroup>
             <tbody>
-                {group.messages.map((message) => (
+            {group.messages.map((message) => (
                   <tr key={message.id}>
-                    <td style={{ textAlign: 'left' }}> {/* Add this style to align messages to the left */}
-                      <FontAwesomeIcon
-                        className={classes.iconButton}
-                        icon={faPencil}
-                        onClick={() => {
-                          navigate(
-                            routes.MessageUpdate.replace(
-                              ":id",
-                              `${message.id}`
-                            )
-                          );
-                        }}
-                      />
-                       <FontAwesomeIcon
-                className={classes.iconButton}
-                icon={faTrash}
-                color="red"
-                size="sm"
-                onClick={() =>
-                  handleDeleteAndNavigate(message.id, message.groupId, "message")
-                }
-                style={{ cursor: "pointer", marginLeft: "8px" }}
-              />
-                </td>
-                    
-                <td style={{ textAlign: 'left' }}> {/* Add this style to align messages to the left */}
-                  <strong style={{ fontSize: '1.2em' }}>{message.userName}</strong>
-                  <Space></Space>{message.content}<Space></Space>{message.createdAt}
-                </td>   
-                </tr>
+                    <td style={{ textAlign: 'left' }}>
+                      {user.id === message.userId && ( // Check if the current user is the sender
+                        <>
+                          <FontAwesomeIcon
+                            className={classes.iconButton}
+                            icon={faPencil}
+                            onClick={() => {
+                              navigate(
+                                routes.MessageUpdate.replace(":id", `${message.id}`)
+                              );
+                            }}
+                          />
+                          <FontAwesomeIcon
+                            className={classes.iconButton}
+                            icon={faTrash}
+                            color="red"
+                            size="sm"
+                            onClick={() =>
+                              handleDeleteAndNavigate(message.id, message.groupId, "message")
+                            }
+                            style={{ cursor: "pointer", marginLeft: "8px" }}
+                          />
+                        </>
+                      )}
+                    </td>
+                    <td style={{ textAlign: 'left' }}>
+                      <strong style={{ fontSize: '1.2em' }}>{message.userName}</strong>
+                      <Space></Space>{message.content}<Space></Space>{message.createdAt}
+                    </td>
+                  </tr>
                 ))}
               </tbody>
             </Table>
@@ -459,7 +459,6 @@ export const GroupHome = () => {
    
   );
 };
-
 
 const useStyles = createStyles((theme) => {
   return {
