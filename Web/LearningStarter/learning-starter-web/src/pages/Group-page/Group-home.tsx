@@ -444,7 +444,8 @@ export const GroupHome = () => {
                 </td>
                     
                 <td style={{ textAlign: 'left' }}> {/* Add this style to align messages to the left */}
-                {message.userName}<Space></Space>{message.content}<Space></Space>{message.createdAt}
+                  <strong style={{ fontSize: '1.2em' }}>{message.userName}</strong>
+                  <Space></Space>{message.content}<Space></Space>{message.createdAt}
                 </td>   
                 </tr>
                 ))}
