@@ -192,7 +192,7 @@ public class Startup
         {
             GroupId = 1,
             Content = "What is up guys! So glad to be in CMPS 285!",
-            CreatedAt = "12:52 pm",
+            CreatedAt = "12:52 PM",
             UserId = 1,
             
         };
@@ -229,8 +229,8 @@ public class Startup
         var seededFlashCard1 = new FlashCards
         {
             FlashCardSetId = 1,
-            Question = "What do you call a cow with no legs",
-            Answer = "Ground beef!",
+            Question = "What is scrum",
+            Answer = "A framework for getting work done with agile development methods",
         };
 
         dataContext.Set<FlashCards>().Add(seededFlashCard1);
@@ -264,8 +264,8 @@ public class Startup
         var seededTestQuestion1 = new TestQuestions
         {
             TestId = 1,
-            Question = "Who is Patrick Mahomes' dad?",
-            Answer = "Jared Goff!",
+            Question = "What is a primary key",
+            Answer = "A unique identifier for a specific table and record in a database",
         };
 
         dataContext.Set<TestQuestions>().Add(seededTestQuestion1);
