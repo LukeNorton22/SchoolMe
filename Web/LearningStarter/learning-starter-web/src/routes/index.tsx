@@ -25,6 +25,10 @@ export const routes = {
   groupCreate: `/group/create`,
   GroupHome: "/GroupHome/:id",
 
+  GroupUserListing: "/groupUser",
+  GroupUserCreate: "/groups/:groupId/add-user",
+
+
   MessageListing: "/messages/:id",
   MessageUpdate: "/messages/update/:id",
   MessagingPage: "/messaging/:id",

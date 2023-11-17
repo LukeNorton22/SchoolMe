@@ -1,5 +1,6 @@
 //This type uses a generic (<T>).  For more information on generics see: https://www.typescriptlang.org/docs/handbook/2/generics.html
 
+import { NonIndexRouteObject } from "react-router-dom";
 import { NumberLiteralType } from "typescript";
 
 //You probably wont need this for the scope of this class :)
@@ -78,6 +79,7 @@ export type GroupGetDto = {
   id: number;
   groupName: string;
   description: string;
+  users: GroupUserGetDto[];
   messages: MessagesGetDto[];
   tests: TestsGetDto[];
   flashCardSets: FlashCardSetGetDto[];
@@ -85,6 +87,16 @@ export type GroupGetDto = {
   
 };
 
+export type GroupUserGetDto ={
+  id: number;
+  firstName: string;
+  lastName: string;
+  userName: string;
+}
+
+export type GroupUserUpdateDto ={
+  userName: string;
+}
 export type MessagesCreateDto = {
   content: string;
 };

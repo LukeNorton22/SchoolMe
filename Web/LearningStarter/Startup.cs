@@ -175,6 +175,7 @@ public class Startup
         {
             GroupName = "CMPS 285",
             Description = "Group for students in CMPS 285",
+            
         };
 
         dataContext.Set<Group>().Add(seededGroup1);
@@ -336,16 +337,29 @@ private static async Task SeedsUsers(DataContext dataContext, UserManager<User> 
 {
     var numUsers = dataContext.Users.Count();
 
-    
-        var seededUser = new User
+
+        var seededUser1 = new User
         {
             FirstName = "Luke",
             LastName = "Norton",
             UserName = "LukeNorton",
-
         };
 
-        await userManager.CreateAsync(seededUser, "Password");
+        // Seed the second user
+        var seededUser2 = new User
+        {
+            FirstName = "Robert",
+            LastName = "Turner",
+            UserName = "RobertTurner",
+        };
+
+
+
+
+        await userManager.CreateAsync(seededUser1, "Password");
+
+        // Create the second user using UserManager
+        await userManager.CreateAsync(seededUser2, "Password");
         await dataContext.SaveChangesAsync();
     
    }

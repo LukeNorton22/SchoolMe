@@ -17,7 +17,7 @@ export const TestCreate = () => {
 
   const submitTest = async (values: TestUpdateDto) => {
     const response = await api.post<ApiResponse<TestUpdateDto>>(
-      `/api/Tests/${id}`, 
+      `api/groupId/user/userId`, 
       values
     );
 

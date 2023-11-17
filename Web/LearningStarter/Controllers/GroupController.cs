@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -64,50 +65,83 @@ public class GroupController : ControllerBase
         return Created("", response);
     }
 
-    [HttpPost("groupId/user/userId")]
-    public IActionResult AddUserToGroup(int groupId, int userId)
+    [HttpPost("{groupId}")]
+    public IActionResult AddUserToGroup(int groupId, [FromBody] GroupUserUpdateDto userData)
     {
         var response = new Response();
-        var group = _dataContext.Set<Group>()
-            .FirstOrDefault(x=> x.Id == groupId);
-        var user = _dataContext.Set<User>()
-            .FirstOrDefault(x=> x.Id == userId);
-        if(group == null)
+        Console.WriteLine("Received userName:", userData.userName);
+        try
         {
-            response.AddError("id", "Group not found.");
-        }
-        if (user == null)
-        {
-            response.AddError("id", "User not found.");
-        }
-        var groupUser = new GroupUser
-        {
-            Group = group,
-            User = user,
+            var group = _dataContext.Set<Group>()
+                .Include(g => g.Users)
+                .FirstOrDefault(x => x.Id == groupId);
 
-        };
-        if (response.HasErrors)
+            if (group == null)
+            {
+                response.AddError("groupId", "Group not found.");
+                return BadRequest(response);
+            }
+
+            var user = _dataContext.Set<User>()
+                .FirstOrDefault(x => x.UserName == userData.userName);
+
+            if (user == null)
+            {
+                response.AddError("userName", "User not found.");
+                return BadRequest(response);
+            }
+
+            if (group == null)
+            {
+                response.AddError("groupId", "Group not found.");
+                return BadRequest(response);
+            }
+
+            // Check if Users collection is null
+            if (group.Users == null)
+            {
+                response.AddError("groupId", "Group users not found.");
+                return BadRequest(response);
+            }
+
+            // Check if the user is already in the group
+            if (group.Users.Any(u => u.User != null && u.User.UserName == userData.userName))
+            {
+                response.AddError("userName", "User is already in the group.");
+                return BadRequest(response);
+            }
+            var groupUser = new GroupUser
+            {
+                Group = group,
+                User = user
+            };
+
+            _dataContext.Set<GroupUser>().Add(groupUser);
+            _dataContext.SaveChanges();
+
+            response.Data = new GroupGetDto
+            {
+                Id = groupId,
+                GroupName = group.GroupName,
+                Description = group.Description,
+                Users = group.Users.Select(x => new GroupUserGetDto
+                {
+                    Id = x.User.Id,
+                    FirstName = x.User.FirstName,
+                    LastName = x.User.LastName,
+                    UserName = x.User.UserName,
+                }).ToList()
+            };
+
+            return Ok(response);
+        }
+        catch (Exception ex)
         {
+            response.AddError("error", $"An error occurred: {ex.Message}");
             return BadRequest(response);
         }
-        _dataContext.Set<GroupUser>().Add(groupUser);
-        _dataContext.SaveChanges();
+    }
 
-        response.Data = new GroupGetDto
-        {
-            Id = groupId,
-            GroupName = group.GroupName,
-            Description = group.Description,
-            Users = group.Users.Select(x => new GroupUserGetDto
-            {
-                Id = x.User.Id,
-                FirstName = x.User.FirstName,
-                LastName = x.User.LastName,
-                UserName = x.User.UserName,
-            }).ToList()
-        };
-        return Ok(response);
-    } 
 
     [HttpGet]
     public IActionResult GetAll()
