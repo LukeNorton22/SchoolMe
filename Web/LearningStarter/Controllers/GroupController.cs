@@ -124,7 +124,7 @@ public class GroupController : ControllerBase
                 Id = groupId,
                 GroupName = group.GroupName,
                 Description = group.Description,
-                Users = group.Users.Select(x => new GroupUserGetDto
+                Users = group.Users.Where(u => u.User != null).Select(x => new GroupUserGetDto
                 {
                     Id = x.User.Id,
                     FirstName = x.User.FirstName,
