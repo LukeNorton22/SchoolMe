@@ -21,35 +21,30 @@ namespace LearningStarter.Controllers
             _dataContext = dataContext;
         }
 
-        [HttpPost]
+        [HttpPost("{groupId}")]
         public IActionResult Create(int groupId, [FromBody] TestsCreateDto createDto)
         {
             var response = new Response();
 
-            var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
-            if (createDto.TestName == null)
+            if (string.IsNullOrEmpty(createDto.TestName))
             {
-                response.AddError(nameof(createDto.TestName), "Test Name can not be empty");
+                response.AddError(nameof(createDto.TestName), "Test Name cannot be empty");
+                return BadRequest(response); // Return a 400 response with validation errors
             }
+
+            var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
 
             if (group == null)
             {
-                return BadRequest("Group can not be found.");
+                response.AddError("GroupId", "Group not found.");
+                return BadRequest(response);
             }
 
             var TestsToCreate = new Tests
             {
                 GroupId = group.Id,
-                TestName = createDto.TestName      
+                TestName = createDto.TestName
             };
-
-
-            if (TestsToCreate == null)
-            {
-                return BadRequest("Test can not be found.");
-            }
-
-
 
             _dataContext.Set<Tests>().Add(TestsToCreate);
             _dataContext.SaveChanges();
@@ -64,6 +59,7 @@ namespace LearningStarter.Controllers
             response.Data = TestsToReturn;
             return Created("", response);
         }
+
 
         [HttpGet]
         public IActionResult GetAll()
@@ -91,61 +87,56 @@ namespace LearningStarter.Controllers
             return Ok(response);
         }
 
-        [HttpGet("id")]
+
+
+        [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
             var response = new Response();
 
-
             var data = _dataContext
                 .Set<Tests>()
-                .Select(Tests => new TestsGetDto
+                .Where(test => test.Id == id) // Add a filter condition here
+                .Select(test => new TestsGetDto
                 {
-                    Id = Tests.Id,
-                    GroupId= Tests.GroupId,
-                    TestName = Tests.TestName,
-                    Questions = Tests.Questions.Select(x => new TestQuestionsGetDto
+                    Id = test.Id,
+                    GroupId = test.GroupId,
+                    TestName = test.TestName,
+                    Questions = test.Questions.Select(x => new TestQuestionsGetDto
                     {
-                        Id= x.Id,
+                        Id = x.Id,
                         TestId = x.TestId,
                         Question = x.Question,
                         Answer = x.Answer,
-
                     }).ToList(),
                 })
-                .FirstOrDefault(Tests => Tests.Id == id);
+                .SingleOrDefault(); // Use SingleOrDefault to fetch a single test or null
 
-            response.Data = data;
             if (data == null)
             {
-
-
-
-                response.AddError("id", "Test not found.");
+                response.AddError("Id", "No test found for the specified Id.");
             }
-            return Ok(response);
+            else
+            {
+                response.Data = data;
+            }
 
+            return Ok(response);
         }
 
-        [HttpPut("id")]
+
+
+        [HttpPut("{id}")]
         public IActionResult Update([FromBody] TestsUpdateDto updateDto, int id)
         {
             var response = new Response();
 
-           
-           
-            if (updateDto.TestName == null)
+            var testToUpdate = _dataContext.Set<Tests>()
+                .FirstOrDefault(group => group.Id == id);
+
+            if (testToUpdate == null)
             {
-                response.AddError(nameof(updateDto.TestName), "Must enter a valid Name");
-            }
-
-
-            var TestsToUpdate = _dataContext.Set<Tests>()
-                .FirstOrDefault(Tests => Tests.Id == id);
-
-            if (TestsToUpdate == null)
-            {
-                response.AddError("id", "Test not found.");
+                response.AddError("id", "Test not found");
             }
 
             if (response.HasErrors)
@@ -153,20 +144,22 @@ namespace LearningStarter.Controllers
                 return BadRequest(response);
             }
 
+            testToUpdate.TestName = updateDto.TestName;
 
             _dataContext.SaveChanges();
 
-            var TestsToReturn = new TestsGetDto
+            var testToReturn = new TestsGetDto
             {
-               
-                TestName = TestsToUpdate.TestName,
-
+                Id = testToUpdate.Id,
+                GroupId = testToUpdate.GroupId,
+                TestName = testToUpdate.TestName,
             };
-            response.Data = TestsToReturn;
+
+            response.Data = testToReturn;
             return Ok(response);
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             var response = new Response();

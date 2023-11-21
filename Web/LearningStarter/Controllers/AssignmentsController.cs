@@ -10,7 +10,7 @@ using static System.Net.Mime.MediaTypeNames;
 namespace LearningStarter.Controllers
 {
     [ApiController]
-    [Route("api/Assignments")]
+    [Route("api/assignments")]
 
     public class AssignmentsController : ControllerBase
     {
@@ -20,38 +20,31 @@ namespace LearningStarter.Controllers
             _dataContext = dataContext;
         }
 
-        [HttpPost]
+        [HttpPost("{groupId}")]
         public IActionResult Create(int groupId, [FromBody] AssignmentsCreateDto createDto)
         {
             var response = new Response();
 
-            var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
-            if (createDto.AssignmentName == null)
+            if (string.IsNullOrEmpty(createDto.AssignmentName))
             {
-                response.AddError(nameof(createDto.AssignmentName), "SetName can not be empty");
+                response.AddError(nameof(createDto.AssignmentName), "Assignment Name cannot be empty");
+                return BadRequest(response); // Return a 400 response with validation errors
             }
+
+            var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
 
             if (group == null)
             {
-                return BadRequest("Group can not be found.");
+                response.AddError("GroupId", "Group not found.");
+                return BadRequest(response);
             }
-
 
             var AssignmentsToCreate = new Assignments
             {
-
                 GroupId = group.Id,
                 AssignmentName = createDto.AssignmentName,
-
+                
             };
-
-
-            if (AssignmentsToCreate == null)
-            {
-                return BadRequest("FlashCardSet can not be found.");
-            }
-          
-
 
             _dataContext.Set<Assignments>().Add(AssignmentsToCreate);
             _dataContext.SaveChanges();
@@ -59,14 +52,12 @@ namespace LearningStarter.Controllers
             var AssignmentsToReturn = new AssignmentsGetDto
             {
                 Id = AssignmentsToCreate.Id,
-
-                GroupId = group.Id,
+                GroupId = AssignmentsToCreate.GroupId,
                 AssignmentName = AssignmentsToCreate.AssignmentName,
             };
 
             response.Data = AssignmentsToReturn;
             return Created("", response);
-
         }
 
         [HttpGet]
@@ -75,19 +66,17 @@ namespace LearningStarter.Controllers
             var response = new Response();
             var data = _dataContext
                 .Set<Assignments>()
-                .Include(x => x.Grade)
+                .Include(x => x.Grades)
                 .Select(assignment => new AssignmentsGetDto
                 {
                     Id = assignment.Id,
                     GroupId =assignment.GroupId,
                     AssignmentName = assignment.AssignmentName,
-                    AverageGrade=assignment.AverageGrade,
-                    Grade = assignment.Grade.Select(x => new AssignmentGradeGetDto
+                    Grades = assignment.Grades.Select(x => new AssignmentGradeGetDto
                     {
                         Id=x.Id,
-                        CreatorId = x.CreatorId,
-                        AssignmentId=assignment.Id,
-                        Grade = x.Grade
+                        AssignmentId=x.Id,
+                        Grades = x.Grades   
 
                     }).ToList(),
                 })
@@ -96,51 +85,53 @@ namespace LearningStarter.Controllers
             return Ok(response);
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
             var response = new Response();
 
-
             var data = _dataContext
                 .Set<Assignments>()
-                 .Include(x => x.Grade)
-                .Select(Assignments => new AssignmentsGetDto
+                .Where(assignment => assignment.Id == id) 
+                .Select(assignment => new AssignmentsGetDto
                 {
-                    Id = Assignments.Id,
-                    GroupId=Assignments.GroupId,
-                    AverageGrade=Assignments.AverageGrade,
-                    AssignmentName = Assignments.AssignmentName,
-                    Grade = Assignments.Grade.Select(x => new AssignmentGradeGetDto
+                    Id = assignment.Id,
+                    GroupId = assignment.GroupId,
+                    AssignmentName = assignment.AssignmentName,
+                    Grades = assignment.Grades.Select(x => new AssignmentGradeGetDto
                     {
                         Id = x.Id,
                         AssignmentId = x.AssignmentId,
-                        Grade = x.Grade
-
-                    }).ToList()
+                        Grades = x.Grades,
+                        
+                    }).ToList(),
                 })
-                .FirstOrDefault(Assignments => Assignments.Id == id);
+                .SingleOrDefault(); 
 
-            response.Data = data;
             if (data == null)
             {
-                response.AddError("id", "Assignment not found.");
+                response.AddError("Id", "No test found for the specified Id.");
             }
-            return Ok(response);
+            else
+            {
+                response.Data = data;
+            }
 
+            return Ok(response);
         }
 
-        [HttpPut("id")]
+
+        [HttpPut("{id}")]
         public IActionResult Update([FromBody] AssignmentsUpdateDto updateDto, int id)
         {
             var response = new Response();
-          
-            var AssignmentsToUpdate = _dataContext.Set<Assignments>()
-                .FirstOrDefault(Assignments => Assignments.Id == id);
 
-            if (AssignmentsToUpdate == null)
+            var assignmentToUpdate = _dataContext.Set<Assignments>()
+                .FirstOrDefault(group => group.Id == id);
+
+            if (assignmentToUpdate == null)
             {
-                response.AddError("id", "Assignment not found.");
+                response.AddError("id", "Assignment not found");
             }
 
             if (response.HasErrors)
@@ -148,22 +139,22 @@ namespace LearningStarter.Controllers
                 return BadRequest(response);
             }
 
-            AssignmentsToUpdate.AssignmentName = updateDto.AssignmentName;
+            assignmentToUpdate.AssignmentName = updateDto.AssignmentName;
 
             _dataContext.SaveChanges();
 
-            var AssignmentsToReturn = new AssignmentsGetDto
+            var assignmentToReturn = new AssignmentsGetDto
             {
-                Id = AssignmentsToUpdate.Id,
-                AssignmentName = AssignmentsToUpdate.AssignmentName,
-                AverageGrade=AssignmentsToUpdate.AverageGrade,
-
+                Id = assignmentToUpdate.Id,
+                GroupId = assignmentToUpdate.GroupId,
+                AssignmentName = assignmentToUpdate.AssignmentName,
             };
-            response.Data = AssignmentsToReturn;
+
+            response.Data = assignmentToReturn;
             return Ok(response);
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             var response = new Response();

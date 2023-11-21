@@ -152,6 +152,7 @@ public class Startup
         var userManager = scope.ServiceProvider.GetService<UserManager<User>>();
 
         SeedUsers(dataContext, userManager).Wait();
+        SeedsUsers(dataContext, userManager).Wait();
         SeedGroup(dataContext);
         SeedMessage(dataContext);
         SeedFlasCardSet(dataContext);
@@ -174,6 +175,7 @@ public class Startup
         {
             GroupName = "CMPS 285",
             Description = "Group for students in CMPS 285",
+            
         };
 
         dataContext.Set<Group>().Add(seededGroup1);
@@ -191,7 +193,9 @@ public class Startup
         {
             GroupId = 1,
             Content = "What is up guys! So glad to be in CMPS 285!",
-            CreatedAt = "12:52 pm",
+            CreatedAt = "12:52 PM",
+            UserId = 1,
+            
         };
 
         dataContext.Set<Messages>().Add(seededMessage1);
@@ -226,8 +230,8 @@ public class Startup
         var seededFlashCard1 = new FlashCards
         {
             FlashCardSetId = 1,
-            Question = "What do you call a cow with no legs",
-            Answer = "Ground beef!",
+            Question = "What is scrum",
+            Answer = "A framework for getting work done with agile development methods",
         };
 
         dataContext.Set<FlashCards>().Add(seededFlashCard1);
@@ -261,8 +265,8 @@ public class Startup
         var seededTestQuestion1 = new TestQuestions
         {
             TestId = 1,
-            Question = "Who is Patrick Mahomes' dad?",
-            Answer = "Jared Goff!",
+            Question = "What is a primary key",
+            Answer = "A unique identifier for a specific table and record in a database",
         };
 
         dataContext.Set<TestQuestions>().Add(seededTestQuestion1);
@@ -280,7 +284,6 @@ public class Startup
         {
             GroupId = 1,
             AssignmentName = "Midterm Presentations",
-            AverageGrade = 100,
         };
 
         dataContext.Set<Assignments>().Add(seededAssignment1);
@@ -296,9 +299,8 @@ public class Startup
 
         var seededAssignmentGrade1 = new AssignmentGrade
         {
-            CreatorId = 1,
             AssignmentId = 1,
-            Grade = 100,
+            Grades = 100
         };
 
         dataContext.Set<AssignmentGrade>().Add(seededAssignmentGrade1);
@@ -329,4 +331,36 @@ public class Startup
             await dataContext.SaveChangesAsync();
         }
     }
+
+
+private static async Task SeedsUsers(DataContext dataContext, UserManager<User> userManager)
+{
+    var numUsers = dataContext.Users.Count();
+
+
+        var seededUser1 = new User
+        {
+            FirstName = "Luke",
+            LastName = "Norton",
+            UserName = "LukeNorton",
+        };
+
+        // Seed the second user
+        var seededUser2 = new User
+        {
+            FirstName = "Robert",
+            LastName = "Turner",
+            UserName = "RobertTurner",
+        };
+
+
+
+
+        await userManager.CreateAsync(seededUser1, "Password");
+
+        // Create the second user using UserManager
+        await userManager.CreateAsync(seededUser2, "Password");
+        await dataContext.SaveChangesAsync();
+    
+   }
 }

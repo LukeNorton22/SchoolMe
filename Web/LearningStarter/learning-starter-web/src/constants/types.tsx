@@ -1,5 +1,6 @@
 //This type uses a generic (<T>).  For more information on generics see: https://www.typescriptlang.org/docs/handbook/2/generics.html
 
+import { NonIndexRouteObject } from "react-router-dom";
 import { NumberLiteralType } from "typescript";
 
 //You probably wont need this for the scope of this class :)
@@ -32,21 +33,80 @@ export type FlashCardsGetDto = {
   answer: string;
 };
 
+
+
 export type AssignmentGradeGetDto = {
-  id: number;
   assignmentId: number;
-  creatorId: number;
-  grade: number;
+  id: number;
+  grades: number;
 };
 
 export type MessagesGetDto = {
+  groupId: number;
+  userId: number;
   id: number;
+  content: string;
+  createdAt: string;
+  userName: string;
+};
+
+export type UserGetDto = {
+  userName: string;
+};
+
+
+
+export type AssignmentGetDto = {
+  id: number;
+  groupId: number;
+  assignmentName: string;
+  grades: AssignmentGradeGetDto[];
+
+};
+
+export type AssignmentUpdateDto = {
+  assignmentName: string;
+};
+
+export type AssignmentGradeUpdateDto = {
+  
+  
+  grades: number;
+
+}
+export type GroupGetDto = {
+ 
+  id: number;
+  groupName: string;
+  description: string;
+  users: GroupUserGetDto[];
+  messages: MessagesGetDto[];
+  tests: TestsGetDto[];
+  flashCardSets: FlashCardSetGetDto[];
+  assignments: AssignmentGetDto[];
+  
+};
+
+export type GroupUserGetDto ={
+  id: number;
+  firstName: string;
+  lastName: string;
+  userName: string;
+}
+
+export type GroupUserUpdateDto ={
+  userName: string;
+}
+export type MessagesCreateDto = {
+  content: string;
+};
+
+export type MessagesUpdateDto = {
   content: string;
   createdAt: string;
 };
 
-export type GroupGetDto = {
-  id: number;
+export type GroupUpdateDto = {
   groupName: string;
   description: string;
 
@@ -54,6 +114,35 @@ export type GroupGetDto = {
 
 export type TestsGetDto = {
   id: number;
+  groupId: number;
   testName: string;
+  questions: QuestionGetDto[];
+  
+};
 
+export type TestUpdateDto = {
+  testName: string;
+};
+
+export type FlashCardSetGetDto = {
+  id: number;
+  groupId: number;
+  setName: string;
+  flashCards: FlashCardsGetDto[];
+};
+export type FlashCardSetUpdateDto = {
+  setName: string;
+};
+
+
+export type QuestionUpdateDto = {
+    question: string;
+    answer: string;
+};
+
+export type QuestionGetDto = {
+  id: number;
+  testId: number;
+  question: string;
+  answer: string;
 };

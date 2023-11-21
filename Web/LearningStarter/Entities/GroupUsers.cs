@@ -13,6 +13,11 @@ namespace LearningStarter.Entities
 
 
     }
+    public class GroupUserUpdateDto
+    {
+        public string userName { get; set; }
+    }
+
 
     public class GroupUserGetDto
     {

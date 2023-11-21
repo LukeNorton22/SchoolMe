@@ -1,42 +1,45 @@
 import { Button, Container, Flex, Space, TextInput } from "@mantine/core"
 import { useEffect, useState } from "react"
-import { ApiResponse, FlashCardSetGetDto, FlashCardSetUpdateDto } from "../../constants/types"
+import { ApiResponse, FlashCardSetGetDto, FlashCardSetUpdateDto, FlashCardsGetDto, QuestionGetDto, QuestionUpdateDto } from "../../constants/types"
 import api from "../../config/axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { showNotification } from "@mantine/notifications";
 import { FormErrors, useForm } from "@mantine/form";
 import { routes } from "../../routes";
 
-export const FlashCardSetUpdate = () => {
-    const [fcset, setFCSet] = useState<FlashCardSetGetDto>();
+export const FCUpdate = () => {
+    const [flashcard, setFlashCard] = useState<FlashCardsGetDto>();
     const navigate = useNavigate();
     const {id} = useParams();
 
-    const mantineForm = useForm<FlashCardSetGetDto>({
-        initialValues: fcset
+   
+
+    const mantineForm = useForm<FlashCardsGetDto>({
+        initialValues: flashcard
     });
 
     useEffect(() => {
-        fetchSets();
-
-        async function fetchSets(){
-            const response = await api.get<ApiResponse<FlashCardSetGetDto>>(`/api/FCSets/${id}`);
+        fetchFlashCard();
+        async function fetchFlashCard(){
+            const response = await api.get<ApiResponse<FlashCardsGetDto>>(`/api/flashcards/${id}`);
 
             if(response.data.hasErrors) {
-               showNotification({message: "Error finding set", color: "red"});
+               showNotification({message: "Error finding flashcard", color: "red"});
                
             }
 
             if(response.data.data){
-                setFCSet(response.data.data);
+                setFlashCard(response.data.data);
                 mantineForm.setValues(response.data.data);
                 mantineForm.resetDirty();
             };
-        };
+        
+      
+        }
     }, [id]);
 
-    const submitSet = async (values: FlashCardSetUpdateDto) => {
-        const response = await api.put<ApiResponse<FlashCardSetGetDto>>(`/api/FCSets/${id}`, values);
+    const submitFlashCard = async (values: QuestionUpdateDto) => {
+        const response = await api.put<ApiResponse<QuestionGetDto>>(`/api/flashcards/${id}`, values);
 
         if(response.data.hasErrors) {
             const formErrors: FormErrors = response.data.errors.reduce(
@@ -51,28 +54,31 @@ export const FlashCardSetUpdate = () => {
         }
 
         if(response.data.data){
-            showNotification({message: "Set successfully updated", color: "green"});
-            navigate(routes.GroupHome.replace(":id", `${fcset?.groupId}`));
+            showNotification({message: "Flashcard successfully updated", color: "green"});
+            navigate(routes.FlashCardSetListing.replace(":id", `${flashcard?.flashCardSetId}`));
         }
 
     };
 
     return (
         <Container>
-          {fcset && (
-            <form onSubmit={mantineForm.onSubmit(submitSet)}>
+          {flashcard && (
+            <form onSubmit={mantineForm.onSubmit(submitFlashCard)}>
                 <TextInput 
-                    {...mantineForm.getInputProps("setName")} 
-                    label = "Name"
+                    {...mantineForm.getInputProps("question")} 
+                    label = "Question"
                     withAsterisk
                 />
-               
+                 <TextInput 
+                    {...mantineForm.getInputProps("answer")} 
+                    label = "Answer"
+                    withAsterisk
+                />
                 <Space h = {18} />
                 <Flex direction={"row"}>
                     <Button type="submit">Submit</Button>
                     <Space w={10} />
-                    <Button type="button" onClick={ () => navigate(routes.GroupHome.replace(":id", `${fcset.groupId}`))}
-
+                    <Button type="button" onClick={ () => navigate(routes.FlashCardListing.replace(":id", `${flashcard.flashCardSetId}`))}
                     >
                     Cancel
                     </Button>

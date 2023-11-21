@@ -18,30 +18,29 @@ public class TestQuestionsController : ControllerBase
         _dataContext = dataContext;
     }
 
-    [HttpPost]
+    [HttpPost("{TestId}")]
     public IActionResult Create(int TestId, [FromBody] TestQuestionsCreateDto createDto)
     {
         var response = new Response();
 
         var test = _dataContext.Set<Tests>().FirstOrDefault(x => x.Id == TestId);
-        if (createDto.Question == null)
-        {
-            response.AddError(nameof(createDto.Question), "Question can not be empty");
-        }
-        
+
         if (test == null)
         {
             return BadRequest("Test can not be found.");
         }
 
+        if (createDto.Question == null)
+        {
+            response.AddError(nameof(createDto.Question), "Question can not be empty");
+            return BadRequest(response);
+        }
 
         var TestQuestionsToCreate = new TestQuestions
         {
-
             TestId = TestId,
             Question = createDto.Question,
             Answer = createDto.Answer,
-
         };
 
         _dataContext.Set<TestQuestions>().Add(TestQuestionsToCreate);
@@ -57,8 +56,9 @@ public class TestQuestionsController : ControllerBase
 
         response.Data = TestQuestionsToReturn;
         return Created("", response);
-
     }
+
+
 
     [HttpGet]
     public IActionResult GetAll()
@@ -78,7 +78,7 @@ public class TestQuestionsController : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("id")]
+    [HttpGet("{id}")]
     public IActionResult GetById(int id)
     {
         var response = new Response();
@@ -88,7 +88,8 @@ public class TestQuestionsController : ControllerBase
             .Set<TestQuestions>()
             .Select(TestQuestions => new TestQuestionsGetDto
             {
-                Id = TestQuestions.Id,              
+                Id = TestQuestions.Id,    
+                TestId = TestQuestions.TestId,
                 Question = TestQuestions.Question,
                 Answer = TestQuestions.Answer,
             })
@@ -103,7 +104,7 @@ public class TestQuestionsController : ControllerBase
 
     }
 
-    [HttpPut("id")]
+    [HttpPut("{id}")]
     public IActionResult Update([FromBody] TestQuestionsUpdateDto updateDto, int id)
     {
         var response = new Response();
@@ -123,6 +124,7 @@ public class TestQuestionsController : ControllerBase
         }
 
         TestQuestionsToUpdate.Question = updateDto.Question;
+        TestQuestionsToUpdate.Answer = updateDto.Answer;
 
         _dataContext.SaveChanges();
 
@@ -137,7 +139,7 @@ public class TestQuestionsController : ControllerBase
         return Ok(response);
     }
 
-    [HttpDelete("id")]
+    [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
         var response = new Response();

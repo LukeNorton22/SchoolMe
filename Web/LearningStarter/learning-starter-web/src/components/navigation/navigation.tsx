@@ -23,15 +23,13 @@ import { NavLink, NavLinkProps, useLocation } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import {
   AssignmentGradeGetDto,
-  FlashCardsGetDto,
   UserDto,
-  MessagesGetDto,
 } from "../../constants/types";
 import { useAuth } from "../../authentication/use-auth";
 
 type PrimaryNavigationProps = {
   user?: UserDto;
-  FlashCardListing?: FlashCardsGetDto;
+ 
   AssignmentGradeListing?: AssignmentGradeGetDto;
 };
 
@@ -72,27 +70,8 @@ const navigation: NavigationItem[] = [
       to: routes.user,
     },
   },
-  {
-    text: "FlashCards",
-    hide: false,
-    nav: {
-      to: routes.FlashCardListing,
-    },
-  },
-  {
-    text: "AssignmentGrades",
-    hide: false,
-    nav: {
-      to: routes.AssignmentGradeListing,
-    },
-  },
-  {
-    text: "Messages",
-    hide: false,
-    nav: {
-      to: routes.MessageListing,
-    },
-  },
+ 
+ 
    {
     text: "Group",
     hide: false,
@@ -100,13 +79,7 @@ const navigation: NavigationItem[] = [
       to:routes.GroupListing,
     },
   },
-  {
-    text: "Tests",
-    hide: false,
-    nav: {
-      to:routes.TestListing
-    }
-  }
+  
 
 ];
 

@@ -7,8 +7,9 @@ import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 import { routes } from "../../routes";
+
 export {};
-export const FlashCardListing = () => {
+export const FlasCardListing = () => {
   const [flashcards, setFlashCards] = useState<FlashCardsGetDto[]>();
   const navigate = useNavigate();
   const { classes } = useStyles();
@@ -52,9 +53,9 @@ export const FlashCardListing = () => {
                       icon={faPencil}
                       onClick={() => {
                         navigate(
-                          routes.FlashCardUpdate.replace(
+                          routes.FCUpdate.replace(
                             ":id",
-                            "${flashcard.id}"
+                            `${flashcard.id}`
                           )
                         );
                       }}

@@ -3,13 +3,42 @@ export const routes = {
   root: `/`,
   home: `/home`,
   user: `/user`,
-  FlashCardListing: "/flashcards",
-  FlashCardUpdate: "/flashcards/:id",
-  AssignmentGradeListing: "/assignmentGrade",
-  AssignmentGradeUpdate: "/assignmentGrade/:id",
-  MessageListing: "/messages",
-  MessageUpdate: "/messages/:id",
-  GroupListing: "/group",
-  TestListing: "/tests",
 
+  AssignmentListing: "/assignments/:id",
+  AssignmentCreatee: "/assignmentCreatee/:id",
+  AssignmentUpdate: "/assignmentUpdate/:id",
+
+  AssignmentGradeListing: "/assignmentGrade/:id",
+  AssignmentGradeUpdate: "/assignmentGradeUpdate/:id",
+  AssignmentGradeCreate: "/assignmentGradeCreate/:id",
+
+  FCSetCreate: "/flashcard-create/:id",
+  FCQuestionCreate: `/fcquestion/create/:id`,
+  FlashCardSetListing: "/FlashCardSets/:id",
+  FlashCardSetUpdate: "/flashcardset-update/:id",
+  FlashCardUpdate: "/flashcardUpdate/:id",
+  FlashCardListing: "/flashcards/:id",
+  FCUpdate: "/flashcard/update/:id",
+
+  GroupListing: "/group",
+  GroupUpdate: "/group/:id",
+  groupCreate: `/group/create`,
+  GroupHome: "/GroupHome/:id",
+
+  GroupUserListing: "/groupUser",
+  GroupUserCreate: "/groups/:groupId/add-user",
+
+
+  MessageListing: "/messages/:id",
+  MessageUpdate: "/messages/update/:id",
+  MessagingPage: "/messaging/:id",
+
+  TestListing: "/tests/:id",
+  TestingPage: "/testing/:id",
+  TestCreate: "/testCreate/:id",
+  TestUpdate: "/testsupdate/:id",
+  TestTaking: "/testTake/:id",
+
+  QuestionCreate: `/question/create/:id`,
+  QuestionUpdate: "/questionUpdate/:id",
 };

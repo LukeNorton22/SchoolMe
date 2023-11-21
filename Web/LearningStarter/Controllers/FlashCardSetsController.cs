@@ -11,7 +11,7 @@ using Group = LearningStarter.Entities.Group;
 namespace LearningStarter.Controllers
 {
     [ApiController]
-    [Route("api/FlashCardSets")]
+    [Route("api/FCSets")]
 
     public class FlashCardSetsController : ControllerBase
     {
@@ -21,7 +21,7 @@ namespace LearningStarter.Controllers
             _dataContext = dataContext;
         }
 
-        [HttpPost]
+        [HttpPost("{groupId}")]
         public IActionResult Create(int groupId, [FromBody] FlashCardSetsCreateDto createDto)
         {
             var response = new Response();
@@ -74,8 +74,7 @@ namespace LearningStarter.Controllers
                 .Select(FlashCardSets => new FlashCardSetsGetDto
                 {
                     Id = FlashCardSets.Id,
-                    GroupId = FlashCardSets.GroupId,
-                    
+                    GroupId = FlashCardSets.GroupId,                
                     SetName = FlashCardSets.SetName,
                     FlashCards = FlashCardSets.FlashCards.Select(x => new FlashCardsGetDto
                     {
@@ -91,7 +90,7 @@ namespace LearningStarter.Controllers
             return Ok(response);
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
             var response = new Response();
@@ -101,7 +100,7 @@ namespace LearningStarter.Controllers
                 .Set<FlashCardSets>()
                 .Select(FlashCardSets => new FlashCardSetsGetDto
                 {
-                    Id = FlashCardSets.Id,
+                  Id = FlashCardSets.Id,
                   GroupId= FlashCardSets.GroupId,
                     
                     SetName = FlashCardSets.SetName,
@@ -128,24 +127,17 @@ namespace LearningStarter.Controllers
 
         }
 
-        [HttpPut("id")]
+        [HttpPut("{id}")]
         public IActionResult Update([FromBody] FlashCardSetsUpdateDto updateDto, int id)
         {
             var response = new Response();
 
-           
-            if (updateDto.SetName == null)
-            {
-                response.AddError(nameof(updateDto.SetName), "SetName can not be empty");
-            }
-           
+            var setToUpdate = _dataContext.Set<FlashCardSets>()
+                .FirstOrDefault(group => group.Id == id);
 
-            var FlashCardSetsToUpdate = _dataContext.Set<FlashCardSets>()
-                .FirstOrDefault(FlashCardSets => FlashCardSets.Id == id);
-
-            if (FlashCardSetsToUpdate == null)
+            if (setToUpdate == null)
             {
-                response.AddError("id", "FlashCard not found.");
+                response.AddError("id", "Set not found");
             }
 
             if (response.HasErrors)
@@ -153,24 +145,22 @@ namespace LearningStarter.Controllers
                 return BadRequest(response);
             }
 
-            FlashCardSetsToUpdate.SetName = updateDto.SetName;
-           
+            setToUpdate.SetName = updateDto.SetName;
 
             _dataContext.SaveChanges();
 
-            var FlashCardSetsToReturn = new FlashCardSetsGetDto
+            var setToReturn = new FlashCardSetsGetDto
             {
-                Id = FlashCardSetsToUpdate.Id,
-        
-                SetName = FlashCardSetsToUpdate.SetName,
-                
-
+                Id = setToUpdate.Id,
+                GroupId = setToUpdate.GroupId,
+                SetName = setToUpdate.SetName,
             };
-            response.Data = FlashCardSetsToReturn;
+
+            response.Data = setToReturn;
             return Ok(response);
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             var response = new Response();

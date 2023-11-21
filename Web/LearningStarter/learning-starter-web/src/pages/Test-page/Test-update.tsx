@@ -1,42 +1,42 @@
 import { Button, Container, Flex, Space, TextInput } from "@mantine/core"
 import { useEffect, useState } from "react"
-import { ApiResponse, FlashCardSetGetDto, FlashCardSetUpdateDto } from "../../constants/types"
+import { ApiResponse, GroupUpdateDto, GroupGetDto, TestsGetDto, TestUpdateDto } from "../../constants/types"
 import api from "../../config/axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { showNotification } from "@mantine/notifications";
 import { FormErrors, useForm } from "@mantine/form";
 import { routes } from "../../routes";
 
-export const FlashCardSetUpdate = () => {
-    const [fcset, setFCSet] = useState<FlashCardSetGetDto>();
+export const TestUpdate = () => {
+    const [test, setTest] = useState<TestsGetDto>();
     const navigate = useNavigate();
     const {id} = useParams();
 
-    const mantineForm = useForm<FlashCardSetGetDto>({
-        initialValues: fcset
+    const mantineForm = useForm<TestsGetDto>({
+        initialValues: test
     });
 
     useEffect(() => {
-        fetchSets();
+        fetchTest();
 
-        async function fetchSets(){
-            const response = await api.get<ApiResponse<FlashCardSetGetDto>>(`/api/FCSets/${id}`);
+        async function fetchTest(){
+            const response = await api.get<ApiResponse<TestsGetDto>>(`/api/Tests/${id}`);
 
             if(response.data.hasErrors) {
-               showNotification({message: "Error finding set", color: "red"});
+               showNotification({message: "Error finding test", color: "red"});
                
             }
 
             if(response.data.data){
-                setFCSet(response.data.data);
+                setTest(response.data.data);
                 mantineForm.setValues(response.data.data);
                 mantineForm.resetDirty();
             };
         };
     }, [id]);
 
-    const submitSet = async (values: FlashCardSetUpdateDto) => {
-        const response = await api.put<ApiResponse<FlashCardSetGetDto>>(`/api/FCSets/${id}`, values);
+    const submitTest = async (values: TestUpdateDto) => {
+        const response = await api.put<ApiResponse<TestsGetDto>>(`/api/Tests/${id}`, values);
 
         if(response.data.hasErrors) {
             const formErrors: FormErrors = response.data.errors.reduce(
@@ -51,18 +51,18 @@ export const FlashCardSetUpdate = () => {
         }
 
         if(response.data.data){
-            showNotification({message: "Set successfully updated", color: "green"});
-            navigate(routes.GroupHome.replace(":id", `${fcset?.groupId}`));
+            showNotification({message: "Test successfully updated", color: "green"});
+            navigate(routes.GroupHome.replace(":id", `${test?.groupId}`));
         }
 
     };
 
     return (
         <Container>
-          {fcset && (
-            <form onSubmit={mantineForm.onSubmit(submitSet)}>
+          {test && (
+            <form onSubmit={mantineForm.onSubmit(submitTest)}>
                 <TextInput 
-                    {...mantineForm.getInputProps("setName")} 
+                    {...mantineForm.getInputProps("testName")} 
                     label = "Name"
                     withAsterisk
                 />
@@ -71,7 +71,7 @@ export const FlashCardSetUpdate = () => {
                 <Flex direction={"row"}>
                     <Button type="submit">Submit</Button>
                     <Space w={10} />
-                    <Button type="button" onClick={ () => navigate(routes.GroupHome.replace(":id", `${fcset.groupId}`))}
+                    <Button type="button" onClick={ () => navigate(routes.GroupHome.replace(":id", `${test.groupId}`))}
 
                     >
                     Cancel

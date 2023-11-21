@@ -8,7 +8,7 @@ using System.Linq;
 namespace LearningStarter.Controllers;
 
 [ApiController]
-[Route("api/messages")]
+[Route("api/Message")]
 
 
 public class MessageController : ControllerBase
@@ -19,53 +19,57 @@ public class MessageController : ControllerBase
         _dataContext = dataContext;
     }
 
-    [HttpPost]
-    public IActionResult Create(int groupId, [FromBody] MessagesCreateDto createDto)
+    [HttpPost("{groupId}/{userId}")]
+    public IActionResult Create(int groupId, int userId, [FromBody] MessagesCreateDto createDto)
     {
         var response = new Response();
 
-        var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
-        if (createDto.Content == null)
+        if (string.IsNullOrEmpty(createDto.Content))
         {
-            response.AddError(nameof(createDto.Content), "Content can not be empty");
+            response.AddError(nameof(createDto.Content), "Test Name cannot be empty");
+            return BadRequest(response);
         }
+
+        var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
 
         if (group == null)
         {
-            return BadRequest("Group can not be found.");
+            response.AddError("GroupId", "Group not found.");
+            return BadRequest(response);
         }
 
+        var user = _dataContext.Set<User>().FirstOrDefault(x => x.Id == userId);
 
-        var MessagesToCreate = new Messages
+        if (user == null)
+        {
+            response.AddError("UserId", "User not found.");
+            return BadRequest(response);
+        }
+
+        var MessageToCreate = new Messages
         {
             GroupId = group.Id,
             Content = createDto.Content,
-
+            UserId = user.Id
         };
-        
 
-        if (MessagesToCreate == null)
-        {
-            return BadRequest("Message can not be found.");
-        }
-       
-        _dataContext.Set<Messages>().Add(MessagesToCreate);
+        _dataContext.Set<Messages>().Add(MessageToCreate);
         _dataContext.SaveChanges();
-
-        MessagesToCreate.CreatedAt = DateTime.Now.ToString("hh:mm tt"); 
-
 
         var MessagesToReturn = new MessagesGetDto
         {
-            Id = MessagesToCreate.Id,
-            GroupId = MessagesToCreate.GroupId,
-            Content =MessagesToCreate.Content,
-            CreatedAt = MessagesToCreate.CreatedAt 
+            Id = MessageToCreate.Id,
+            UserId = MessageToCreate.UserId,
+            GroupId = MessageToCreate.GroupId,
+            Content = MessageToCreate.Content,
+            CreatedAt = MessageToCreate.CreatedAt,
+            UserName = user.UserName
+
         };
+       
 
         response.Data = MessagesToReturn;
         return Created("", response);
-
     }
 
     [HttpGet]
@@ -80,6 +84,8 @@ public class MessageController : ControllerBase
                 GroupId=usermessage.GroupId,
                 Content = usermessage.Content,
                 CreatedAt = usermessage.CreatedAt, 
+                UserName = usermessage.UserName,
+                UserId =usermessage.UserId
 
             })
             .ToList();
@@ -89,7 +95,7 @@ public class MessageController : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("id")]
+    [HttpGet("{id}")]
     public IActionResult GetById(int id)
     {
         var response = new Response();
@@ -102,6 +108,8 @@ public class MessageController : ControllerBase
                 GroupId=usermessage.GroupId,
                 Content = usermessage.Content,
                 CreatedAt = usermessage.CreatedAt,
+                UserId = usermessage.UserId,
+                UserName=usermessage.UserName
 
 
             })
@@ -112,7 +120,7 @@ public class MessageController : ControllerBase
         return Ok(response);
     }
 
-    [HttpPut("id")]
+    [HttpPut("{id}")]
     public IActionResult Update([FromBody] MessagesUpdateDto updateDto, int id)
     {
         var response = new Response();
@@ -146,7 +154,7 @@ public class MessageController : ControllerBase
         return Ok(response);
     }
 
-    [HttpDelete("id")]
+    [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
         var response = new Response();
