@@ -28,6 +28,8 @@ import { TestQuestionUpdate } from "../pages/Test-page/TestQuestion-Update";
 import { FCUpdate } from "../pages/flashcard-page/FCupdate";
 import {TestQuestionsDisplay} from "../pages/Test-page/TestTaking";
 import { FlashCardListing } from "../pages/flashcard-page/FlashCardSet-listing";
+import { GroupUserPage } from "../pages/GroupUser-listing";
+import { AddUserToGroup } from "../pages/user-page/GroupUser-create";
 
 
 //This is where you will tell React Router what to render when the path matches the route specified.
@@ -64,6 +66,12 @@ export const Routes = () => {
           <Route path={routes.GroupUpdate} element = {<GroupUpdate/>} />
           <Route path={routes.GroupHome} element = {<GroupHome/>} />
           <Route path={routes.groupCreate} element = {<GroupCreate/>} />
+
+          <Route path={routes.GroupUserListing} element = {<GroupUserPage/>} />
+          <Route
+        path={routes.GroupUserCreate}
+        element={<AddUserToGroup />}
+      />
 
           <Route path={routes.AssignmentListing} element={<AssignmentListing />}/>
           <Route path="/assignmentCreatee/:id" element={<AssignmentCreatee />} />

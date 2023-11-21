@@ -199,6 +199,7 @@ export const GroupHome = () => {
           <Tabs.Tab value="Tests">Tests</Tabs.Tab>
           <Tabs.Tab value="Flashcard Sets">Flashcard Sets</Tabs.Tab>
           <Tabs.Tab value="Assignments">Assignments</Tabs.Tab>
+          <Tabs.Tab value="GroupUser">Group Members</Tabs.Tab>
         </Tabs.List>
 
         <Tabs.Panel value="Tests">
@@ -256,7 +257,44 @@ export const GroupHome = () => {
             Create Test
           </Button>
         </Tabs.Panel>
+        <Tabs.Panel value="GroupUser">
+  {/* Users List */}
+  {group?.users.map((user) => (
+    <div
+      key={user.id} // Make sure to provide a unique key for each item in the list
+      style={{
+        whiteSpace: "nowrap",
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+        marginBottom: 8, // Add some spacing between users
+      }}
+    >
+      <Button
+        variant="subtle"
+        color="gray"
+        size="sm"
+        radius="xs"
+        onClick={() => navigate(routes.TestingPage.replace(":id", `${user.id}`))}
+      >
+        {user.userName}
+      </Button>
+    </div>
+  ))}
 
+  {/* Add User Button */}
+  <Button
+    variant="subtle"
+    color="gray"
+    size="sm"
+    radius="xs"
+    onClick={() =>
+      navigate(routes.GroupUserCreate.replace(":groupId", `${group?.id}`))
+    }
+  >
+    Add User
+  </Button>
+</Tabs.Panel>
         <Tabs.Panel value="Flashcard Sets">
           {/* Flashcard Sets Content */}
           {group?.flashCardSets.map((flashCardSet) => (
