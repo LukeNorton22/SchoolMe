@@ -154,6 +154,7 @@ public class Startup
         SeedUsers(dataContext, userManager).Wait();
         SeedsUsers(dataContext, userManager).Wait();
         SeedGroup(dataContext);
+        SeedGroupUser(dataContext);
         SeedMessage(dataContext);
         SeedFlasCardSet(dataContext);
         SeedFlashCards(dataContext);
@@ -181,6 +182,26 @@ public class Startup
         dataContext.Set<Group>().Add(seededGroup1);
         dataContext.SaveChanges();
     }
+    private static void SeedGroupUser(DataContext dataContext)
+    {
+        if (dataContext.Set<GroupUser>().Any())
+        {
+            return;
+        }
+
+        var seededGroupUser1 = new GroupUser
+        {
+            GroupId = 1,
+            UserId = 1,
+            
+
+        };
+
+        dataContext.Set<GroupUser>().Add(seededGroupUser1);
+        dataContext.SaveChanges();
+    }
+
+
 
     private static void SeedMessage(DataContext dataContext)
     {
