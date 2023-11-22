@@ -7,17 +7,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faPen } from "@fortawesome/free-solid-svg-icons";
 import {  useNavigate } from "react-router-dom";
 import { routes } from "../../routes";
+import { useUser } from "../../authentication/use-auth";
+
 
 export const GroupListing = () => {
   const [group, setGroup] = useState<GroupGetDto[]>();
   const navigate = useNavigate();
   const { classes } = useStyles();
+  const user = useUser();
+
 
   useEffect(() => {
     fetchGroup();
 
     async function fetchGroup() {
-      const response = await api.get<ApiResponse<GroupGetDto[]>>("/api/Groups");
+      const response = await api.get<ApiResponse<GroupGetDto[]>>(`/api/Groups/ByUserId/${user.id}`);
 
       setGroup(response.data.data);
     }

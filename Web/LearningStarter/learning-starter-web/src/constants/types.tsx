@@ -58,6 +58,7 @@ export type MessagesGetDto = {
 
 export type UserGetDto = {
   userName: string;
+  groups: string[];
 };
 
 
@@ -75,8 +76,6 @@ export type AssignmentUpdateDto = {
 };
 
 export type AssignmentGradeUpdateDto = {
-  
-  
   
   grades: number;
 

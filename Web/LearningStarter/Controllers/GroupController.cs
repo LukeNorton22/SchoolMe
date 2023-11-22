@@ -203,6 +203,60 @@ public class GroupController : ControllerBase
 
         return Ok(response);
     }
+    [HttpGet("ByUserId/{userId}")]
+    public IActionResult GetGroupsByUserId(int userId)
+    {
+        var response = new Response();
+
+        var groups = _dataContext.Set<Group>()
+            .Where(g => g.Users.Any(u => u.User != null && u.User.Id == userId))
+            .Select(group => new GroupGetDto
+            {
+                Id = group.Id,
+                GroupName = group.GroupName,
+                Description = group.Description,
+                Users = group.Users.Select(x => new GroupUserGetDto
+                {
+                    Id = x.User.Id,
+                    FirstName = x.User.FirstName,
+                    LastName = x.User.LastName,
+                    UserName = x.User.UserName,
+                }).ToList(),
+                Tests = group.Test.Select(test => new TestsGetDto
+                {
+                    Id = test.Id,
+                    GroupId = test.Group.Id,
+                    TestName = test.TestName,
+                }).ToList(),
+                Messages = group.Messages.Select(Messages => new MessagesGetDto
+                {
+                    Id = Messages.Id,
+                    Content = Messages.Content,
+                    GroupId = Messages.Group.Id,
+                    CreatedAt = Messages.CreatedAt,
+                    UserName = Messages.User.UserName,
+                    UserId = Messages.User.Id,
+                }).ToList(),
+                FlashCardSets = group.FlashCardSets.Select(flashcardset => new FlashCardSetsGetDto
+                {
+                    Id = flashcardset.Id,
+                    GroupId = flashcardset.Group.Id,
+                    SetName = flashcardset.SetName,
+                }).ToList(),
+                Assignments = group.Assignments.Select(assignments => new AssignmentsGetDto
+                {
+                    Id = assignments.Id,
+                    GroupId = assignments.Group.Id,
+                    AssignmentName = assignments.AssignmentName,
+                }).ToList()
+            })
+            .ToList();
+
+        response.Data = groups;
+
+        return Ok(response);
+    }
+
 
     [HttpGet ("{id}")]
     public IActionResult GetById(int id)
@@ -261,7 +315,10 @@ public class GroupController : ControllerBase
         response.Data = data;
 
         return Ok(response);
-    }  
+    }
+
+    
+
 
     [HttpPut("{id}")]
     public IActionResult Update([FromBody] GroupUpdateDto updateDto, int id)
