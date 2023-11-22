@@ -32,11 +32,11 @@ export const GradeCreate = () => {
 
       // Add userId and username to the values before sending the request
       const gradeDataWithUser = {
-        values,
+        ...values,
         userId: userId,
         userName: user.userName,
       };
-
+console.log("values", values)
       const response = await api.post<ApiResponse<AssignmentGradeUpdateDto>>(
         `/api/assignmentGrade/${id}`,
         gradeDataWithUser

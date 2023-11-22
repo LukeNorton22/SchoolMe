@@ -39,6 +39,7 @@ public class AssignmentGradeUpdateDto
     public int Grades { get; set; }
     public int userId { get; set; }
     public string userName { get; set; }
+
 }
 
 
