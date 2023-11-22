@@ -120,12 +120,14 @@ export type TestsGetDto = {
   id: number;
   groupId: number;
   testName: string;
+  userId: number;
   questions: QuestionGetDto[];
   
 };
 
 export type TestUpdateDto = {
   testName: string;
+  userId: number;
 };
 
 export type FlashCardSetGetDto = {

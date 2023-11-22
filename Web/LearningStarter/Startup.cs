@@ -270,6 +270,7 @@ public class Startup
         {
             TestName = "Midterm Material",
             GroupId = 1,
+            UserId= 1
         };
 
         dataContext.Set<Tests>().Add(seededTest1);

@@ -205,60 +205,66 @@ export const GroupHome = () => {
         </Tabs.List>
 
         <Tabs.Panel value="Tests">
-          {/* Tests Content */}
+  {/* Tests Content */}
+  {group?.tests.map((test) => (
+    <div
+      style={{
+        whiteSpace: "nowrap",
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+      }}
+      key={test.id} // Make sure to provide a unique key for each item in the list
+    >
+      <Button
+        variant="subtle"
+        color="gray"
+        size="sm"
+        radius="xs"
+        onClick={() =>
+          navigate(routes.TestingPage.replace(":id", `${test.id}`))
+        }
+      >
+        {test.testName}
+      </Button>
 
-          {group?.tests.map((test) => (
-            <div
-              style={{
-                whiteSpace: "nowrap",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <Button
-                variant="subtle"
-                color="gray"
-                size="sm"
-                radius="xs"
-                onClick={() =>
-                  navigate(routes.TestingPage.replace(":id", `${test.id}`))
-                }
-              >
-                {test.testName}
-              </Button>
-
-              <FontAwesomeIcon
-                className={classes.iconButton}
-                icon={faPen}
-                onClick={() =>
-                  navigate(routes.TestUpdate.replace(":id", `${test.id}`))
-                }
-              />
-              <FontAwesomeIcon
-                className={classes.iconButton}
-                icon={faTrash}
-                color="red"
-                size="sm"
-                onClick={() =>
-                  handleDeleteAndNavigate(test.id, test.groupId, "test")
-                }
-                style={{ cursor: "pointer", marginLeft: "8px" }}
-              />
-            </div>
-          ))}
-          <Button
-            variant="subtle"
-            color="gray"
-            size="sm"
-            radius="xs"
+      {user.id === test.userId && ( // Check if the current user is the creator of the test
+        <>
+          <FontAwesomeIcon
+            className={classes.iconButton}
+            icon={faPen}
             onClick={() =>
-              navigate(routes.TestCreate.replace(":id", `${group?.id}`))
+              navigate(routes.TestUpdate.replace(":id", `${test.id}`))
             }
-          >
-            Create Test
-          </Button>
-        </Tabs.Panel>
+          />
+          <FontAwesomeIcon
+            className={classes.iconButton}
+            icon={faTrash}
+            color="red"
+            size="sm"
+            onClick={() =>
+              handleDeleteAndNavigate(test.id, test.groupId, "test")
+            }
+            style={{ cursor: "pointer", marginLeft: "8px" }}
+          />
+        </>
+      )}
+    </div>
+  ))}
+
+  <Button
+    variant="subtle"
+    color="gray"
+    size="sm"
+    radius="xs"
+    onClick={() =>
+      navigate(routes.TestCreate.replace(":id", `${group?.id}`))
+    }
+  >
+    Create Test
+  </Button>
+</Tabs.Panel>
+
         <Tabs.Panel value="GroupUser">
   {/* Users List */}
   {group?.users.map((user) => (

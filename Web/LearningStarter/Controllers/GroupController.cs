@@ -168,6 +168,7 @@ public class GroupController : ControllerBase
                     Id = test.Id,
                     GroupId = test.GroupId,
                     TestName = test.TestName,
+                    UserId = test.UserId,
                     // Add other test properties as needed
                 }).ToList(),
 
@@ -302,6 +303,7 @@ public class GroupController : ControllerBase
                     Id = test.Id,
                     GroupId = test.Group.Id,
                     TestName = test.TestName,
+                    UserId = test.User.Id,
                 }).ToList(),
                 Messages = group.Messages.Select(Messages => new MessagesGetDto
                 {
@@ -359,6 +361,7 @@ public class GroupController : ControllerBase
                     Id = test.Id,
                     GroupId = test.Group.Id,
                     TestName = test.TestName,
+                    UserId = test.User.Id,
 
                 }).ToList(),
                 Messages = group.Messages.Select(Messages => new MessagesGetDto
