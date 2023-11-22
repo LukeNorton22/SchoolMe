@@ -21,48 +21,67 @@ namespace LearningStarter.Controllers
             _dataContext = dataContext;
         }
 
-        [HttpPost("{groupId}")]
-        public IActionResult Create(int groupId, [FromBody] FlashCardSetsCreateDto createDto)
+
+        [HttpPost("{groupId}/{userId}")]
+        public IActionResult Create(int groupId, int userId, [FromBody] FlashCardSetsCreateDto createDto)
         {
             var response = new Response();
 
             var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
-            if (createDto.SetName == null)
-            {
-                response.AddError(nameof(createDto.SetName), "SetName can not be empty");
-            }
-
             if (group == null)
             {
-                return BadRequest("Group can not be found.");
+                return NotFound("Group not found.");
             }
 
-            var FlashCardSetsToCreate = new FlashCardSets
-            {              
+            var user = _dataContext.Set<User>().FirstOrDefault(x => x.Id == userId);
+            if (user == null)
+            {
+                response.AddError("UserId", "User not found.");
+                return UnprocessableEntity(response);
+            }
+
+            if (string.IsNullOrEmpty(createDto.SetName))
+            {
+                response.AddError(nameof(createDto.SetName), "SetName can not be empty");
+                return UnprocessableEntity(response);
+            }
+
+            var flashCardSetToCreate = new FlashCardSets
+            {
                 GroupId = group.Id,
-                SetName = createDto.SetName,               
+                UserId = user.Id,
+                SetName = createDto.SetName,
             };
-           
 
-            if (FlashCardSetsToCreate== null) {
-                return BadRequest("FlashCardSet can not be found.");
-            }
-           
-            
-           
-            _dataContext.Set<FlashCardSets>().Add(FlashCardSetsToCreate);
+            _dataContext.Set<FlashCardSets>().Add(flashCardSetToCreate);
             _dataContext.SaveChanges();
 
-            var FlashCardSetsToReturn = new FlashCardSetsGetDto
+            // Include associated flashcards in the response
+            var flashcards = _dataContext.Set<FlashCards>()
+                .Where(x => x.FlashCardSetId == flashCardSetToCreate.Id)
+                .Select(x => new FlashCardsGetDto
+                {
+                    Id = x.Id,
+                    FlashCardSetId = x.FlashCardSetId,
+                    Question = x.Question,
+                    Answer = x.Answer,
+                })
+                .ToList();
+
+            var flashCardSetToReturn = new FlashCardSetsGetDto
             {
-                Id = FlashCardSetsToCreate.Id, 
-                GroupId = FlashCardSetsToCreate.GroupId,
-                SetName = FlashCardSetsToCreate.SetName,
+                Id = flashCardSetToCreate.Id,
+                GroupId = flashCardSetToCreate.GroupId,
+                SetName = flashCardSetToCreate.SetName,
+                FlashCards = flashcards,
+                UserId = user.Id,
             };
 
-            response.Data = FlashCardSetsToReturn;
+            response.Data = flashCardSetToReturn;
             return Created("", response);
         }
+
+
 
         [HttpGet]
         public IActionResult GetAll()
@@ -104,6 +123,7 @@ namespace LearningStarter.Controllers
                   GroupId= FlashCardSets.GroupId,
                     
                     SetName = FlashCardSets.SetName,
+                    UserId = FlashCardSets.UserId,
                     FlashCards = FlashCardSets.FlashCards.Select(x => new FlashCardsGetDto
                     {
                         Id = x.Id,

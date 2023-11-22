@@ -12,6 +12,8 @@ namespace LearningStarter.Entities
         public int GroupId { get; set; }
         public Group Group { get; set; }
         public List<FlashCards> FlashCards { get; set; }
+        public int UserId { get; set; }
+        public User User { get; set; }
     }
 
     public class FlashCardSetsGetDto
@@ -20,6 +22,9 @@ namespace LearningStarter.Entities
        
         public int GroupId { get; set; }
         public string SetName { get; set; }
+
+        public int UserId { get; set; }
+        public User User { get; set; }  
         public List<FlashCardsGetDto> FlashCards { get; set; }
     }
     public class FlashCardSetsCreateDto
@@ -38,6 +43,12 @@ namespace LearningStarter.Entities
             builder.ToTable("FlashCardSets");
 
             builder.HasMany(x => x.FlashCards).WithOne(x => x.FlashCardSet);
+
+            builder.HasOne(x => x.User)
+             .WithMany() // Assuming User does not have a navigation property to FlashCardSets
+             .HasForeignKey(x => x.UserId); // Specify the foreign key property
+            
+
         }
     }
 

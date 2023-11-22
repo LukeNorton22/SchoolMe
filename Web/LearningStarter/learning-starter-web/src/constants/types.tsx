@@ -31,6 +31,7 @@ export type FlashCardsGetDto = {
   flashCardSetId: number;
   question: string;
   answer: string;
+  
 };
 
 
@@ -39,12 +40,9 @@ export type AssignmentGradeGetDto = {
   assignmentId: number;
   id: number;
   grades: number;
- userId: number;
+  userId: number;
   userName: string;
-  
- 
- 
- 
+
 };
 
 export type MessagesGetDto = {
@@ -134,10 +132,13 @@ export type FlashCardSetGetDto = {
   id: number;
   groupId: number;
   setName: string;
+  userId: number;
   flashCards: FlashCardsGetDto[];
 };
 export type FlashCardSetUpdateDto = {
+  
   setName: string;
+  userId: number;
 };
 
 

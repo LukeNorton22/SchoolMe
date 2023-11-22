@@ -150,6 +150,8 @@ export const GroupHome = () => {
 
   };
 
+
+
   useEffect(() => {
     fetchGroup();
   }, [id]);
@@ -295,72 +297,78 @@ export const GroupHome = () => {
     Add User
   </Button>
 </Tabs.Panel>
-        <Tabs.Panel value="Flashcard Sets">
-          {/* Flashcard Sets Content */}
-          {group?.flashCardSets.map((flashCardSet) => (
-            <div
-              style={{
-                whiteSpace: "nowrap",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <Button
-                variant="subtle"
-                color="gray"
-                size="sm"
-                radius="xs"
-                onClick={() =>
-                  navigate(
-                    routes.FlashCardSetListing.replace(":id", `${flashCardSet.id}`)
-                  )
-                }
-              >
-                {flashCardSet.setName}
-              </Button>
+<Tabs.Panel value="Flashcard Sets">
+  {/* Flashcard Sets Content */}
+  {group?.flashCardSets.map((flashCardSet) => (
+  <div
+    key={flashCardSet.id} // Make sure to provide a unique key for each item in the list
+    style={{
+      whiteSpace: "nowrap",
+      cursor: "pointer",
+      display: "flex",
+      alignItems: "center",
+    }}
+  >
+    <Button
+      variant="subtle"
+      color="gray"
+      size="sm"
+      radius="xs"
+      onClick={() =>
+        navigate(
+          routes.FlashCardSetListing.replace(":id", `${flashCardSet.id}`)
+        )
+      }
+    >
+      {flashCardSet.setName}
+    </Button>
 
-              <span style={{ marginRight: "8px" }}></span>
-              <FontAwesomeIcon
-                className={classes.iconButton}
-                icon={faPen}
-                onClick={() =>
-                  navigate(
-                    routes.FlashCardSetUpdate.replace(
-                      ":id",
-                      `${flashCardSet.id}`
-                    )
-                  )
-                }
-              />
-              <FontAwesomeIcon
-                className={classes.iconButton}
-                icon={faTrash}
-                color="red"
-                size="sm"
-                onClick={() =>
-                  handleDeleteAndNavigate(
-                    flashCardSet.id,
-                    flashCardSet.groupId,
-                    "fcSet"
-                  )
-                }
-                style={{ cursor: "pointer", marginLeft: "8px" }}
-              />
-            </div>
-          ))}
-          <Button
-            variant="subtle"
-            color="gray"
-            size="sm"
-            radius="xs"
-            onClick={() =>
-              navigate(routes.FCSetCreate.replace(":id", `${group?.id}`))
-            }
-          >
-            Create Set
-          </Button>
-        </Tabs.Panel>
+    <span style={{ marginRight: "8px" }}></span>
+   {/* Add debugging statements */}
+   
+    {user.id === flashCardSet.userId && (
+      <>
+        <FontAwesomeIcon
+          className={classes.iconButton}
+          icon={faPen}
+          onClick={() =>
+            navigate(
+              routes.FlashCardSetUpdate.replace(":id", `${flashCardSet.id}`)
+            )
+          }
+        />
+        <FontAwesomeIcon
+          className={classes.iconButton}
+          icon={faTrash}
+          color="red"
+          size="sm"
+          onClick={() =>
+            handleDeleteAndNavigate(
+              flashCardSet.id,
+              flashCardSet.groupId,
+              "fcSet"
+            )
+          }
+          style={{ cursor: "pointer", marginLeft: "8px" }}
+        />
+      </>
+    )}
+  </div>
+))}
+
+  <Button
+    variant="subtle"
+    color="gray"
+    size="sm"
+    radius="xs"
+    onClick={() =>
+      navigate(routes.FCSetCreate.replace(":id", `${group?.id}`))
+    }
+  >
+    Create Set
+  </Button>
+</Tabs.Panel>
+
 
         <Tabs.Panel value="Assignments">
           {/* Assignments Content */}

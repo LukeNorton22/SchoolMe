@@ -234,7 +234,7 @@ public class Startup
         {
             SetName = "Midterm study material",
             GroupId = 1,
-           
+            UserId = 1
         };
 
         dataContext.Set<FlashCardSets>().Add(seededFlashCardSet1);
