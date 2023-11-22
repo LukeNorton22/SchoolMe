@@ -17,7 +17,7 @@ export const AssignmentListing = () => {
   const [assignment, setAssignment] = useState<AssignmentGetDto | null>(null);
   const [grade, setGrade] = useState<AssignmentGradeGetDto | null>(null);
   const [loading, setLoading] = useState(true);
-
+console.log("gradeId", gradeId)
   async function fetchAssignment() {
     try {
       const response = await api.get<ApiResponse<AssignmentGetDto>>(`/api/assignments/${id}`);

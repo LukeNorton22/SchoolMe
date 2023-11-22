@@ -76,7 +76,9 @@ namespace LearningStarter.Controllers
                     {
                         Id=x.Id,
                         AssignmentId=x.Id,
-                        Grades = x.Grades   
+                        Grades = x.Grades , 
+                        userId=x.userId,
+                        userName=x.userName,
 
                     }).ToList(),
                 })
@@ -103,7 +105,10 @@ namespace LearningStarter.Controllers
                         Id = x.Id,
                         AssignmentId = x.AssignmentId,
                         Grades = x.Grades,
-                        
+                        userId = x.userId,
+                        userName = x.userName,
+
+
                     }).ToList(),
                 })
                 .SingleOrDefault(); 

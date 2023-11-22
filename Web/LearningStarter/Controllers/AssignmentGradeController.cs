@@ -32,21 +32,18 @@ public class AssignmentGradeController : ControllerBase
         {
             return BadRequest("Assignment can not be found.");
         }
-        if (createDto.Grades > 100)
+        if (createDto.Grades > 100 || createDto.Grades < 0)
         {
             return BadRequest("Grade must be between 0-100.");
         }
-        if (createDto.Grades < 0)
-        {
-            return BadRequest("Grade must be between 0-100.");
-        }
-
 
         var AssignmentGradesToCreate = new AssignmentGrade
         {
             AssignmentId = AssignmentId,
             Grades = createDto.Grades,
-
+            userId = createDto.userId,
+            userName=createDto.userName// Assign UserId from the request payload
+                                        // You can also assign other properties as needed
         };
 
         _dataContext.Set<AssignmentGrade>().Add(AssignmentGradesToCreate);
@@ -57,11 +54,15 @@ public class AssignmentGradeController : ControllerBase
             Id = AssignmentGradesToCreate.Id,
             AssignmentId = AssignmentId,
             Grades = createDto.Grades,
+            userId = AssignmentGradesToCreate.userId,
+            userName= AssignmentGradesToCreate.userName// Include UserId in the response DTO
+                                                       // You can also include other properties as needed
         };
 
         response.Data = TestQuestionsToReturn;
         return Created("", response);
     }
+
 
 
 
@@ -95,6 +96,8 @@ public class AssignmentGradeController : ControllerBase
                 Id = assignmentGrade.Id,    
                 AssignmentId= assignmentGrade.AssignmentId,
                 Grades = assignmentGrade.Grades,
+                userId= assignmentGrade.userId,
+                userName=assignmentGrade.userName,
               
 
             })
@@ -103,7 +106,7 @@ public class AssignmentGradeController : ControllerBase
         response.Data = data;
         if (data == null)
         {
-            response.AddError("id", "AssignmentGrade not found.");
+            response.AddError("AssignmentId", "AssignmentGrade not found.");
         }
         return Ok(response);
     }
