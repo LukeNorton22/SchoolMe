@@ -4,14 +4,15 @@ import { Button, Container, Flex, Space, TextInput } from "@mantine/core";
 import { useNavigate, useParams } from "react-router-dom";
 import { showNotification } from "@mantine/notifications";
 import api from "../../config/axios";
-import { useUser } from "../../authentication/use-auth"; // Assuming you have a hook to get user information
+import { useUser } from "../../authentication/use-auth"; 
 import { routes } from "../../routes";
 
 export const GradeCreate = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   console.log("Assignment ID:", id);
-  const user = useUser(); // Get user information using your hook
+  const user = useUser(); 
+  
   const mantineForm = useForm<AssignmentGradeUpdateDto>({
     initialValues: {
       grades: 0,
@@ -19,6 +20,7 @@ export const GradeCreate = () => {
   });
 
   const submitGrade = async (values: AssignmentGradeUpdateDto) => {
+   
     try {
       const userId = user.id;
       console.log("user.userName:", user.userName);
@@ -30,12 +32,13 @@ export const GradeCreate = () => {
         return;
       }
 
-      // Add userId and username to the values before sending the request
+     
       const gradeDataWithUser = {
         ...values,
         userId: userId,
         userName: user.userName,
       };
+      
 console.log("values", values)
       const response = await api.post<ApiResponse<AssignmentGradeUpdateDto>>(
         `/api/assignmentGrade/${id}`,
@@ -54,6 +57,8 @@ console.log("values", values)
       }
 
       if (response.data.data) {
+      
+
         showNotification({ message: "New grade added", color: "purple" });
         navigate(routes.AssignmentListing.replace(":id", `${id}`));
       }

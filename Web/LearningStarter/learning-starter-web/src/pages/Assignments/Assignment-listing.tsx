@@ -17,7 +17,7 @@ export const AssignmentListing = () => {
   const [assignment, setAssignment] = useState<AssignmentGetDto | null>(null);
   const [grade, setGrade] = useState<AssignmentGradeGetDto | null>(null);
   const [loading, setLoading] = useState(true);
-console.log("gradeId", gradeId)
+
   async function fetchAssignment() {
     try {
       const response = await api.get<ApiResponse<AssignmentGetDto>>(`/api/assignments/${id}`);
@@ -109,38 +109,42 @@ console.log("gradeId", gradeId)
 
       {assignment && (
         <Flex>
-          <Table withBorder fontSize={15}>
-            <thead>
-              <tr>
-                <th>Grades</th>
-              </tr>
-            </thead>
-            <tbody>
-              {assignment.grades.map((grade) => (
-                <tr key={grade.id}>
-                  <td>
-                    <FontAwesomeIcon
-                      className={classes.iconButton}
-                      icon={faPen}
-                      onClick={() => {
-                        navigate(routes.AssignmentGradeUpdate.replace(":id", `${grade.id}`));
-                      }}
-                      style={{ cursor: 'pointer', marginRight: '8px' }}
-                    />
-                    <FontAwesomeIcon
-                      className={classes.iconButton}
-                      icon={faTrash}
-                      color="red"
-                      size="sm"
-                      onClick={() => handleGradeDelete(grade.id)}
-                      style={{ cursor: 'pointer' }}
-                    />
-                    {grade.grades}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
+         <Table withBorder fontSize={15} style={{ width: '100%' }}>
+  <thead>
+    <tr>
+      <th>Grades</th>
+      <th style ={{paddingLeft:`400px`}}>User</th>
+    </tr>
+  </thead>
+  <tbody>
+    {assignment.grades.map((grade) => (
+      <tr key={grade.id}>
+        <td>
+          <FontAwesomeIcon
+            className={classes.iconButton}
+            icon={faPen}
+            onClick={() => {
+              navigate(routes.AssignmentGradeUpdate.replace(":id", `${grade.id}`));
+            }}
+            style={{ cursor: 'pointer', marginRight: '8px' }}
+          />
+          <FontAwesomeIcon
+            className={classes.iconButton}
+            icon={faTrash}
+            color="red"
+            size="sm"
+            onClick={() => handleGradeDelete(grade.id)}
+            style={{ cursor: 'pointer' }}
+          />
+          {grade.grades}
+        </td>
+        <td style={{ paddingLeft: '400px' }}>
+          <div>{grade.userName}</div>
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</Table>
 
           <Space h="lg" />
 

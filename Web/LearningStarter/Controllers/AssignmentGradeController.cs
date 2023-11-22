@@ -53,7 +53,7 @@ public class AssignmentGradeController : ControllerBase
         {
             Id = AssignmentGradesToCreate.Id,
             AssignmentId = AssignmentId,
-            Grades = createDto.Grades,
+            Grades = AssignmentGradesToCreate.Grades,
             userId = AssignmentGradesToCreate.userId,
             userName= AssignmentGradesToCreate.userName// Include UserId in the response DTO
                                                        // You can also include other properties as needed

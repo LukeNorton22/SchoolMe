@@ -39,6 +39,12 @@ export type AssignmentGradeGetDto = {
   assignmentId: number;
   id: number;
   grades: number;
+ userId: number;
+  userName: string;
+  
+ 
+ 
+ 
 };
 
 export type MessagesGetDto = {
@@ -69,6 +75,7 @@ export type AssignmentUpdateDto = {
 };
 
 export type AssignmentGradeUpdateDto = {
+  
   
   
   grades: number;
