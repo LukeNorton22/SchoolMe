@@ -203,6 +203,80 @@ public class GroupController : ControllerBase
 
         return Ok(response);
     }
+
+    [HttpPost("CreateAndAddUser")]
+    public IActionResult CreateAndAddUser([FromBody] GroupCreateDto createDto, [FromQuery] int userId)
+    {
+        var response = new Response();
+
+        if (string.IsNullOrEmpty(createDto.GroupName))
+        {
+            response.AddError(nameof(createDto.GroupName), "Group name can't be empty");
+        }
+
+        if (response.HasErrors)
+        {
+            return BadRequest(response);
+        }
+
+        var groupToCreate = new Group
+        {
+            GroupName = createDto.GroupName,
+            Description = createDto.Description,
+        };
+
+        _dataContext.Set<Group>().Add(groupToCreate);
+        _dataContext.SaveChanges();
+
+        // Get the created group with the added user
+        var groupWithUser = _dataContext
+            .Set<Group>()
+            .Include(g => g.Users)
+            .FirstOrDefault(g => g.Id == groupToCreate.Id);
+
+        var user = _dataContext.Set<User>().FirstOrDefault(u => u.Id == userId);
+
+        if (user == null)
+        {
+            response.AddError("userId", "User not found.");
+            return BadRequest(response);
+        }
+
+        if (groupWithUser == null)
+        {
+            response.AddError("groupId", "Group not found.");
+            return BadRequest(response);
+        }
+
+        var groupUser = new GroupUser
+        {
+            Group = groupWithUser,
+            User = user
+        };
+
+        _dataContext.Set<GroupUser>().Add(groupUser);
+        _dataContext.SaveChanges();
+
+        var groupToReturn = new GroupGetDto
+        {
+            Id = groupWithUser.Id,
+            GroupName = groupWithUser.GroupName,
+            Description = groupWithUser.Description,
+            Users = groupWithUser.Users.Where(u => u.User != null).Select(x => new GroupUserGetDto
+            {
+                Id = x.User.Id,
+                FirstName = x.User.FirstName,
+                LastName = x.User.LastName,
+                UserName = x.User.UserName,
+            }).ToList()
+        };
+
+        response.Data = groupToReturn;
+
+        return Created("", response);
+    }
+
+
     [HttpGet("ByUserId/{userId}")]
     public IActionResult GetGroupsByUserId(int userId)
     {
