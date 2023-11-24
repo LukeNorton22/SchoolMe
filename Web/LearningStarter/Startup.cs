@@ -306,6 +306,9 @@ public class Startup
         {
             GroupId = 1,
             AssignmentName = "Midterm Presentations",
+            UserId = 1,
+           
+            
         };
 
         dataContext.Set<Assignments>().Add(seededAssignment1);

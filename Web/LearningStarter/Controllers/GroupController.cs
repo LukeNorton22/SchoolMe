@@ -195,7 +195,9 @@ public class GroupController : ControllerBase
                 {
                     Id = assignments.Id,
                     GroupId = assignments.GroupId,
-                    AssignmentName = assignments.AssignmentName
+                    AssignmentName = assignments.AssignmentName,
+                    UserId = assignments.UserId,
+                    
 
                 }).ToList()
 
@@ -326,6 +328,7 @@ public class GroupController : ControllerBase
                     Id = assignments.Id,
                     GroupId = assignments.Group.Id,
                     AssignmentName = assignments.AssignmentName,
+                    UserId = assignments.UserId,
                 }).ToList()
             })
             .ToList();
@@ -385,7 +388,8 @@ public class GroupController : ControllerBase
                 { 
                     Id =assignments.Id,
                     GroupId = assignments.Group.Id,
-                    AssignmentName = assignments.AssignmentName
+                    AssignmentName = assignments.AssignmentName,
+                    UserId=assignments.User.Id,
 
                 }).ToList()
 

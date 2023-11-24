@@ -20,18 +20,18 @@ public class AssignmentGradeController : ControllerBase
     {
         _dataContext = dataContext;
     }
-
-    [HttpPost("{AssignmentId}")]
-    public IActionResult Create(int AssignmentId, [FromBody] AssignmentGradeCreateDto createDto)
+    [HttpPost("{AssignmentId}/{userId}")]
+    public IActionResult Create(int AssignmentId, int userId, [FromBody] AssignmentGradeCreateDto createDto)
     {
         var response = new Response();
 
-        var assignment = _dataContext.Set<Tests>().FirstOrDefault(x => x.Id == AssignmentId);
+        var assignment = _dataContext.Set<Assignments>().FirstOrDefault(x => x.Id == AssignmentId);
 
         if (assignment == null)
         {
             return BadRequest("Assignment can not be found.");
         }
+
         if (createDto.Grades > 100 || createDto.Grades < 0)
         {
             return BadRequest("Grade must be between 0-100.");
@@ -41,9 +41,8 @@ public class AssignmentGradeController : ControllerBase
         {
             AssignmentId = AssignmentId,
             Grades = createDto.Grades,
-            userId = createDto.userId,
-            userName=createDto.userName// Assign UserId from the request payload
-                                        // You can also assign other properties as needed
+            userId = userId,
+            userName = createDto.userName
         };
 
         _dataContext.Set<AssignmentGrade>().Add(AssignmentGradesToCreate);
@@ -55,8 +54,7 @@ public class AssignmentGradeController : ControllerBase
             AssignmentId = AssignmentId,
             Grades = AssignmentGradesToCreate.Grades,
             userId = AssignmentGradesToCreate.userId,
-            userName= AssignmentGradesToCreate.userName// Include UserId in the response DTO
-                                                       // You can also include other properties as needed
+            userName = AssignmentGradesToCreate.userName
         };
 
         response.Data = TestQuestionsToReturn;
@@ -76,7 +74,8 @@ public class AssignmentGradeController : ControllerBase
             {
                 Id = AssignmentGrade.Id,
                 AssignmentId=AssignmentGrade.AssignmentId,
-                Grades = AssignmentGrade.Grades,               
+                Grades = AssignmentGrade.Grades,       
+                userId = AssignmentGrade.userId,
             })
             .ToList();
 
@@ -140,6 +139,7 @@ public class AssignmentGradeController : ControllerBase
             Id = AssignmentGradeToUpdate.Id,
             AssignmentId = AssignmentGradeToUpdate.AssignmentId,
             Grades = AssignmentGradeToUpdate.Grades,
+            userId  = AssignmentGradeToUpdate.userId
             
         };
 

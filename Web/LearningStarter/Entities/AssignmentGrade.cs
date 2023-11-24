@@ -49,10 +49,14 @@ public class AssignmentGradeEntityTypeConfiguration : IEntityTypeConfiguration<A
     {
         builder.ToTable("AssignmentGrade");
 
-        builder.HasOne(q => q.Assignments)
-          .WithMany(t => t.Grades)
-          .HasForeignKey(q => q.AssignmentId);
-        builder.HasOne(x => x.User); 
+        builder.HasOne(x => x.User)
+            .WithMany()
+            .HasForeignKey(x => x.userId)
+            .OnDelete(DeleteBehavior.Restrict); // Adjust the cascade action if needed
+        builder.HasOne(x => x.Assignments)  // Add this line for the Assignments relationship
+           .WithMany(a => a.Grades)
+           .HasForeignKey(x => x.AssignmentId)
+           .OnDelete(DeleteBehavior.Restrict);
 
     }
 }

@@ -1,3 +1,4 @@
+import React from "react";
 import { FormErrors, useForm } from "@mantine/form";
 import { ApiResponse, AssignmentGradeUpdateDto } from "../../constants/types";
 import { Button, Container, Flex, Space, TextInput } from "@mantine/core";
@@ -20,28 +21,21 @@ export const GradeCreate = () => {
   });
 
   const submitGrade = async (values: AssignmentGradeUpdateDto) => {
-   
     try {
-      const userId = user.id;
-      console.log("user.userName:", user.userName);
-
-      console.log("userId:", user.id);
       // Ensure that user and user.id are defined
       if (!user || !user.id || !user.userName) {
         console.error("User information is missing.");
         return;
       }
 
-     
       const gradeDataWithUser = {
         ...values,
-        userId: userId,
+        userId: user.id,
         userName: user.userName,
       };
-      
-console.log("values", values)
+
       const response = await api.post<ApiResponse<AssignmentGradeUpdateDto>>(
-        `/api/assignmentGrade/${id}`,
+        `/api/assignmentGrade/${id}/${user.id}`, // Include userId in the URL
         gradeDataWithUser
       );
 
@@ -57,8 +51,6 @@ console.log("values", values)
       }
 
       if (response.data.data) {
-      
-
         showNotification({ message: "New grade added", color: "purple" });
         navigate(routes.AssignmentListing.replace(":id", `${id}`));
       }

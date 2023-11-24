@@ -65,12 +65,14 @@ export type AssignmentGetDto = {
   id: number;
   groupId: number;
   assignmentName: string;
+  userId: number;
   grades: AssignmentGradeGetDto[];
 
 };
 
 export type AssignmentUpdateDto = {
   assignmentName: string;
+  userId: number;
 };
 
 export type AssignmentGradeUpdateDto = {

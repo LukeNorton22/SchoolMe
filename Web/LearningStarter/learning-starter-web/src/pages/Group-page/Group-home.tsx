@@ -378,57 +378,61 @@ export const GroupHome = () => {
 
         <Tabs.Panel value="Assignments">
           {/* Assignments Content */}
-          {group?.assignments.map((assignment) => (
-            <div
-              style={{
-                whiteSpace: "nowrap",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <Button
-                variant="subtle"
-                color="gray"
-                size="sm"
-                radius="xs"
-                onClick={() =>
-                  navigate(
-                    routes.AssignmentListing.replace(
-                      ":id",
-                      `${assignment.id}`
-                    )
-                  )
-                }
-              >
-                {assignment.assignmentName}
-              </Button>
+         {/* Assignments Content */}
+{group?.assignments.map((assignment) => (
+  <div
+    style={{
+      whiteSpace: "nowrap",
+      cursor: "pointer",
+      display: "flex",
+      alignItems: "center",
+    }}
+    key={assignment.id} // Make sure to provide a unique key for each item in the list
+  >
+    <Button
+      variant="subtle"
+      color="gray"
+      size="sm"
+      radius="xs"
+      onClick={() =>
+        navigate(
+          routes.AssignmentListing.replace(":id", `${assignment.id}`)
+        )
+      }
+    >
+      {assignment.assignmentName}
+    </Button>
 
-              <FontAwesomeIcon
-                className={classes.iconButton}
-                icon={faPen}
-                onClick={() =>
-                  navigate(
-                    routes.AssignmentUpdate.replace(":id", `${assignment.id}`)
-                  )
-                }
-              />
-              <FontAwesomeIcon
-                className={classes.iconButton}
-                icon={faTrash}
-                color="red"
-                size="sm"
-                onClick={() =>
-                  handleDeleteAndNavigate(
-                    assignment.id,
-                    assignment.groupId,
-                    "assignment"
-                  )
-                }
-                style={{ cursor: "pointer", marginLeft: "8px" }}
-              />
-            </div>
-          ))}
+    {user.id === assignment.userId && ( // Check if the current user is the creator of the assignment
+      <>
+        <FontAwesomeIcon
+          className={classes.iconButton}
+          icon={faPen}
+          onClick={() =>
+            navigate(
+              routes.AssignmentUpdate.replace(":id", `${assignment.id}`)
+            )
+          }
+        />
+        <FontAwesomeIcon
+          className={classes.iconButton}
+          icon={faTrash}
+          color="red"
+          size="sm"
+          onClick={() =>
+            handleDeleteAndNavigate(
+              assignment.id,
+              assignment.groupId,
+              "assignment"
+            )
+          }
+          style={{ cursor: "pointer", marginLeft: "8px" }}
+        />
+      </>
+    )}
+  </div>
+))}
+
           <Button
             variant="subtle"
             color="gray"

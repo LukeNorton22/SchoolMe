@@ -5,19 +5,25 @@ import { routes } from "../../routes";
 import { useNavigate, useParams } from "react-router-dom";
 import { showNotification } from "@mantine/notifications";
 import api from "../../config/axios";
+import { useUser } from "../../authentication/use-auth";
+
 
 export const AssignmentCreatee = () => {
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { id , userId} = useParams();
+  const user = useUser();
+
+
   const mantineForm = useForm<AssignmentUpdateDto>({
     initialValues: {
       assignmentName: "",
+      userId: user.id,
     },
   });
 
   const submitAssignment = async (values: AssignmentUpdateDto) => {
     const response = await api.post<ApiResponse<AssignmentUpdateDto>>(
-      `/api/Assignments/${id}`, 
+      `/api/Assignments/${id}/${user.id}`, 
       values
     );
 

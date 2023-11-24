@@ -9,6 +9,8 @@ import api from "../../config/axios";
 import "./Card.css";
 import { faArrowLeft, faPen, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { GradeCreate } from "../assignmentgrade-page/grade-create";
+import { useUser } from "../../authentication/use-auth";
+
 
 export const AssignmentListing = () => {
   const { id, gradeId } = useParams();
@@ -17,6 +19,8 @@ export const AssignmentListing = () => {
   const [assignment, setAssignment] = useState<AssignmentGetDto | null>(null);
   const [grade, setGrade] = useState<AssignmentGradeGetDto | null>(null);
   const [loading, setLoading] = useState(true);
+  const user = useUser();
+
 
   async function fetchAssignment() {
     try {
@@ -51,6 +55,7 @@ export const AssignmentListing = () => {
     }
 
     const totalGrades = assignment.grades.reduce((sum, grade) => sum + Number(grade.grades), 0);
+    
     const average = totalGrades / assignment.grades.length;
     return average.toFixed(2);
   };
@@ -74,7 +79,9 @@ export const AssignmentListing = () => {
     fetchGrades();
     fetchAssignment();
   }, [id]);
-
+  console.log("User ID:", user.id);
+  console.log("Assignment User ID:", assignment?.userId);
+  
   if (loading) {
     return <div>Loading...</div>; // Render a loading indicator
   }
@@ -93,58 +100,67 @@ export const AssignmentListing = () => {
       >
         <FontAwesomeIcon icon={faArrowLeft} size="xl" />
       </Button>
-      <Button
-        onClick={() => {
-          
-          navigate(routes.AssignmentGradeCreate.replace(":id", `${assignment?.id}`));
-        }}
-      >
-        <FontAwesomeIcon icon={faPlus} /> <Space w={8} />
-        Add Grade
-      </Button>
-      <Center>
-        <Title>{assignment?.assignmentName}</Title>
-        <Space h="lg" />
-      </Center>
+
+      {assignment &&  (
+        <Button
+          onClick={() => {
+            navigate(routes.AssignmentGradeCreate.replace(":id", `${assignment?.id}`));
+          }}
+        >
+          <FontAwesomeIcon icon={faPlus} /> <Space w={8} />
+          Add Grade
+        </Button>
+      )}
+
+      {assignment && (
+        <Center>
+          <Title>{assignment?.assignmentName}</Title>
+          <Space h="lg" />
+        </Center>
+      )}
 
       {assignment && (
         <Flex>
-         <Table withBorder fontSize={15} style={{ width: '100%' }}>
-  <thead>
-    <tr>
-      <th>Grades</th>
-      <th style ={{paddingLeft:`400px`}}>User</th>
-    </tr>
-  </thead>
-  <tbody>
-    {assignment.grades.map((grade) => (
-      <tr key={grade.id}>
-        <td>
-          <FontAwesomeIcon
-            className={classes.iconButton}
-            icon={faPen}
-            onClick={() => {
-              navigate(routes.AssignmentGradeUpdate.replace(":id", `${grade.id}`));
-            }}
-            style={{ cursor: 'pointer', marginRight: '8px' }}
-          />
-          <FontAwesomeIcon
-            className={classes.iconButton}
-            icon={faTrash}
-            color="red"
-            size="sm"
-            onClick={() => handleGradeDelete(grade.id)}
-            style={{ cursor: 'pointer' }}
-          />
-          {grade.grades}
-        </td>
-        <td style={{ paddingLeft: '400px' }}>
-          <div>{grade.userName}</div>
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</Table>
+          <Table withBorder fontSize={15} style={{ width: '100%' }}>
+            <thead>
+              <tr>
+                <th>Grades</th>
+                <th style={{ paddingLeft: `400px` }}>User</th>
+              </tr>
+            </thead>
+            <tbody>
+              {assignment.grades.map((grade) => (
+                <tr key={grade.id}>
+                  <td>
+                    {grade.userId === user.id && (
+                      <>
+                        <FontAwesomeIcon
+                          className={classes.iconButton}
+                          icon={faPen}
+                          onClick={() => {
+                            navigate(routes.AssignmentGradeUpdate.replace(":id", `${grade.id}`));
+                          }}
+                          style={{ cursor: 'pointer', marginRight: '8px' }}
+                        />
+                        <FontAwesomeIcon
+                          className={classes.iconButton}
+                          icon={faTrash}
+                          color="red"
+                          size="sm"
+                          onClick={() => handleGradeDelete(grade.id)}
+                          style={{ cursor: 'pointer' }}
+                        />
+                      </>
+                    )}
+                    {grade.grades}
+                  </td>
+                  <td style={{ paddingLeft: '400px' }}>
+                    <div>{grade.userName}</div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
 
           <Space h="lg" />
 
