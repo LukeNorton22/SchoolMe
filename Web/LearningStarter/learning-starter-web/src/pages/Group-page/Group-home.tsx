@@ -14,6 +14,9 @@ import { GroupGetDto, ApiResponse, MessagesGetDto } from "../../constants/types"
 import { routes } from "../../routes";
 import { createStyles } from "@mantine/core";
 import { useUser } from "../../authentication/use-auth";
+import { UpdateDeleteButton } from './three-dots'; // Import the UpdateDeleteButton component
+import {  faChevronDown } from '@fortawesome/free-solid-svg-icons';
+
 
 
 export const GroupHome = () => {
@@ -204,7 +207,7 @@ export const GroupHome = () => {
           <Tabs.Tab value="GroupUser">Group Members</Tabs.Tab>
         </Tabs.List>
 
-        <Tabs.Panel value="Tests">
+  <Tabs.Panel value="Tests">
   {/* Tests Content */}
   {group?.tests.map((test) => (
     <div
@@ -214,7 +217,7 @@ export const GroupHome = () => {
         display: "flex",
         alignItems: "center",
       }}
-      key={test.id} // Make sure to provide a unique key for each item in the list
+      key={test.id}
     >
       <Button
         variant="subtle"
@@ -228,26 +231,15 @@ export const GroupHome = () => {
         {test.testName}
       </Button>
 
-      {user.id === test.userId && ( // Check if the current user is the creator of the test
-        <>
-          <FontAwesomeIcon
-            className={classes.iconButton}
-            icon={faPen}
-            onClick={() =>
-              navigate(routes.TestUpdate.replace(":id", `${test.id}`))
-            }
-          />
-          <FontAwesomeIcon
-            className={classes.iconButton}
-            icon={faTrash}
-            color="red"
-            size="sm"
-            onClick={() =>
-              handleDeleteAndNavigate(test.id, test.groupId, "test")
-            }
-            style={{ cursor: "pointer", marginLeft: "8px" }}
-          />
-        </>
+      {user.id === test.userId && (
+        <UpdateDeleteButton
+          onUpdate={() =>
+            navigate(routes.TestUpdate.replace(":id", `${test.id}`))
+          }
+          onDelete={() =>
+            handleDeleteAndNavigate(test.id, test.groupId, "test")
+          }
+        />
       )}
     </div>
   ))}
@@ -264,6 +256,7 @@ export const GroupHome = () => {
     Create Test
   </Button>
 </Tabs.Panel>
+
 
         <Tabs.Panel value="GroupUser">
   {/* Users List */}
@@ -306,61 +299,41 @@ export const GroupHome = () => {
 <Tabs.Panel value="Flashcard Sets">
   {/* Flashcard Sets Content */}
   {group?.flashCardSets.map((flashCardSet) => (
-  <div
-    key={flashCardSet.id} // Make sure to provide a unique key for each item in the list
-    style={{
-      whiteSpace: "nowrap",
-      cursor: "pointer",
-      display: "flex",
-      alignItems: "center",
-    }}
-  >
-    <Button
-      variant="subtle"
-      color="gray"
-      size="sm"
-      radius="xs"
-      onClick={() =>
-        navigate(
-          routes.FlashCardSetListing.replace(":id", `${flashCardSet.id}`)
-        )
-      }
+    <div
+      key={flashCardSet.id}
+      style={{
+        whiteSpace: "nowrap",
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+      }}
     >
-      {flashCardSet.setName}
-    </Button>
+      <Button
+        variant="subtle"
+        color="gray"
+        size="sm"
+        radius="xs"
+        onClick={() =>
+          navigate(routes.FlashCardSetListing.replace(":id", `${flashCardSet.id}`))
+        }
+      >
+        {flashCardSet.setName}
+      </Button>
 
-    <span style={{ marginRight: "8px" }}></span>
-   {/* Add debugging statements */}
-   
-    {user.id === flashCardSet.userId && (
-      <>
-        <FontAwesomeIcon
-          className={classes.iconButton}
-          icon={faPen}
-          onClick={() =>
-            navigate(
-              routes.FlashCardSetUpdate.replace(":id", `${flashCardSet.id}`)
-            )
+      <span style={{ marginRight: "8px" }}></span>
+
+      {user.id === flashCardSet.userId && (
+        <UpdateDeleteButton
+          onUpdate={() =>
+            navigate(routes.FlashCardSetUpdate.replace(":id", `${flashCardSet.id}`))
+          }
+          onDelete={() =>
+            handleDeleteAndNavigate(flashCardSet.id, flashCardSet.groupId, "fcSet")
           }
         />
-        <FontAwesomeIcon
-          className={classes.iconButton}
-          icon={faTrash}
-          color="red"
-          size="sm"
-          onClick={() =>
-            handleDeleteAndNavigate(
-              flashCardSet.id,
-              flashCardSet.groupId,
-              "fcSet"
-            )
-          }
-          style={{ cursor: "pointer", marginLeft: "8px" }}
-        />
-      </>
-    )}
-  </div>
-))}
+      )}
+    </div>
+  ))}
 
   <Button
     variant="subtle"
@@ -376,140 +349,113 @@ export const GroupHome = () => {
 </Tabs.Panel>
 
 
-        <Tabs.Panel value="Assignments">
-          {/* Assignments Content */}
-         {/* Assignments Content */}
-{group?.assignments.map((assignment) => (
-  <div
-    style={{
-      whiteSpace: "nowrap",
-      cursor: "pointer",
-      display: "flex",
-      alignItems: "center",
-    }}
-    key={assignment.id} // Make sure to provide a unique key for each item in the list
-  >
-    <Button
-      variant="subtle"
-      color="gray"
-      size="sm"
-      radius="xs"
-      onClick={() =>
-        navigate(
-          routes.AssignmentListing.replace(":id", `${assignment.id}`)
-        )
-      }
+<Tabs.Panel value="Assignments">
+  {/* Assignments Content */}
+  {group?.assignments.map((assignment) => (
+    <div
+      style={{
+        whiteSpace: "nowrap",
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+      }}
+      key={assignment.id}
     >
-      {assignment.assignmentName}
-    </Button>
+      <Button
+        variant="subtle"
+        color="gray"
+        size="sm"
+        radius="xs"
+        onClick={() =>
+          navigate(
+            routes.AssignmentListing.replace(":id", `${assignment.id}`)
+          )
+        }
+      >
+        {assignment.assignmentName}
+      </Button>
 
-    {user.id === assignment.userId && ( // Check if the current user is the creator of the assignment
-      <>
-        <FontAwesomeIcon
-          className={classes.iconButton}
-          icon={faPen}
-          onClick={() =>
+      {user.id === assignment.userId && (
+        <UpdateDeleteButton
+          onUpdate={() =>
             navigate(
               routes.AssignmentUpdate.replace(":id", `${assignment.id}`)
             )
           }
-        />
-        <FontAwesomeIcon
-          className={classes.iconButton}
-          icon={faTrash}
-          color="red"
-          size="sm"
-          onClick={() =>
+          onDelete={() =>
             handleDeleteAndNavigate(
               assignment.id,
               assignment.groupId,
               "assignment"
             )
           }
-          style={{ cursor: "pointer", marginLeft: "8px" }}
         />
-      </>
-    )}
-  </div>
-))}
+      )}
+    </div>
+  ))}
 
-          <Button
-            variant="subtle"
-            color="gray"
-            size="sm"
-            radius="xs"
-            onClick={() =>
-              navigate(routes.AssignmentCreatee.replace(":id", `${group?.id}`))
-            }
-          >
-            Create Assignment
-          </Button>
-        </Tabs.Panel>
+  <Button
+    variant="subtle"
+    color="gray"
+    size="sm"
+    radius="xs"
+    onClick={() =>
+      navigate(routes.AssignmentCreatee.replace(":id", `${group?.id}`))
+    }
+  >
+    Create Assignment
+  </Button>
+</Tabs.Panel>
+
      
         <Tabs.Panel value="Chat">
+      {group && (
+        <div style={{ position: 'fixed', bottom: 70, left: 170, right: 170, padding: '0px', backgroundColor: '' }}>
+          <Input
+            size="md"
+            placeholder="Type your message..."
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            style={{ borderColor: theme.colors.teal[6], color: theme.black }}
+          />
+          <Space h={8}></Space>
+          <Button variant="filled" color="teal" onClick={handleSendMessage}>
+            Send
+          </Button>
+        </div>
+      )}
+
+      <div style={{ left: "120", right: "120", maxHeight: "385px", overflowY: "auto", width: "100%" }} ref={tableRef}>
+        {/* Set your desired max height */}
         {group && (
-          <div style={{ position: 'fixed', bottom: 70, left: 170, right: 170, padding: '0px', backgroundColor: '' }}>
-            <Input
-              size="md"
-              placeholder="Type your message..."
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              style={{ borderColor: theme.colors.teal[6], color: theme.black }}
-
-            />
-            <Space h={8}></Space>
-            <Button variant="filled" color="teal" onClick={handleSendMessage}>
-              Send
-            </Button>
-          </div>
-        )}
-
-        <div style={{left: "120", right: "120", maxHeight: "385px",  overflowY: "auto", width: "100%"}} ref={tableRef}> {/* Set your desired max height */}
-          {group && (
-            <Table style={{ borderColor: theme.colors.teal[6], width: "100%", tableLayout: "fixed" }}>
+          <Table style={{ borderColor: theme.colors.teal[6], width: "100%", tableLayout: "fixed" }}>
             <colgroup>
-              <col style={{ width: "10%" }} /> {/* Adjust the width of the first column as needed */}
-              <col style={{ width: "90%" }} /> {/* Adjust the width of the second column as needed */}
+              <col style={{ width: "90%" }} /> {/* Move the first column style to the right */}
+              <col style={{ width: "10%" }} /> {/* Move the second column style to the left */}
             </colgroup>
             <tbody>
-            {group.messages.map((message) => (
-                  <tr key={message.id}>
-                    <td style={{ textAlign: 'left' }}>
-                      {user.id === message.userId && ( // Check if the current user is the sender
-                        <>
-                          <FontAwesomeIcon
-                            className={classes.iconButton}
-                            icon={faPencil}
-                            onClick={() => {
-                              navigate(
-                                routes.MessageUpdate.replace(":id", `${message.id}`)
-                              );
-                            }}
-                          />
-                          <FontAwesomeIcon
-                            className={classes.iconButton}
-                            icon={faTrash}
-                            color="red"
-                            size="sm"
-                            onClick={() =>
-                              handleDeleteAndNavigate(message.id, message.groupId, "message")
-                            }
-                            style={{ cursor: "pointer", marginLeft: "8px" }}
-                          />
-                        </>
-                      )}
-                    </td>
-                    <td style={{ textAlign: 'left' }}>
-                      <strong style={{ fontSize: '1.2em' }}>{message.userName}</strong>
-                      <Space></Space>{message.content}<Space></Space>{message.createdAt}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          )}
-        </div>
-      </Tabs.Panel>
+              {group.messages.map((message) => (
+                <tr key={message.id}>
+                  <td style={{ textAlign: 'left', wordWrap: 'break-word' }}>
+                    <strong style={{ fontSize: '1.2em' }}>{message.userName}</strong>
+                    <Space></Space>{message.content}<Space></Space>{message.createdAt}
+                  </td>
+                  <td style={{ textAlign: 'right' }}>
+                    {user.id === message.userId && ( // Check if the current user is the sender
+                      <UpdateDeleteButton
+                        onUpdate={() => navigate(routes.MessageUpdate.replace(":id", `${message.id}`))}
+                        onDelete={() => handleDeleteAndNavigate(message.id, message.groupId, "message")}
+                      />
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        )}
+      </div>
+    </Tabs.Panel>
+
       </Tabs>
     </Container>
    
