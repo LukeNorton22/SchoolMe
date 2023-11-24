@@ -23,6 +23,7 @@ import { routes } from "../../routes";
 import "./FlashCardListing.css"; 
 import Flashcard from "../../components/FlashCards/Flashcard";
 import { useUser } from "../../authentication/use-auth";
+import { UpdateDeleteButton } from "../Group-page/three-dots";
 
 export const FlashCardListing: React.FC = () => {
   const { id } = useParams();
@@ -177,39 +178,23 @@ export const FlashCardListing: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {fcset.flashCards.map((flashcard, index) => (
-                  <tr key={index}>
-                    <td>
-                      {user.id === fcset.userId && (
-                        <>
-                          {/* Edit Icon */}
-                          <FontAwesomeIcon
-                            className={classes.iconButton}
-                            icon={faPen}
-                            onClick={() => {
-                              navigate(
-                                routes.FCUpdate.replace(":id", `${flashcard.id}`)
-                              );
-                            }}
-                            style={{ cursor: "pointer", marginRight: "8px" }}
-                          />
+              {fcset.flashCards.map((flashcard, index) => (
+  <tr key={index}>
+    <td>
+      {user.id === fcset.userId && (
+        <UpdateDeleteButton
+          onUpdate={() => {
+            navigate(routes.FCUpdate.replace(":id", `${flashcard.id}`));
+          }}
+          onDelete={() => handleFlashCardDelete(flashcard.id)}
+        />
+      )}
+    </td>
+    <td>{flashcard.question}</td>
+    <td>{flashcard.answer}</td>
+  </tr>
+))}
 
-                          {/* Delete Icon */}
-                          <FontAwesomeIcon
-                            className={classes.iconButton}
-                            icon={faTrash}
-                            color="red"
-                            size="sm"
-                            onClick={() => handleFlashCardDelete(flashcard.id)}
-                            style={{ cursor: "pointer" }}
-                          />
-                        </>
-                      )}
-                    </td>
-                    <td>{flashcard.question}</td>
-                    <td>{flashcard.answer}</td>
-                  </tr>
-                ))}
               </tbody>
             </Table>
           )}

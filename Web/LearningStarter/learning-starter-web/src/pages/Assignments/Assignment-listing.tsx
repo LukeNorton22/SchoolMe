@@ -10,6 +10,7 @@ import "./Card.css";
 import { faArrowLeft, faPen, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { GradeCreate } from "../assignmentgrade-page/grade-create";
 import { useUser } from "../../authentication/use-auth";
+import { UpdateDeleteButton } from "../Group-page/three-dots";
 
 
 export const AssignmentListing = () => {
@@ -124,42 +125,34 @@ export const AssignmentListing = () => {
           <Table withBorder fontSize={15} style={{ width: '100%' }}>
             <thead>
               <tr>
-                <th>Grades</th>
+                <th> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Grades</th>
                 <th style={{ paddingLeft: `400px` }}>User</th>
               </tr>
             </thead>
             <tbody>
-              {assignment.grades.map((grade) => (
-                <tr key={grade.id}>
-                  <td>
-                    {grade.userId === user.id && (
-                      <>
-                        <FontAwesomeIcon
-                          className={classes.iconButton}
-                          icon={faPen}
-                          onClick={() => {
-                            navigate(routes.AssignmentGradeUpdate.replace(":id", `${grade.id}`));
-                          }}
-                          style={{ cursor: 'pointer', marginRight: '8px' }}
-                        />
-                        <FontAwesomeIcon
-                          className={classes.iconButton}
-                          icon={faTrash}
-                          color="red"
-                          size="sm"
-                          onClick={() => handleGradeDelete(grade.id)}
-                          style={{ cursor: 'pointer' }}
-                        />
-                      </>
-                    )}
-                    {grade.grades}
-                  </td>
-                  <td style={{ paddingLeft: '400px' }}>
-                    <div>{grade.userName}</div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+  {assignment.grades.map((grade) => (
+    <tr key={grade.id}>
+      <td style={{ display: 'flex', alignItems: 'center' }}>
+        {grade.userId === user.id && (
+          <>
+            <UpdateDeleteButton
+              onUpdate={() => {
+                navigate(routes.AssignmentGradeUpdate.replace(":id", `${grade.id}`));
+              }}
+              onDelete={() => handleGradeDelete(grade.id)}
+            />
+            <div style={{ marginLeft: '8px' }}>
+              {grade.grades}
+            </div>
+          </>
+        )}
+      </td>
+      <td style={{ paddingLeft: '400px' }}>
+        <div>{grade.userName}</div>
+      </td>
+    </tr>
+  ))}
+</tbody>
           </Table>
 
           <Space h="lg" />

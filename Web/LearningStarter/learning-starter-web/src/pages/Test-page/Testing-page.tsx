@@ -28,6 +28,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { routes } from "../../routes";
 import { showNotification } from "@mantine/notifications";
 import { useUser } from "../../authentication/use-auth";
+import { UpdateDeleteButton } from "../Group-page/three-dots";
 
 
 export const TestingPage = () => {
@@ -127,38 +128,23 @@ export const TestingPage = () => {
             </tr>
           </thead>
           <tbody>
-            {test.questions.map((question, index) => (
-              <tr key={index}>
-                <td>
-                  {/* Conditionally render delete/update icons */}
-                  {user.id === test.userId && (
-                    <>
-                      {/* Edit Icon */}
-                      <FontAwesomeIcon
-                        className={classes.iconButton}
-                        icon={faPen}
-                        onClick={() => {
-                          navigate(routes.QuestionUpdate.replace(":id", `${question.id}`));
-                        }}
-                        style={{ cursor: 'pointer', marginRight: '8px' }}
-                      />
-
-                      {/* Delete Icon */}
-                      <FontAwesomeIcon
-                        className={classes.iconButton}
-                        icon={faTrash}
-                        color="red"
-                        size="sm"
-                        onClick={() => handleQuestionDelete(question.id)}
-                        style={{ cursor: 'pointer' }}
-                      />
-                    </>
-                  )}
-                </td>
-                <td>{question.question}</td>
-                <td>{question.answer}</td>
-              </tr>
-            ))}
+          {test.questions.map((question, index) => (
+  <tr key={index}>
+    <td>
+      {/* Conditionally render delete/update icons */}
+      {user.id === test.userId && (
+        <UpdateDeleteButton
+          onUpdate={() => {
+            navigate(routes.QuestionUpdate.replace(":id", `${question.id}`));
+          }}
+          onDelete={() => handleQuestionDelete(question.id)}
+        />
+      )}
+    </td>
+    <td>{question.question}</td>
+    <td>{question.answer}</td>
+  </tr>
+))}
           </tbody>
         </Table>
       )}
