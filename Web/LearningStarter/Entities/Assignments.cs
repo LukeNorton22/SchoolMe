@@ -46,12 +46,12 @@ public class AssignmentEntityTypeConfiguration : IEntityTypeConfiguration<Assign
         builder.HasOne(x => x.Group)
           .WithMany(x => x.Assignments)
           .HasForeignKey(x => x.GroupId)
-          .OnDelete(DeleteBehavior.Restrict); // Specify the desired cascade action
+          .OnDelete(DeleteBehavior.Cascade); // Specify the desired cascade action
 
         builder.HasMany(x => x.Grades)
             .WithOne(x => x.Assignments)
             .HasForeignKey(x => x.AssignmentId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
 
     }

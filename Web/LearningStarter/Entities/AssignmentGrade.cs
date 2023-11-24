@@ -56,7 +56,7 @@ public class AssignmentGradeEntityTypeConfiguration : IEntityTypeConfiguration<A
         builder.HasOne(x => x.Assignments)  // Add this line for the Assignments relationship
            .WithMany(a => a.Grades)
            .HasForeignKey(x => x.AssignmentId)
-           .OnDelete(DeleteBehavior.Restrict);
+           .OnDelete(DeleteBehavior.Cascade);
 
     }
 }
