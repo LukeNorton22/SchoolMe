@@ -126,29 +126,30 @@ export const AssignmentListing = () => {
             <thead>
               <tr>
                 <th> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Grades</th>
-                <th style={{ paddingLeft: `400px` }}>User</th>
+                <th style={{ paddingLeft: '400px' }}>User</th>
+                <th style={{ paddingLeft: '20px' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {assignment.grades.map((grade) => (
                 <tr key={grade.id}>
                   <td style={{ display: 'flex', alignItems: 'center' }}>
-                    {grade.userId === user.id && (
-                      <>
-                        <UpdateDeleteButton
-                          onUpdate={() => {
-                            navigate(routes.AssignmentGradeUpdate.replace(":id", `${grade.id}`));
-                          }}
-                          onDelete={() => handleGradeDelete(grade.id)}
-                        />
-                        <div style={{ marginLeft: '8px' }}>
-                          {grade.grades}
-                        </div>
-                      </>
-                    )}
+                    <div style={{ marginLeft: '8px' }}>
+                      {grade.grades}
+                    </div>
                   </td>
                   <td style={{ paddingLeft: '400px' }}>
                     <div>{grade.userName}</div>
+                  </td>
+                  <td style={{ paddingLeft: '20px' }}>
+                    {grade.userId === user.id && (
+                      <UpdateDeleteButton
+                        onUpdate={() => {
+                          navigate(routes.AssignmentGradeUpdate.replace(":id", `${grade.id}`));
+                        }}
+                        onDelete={() => handleGradeDelete(grade.id)}
+                      />
+                    )}
                   </td>
                 </tr>
               ))}
@@ -191,6 +192,7 @@ export const AssignmentListing = () => {
       )}
     </Container>
   );
+  
   
   
   // ...
