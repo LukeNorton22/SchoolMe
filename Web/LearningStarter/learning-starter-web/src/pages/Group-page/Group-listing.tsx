@@ -149,6 +149,8 @@ const GroupListing = () => {
         <Title order ={4} style={{marginBottom: `40px`, fontSize: `15px`}}>To get started, select a group you're already in or create your own group.</Title>
         <Title order={2} style={{ marginBottom: '18px', fontSize: `35px` }}>Your Groups</Title>
         <Button
+          color="yellow"
+
           onClick={() => {
             navigate(routes.groupCreate);
           }}

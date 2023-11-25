@@ -104,6 +104,7 @@ export const TestingPage = () => {
         </Flex>
         <Flex>
           <Button
+          color = "yellow"
             onClick={() => {
               navigate(routes.TestTaking.replace(":id", `${test?.id}`));
             }}
@@ -117,6 +118,7 @@ export const TestingPage = () => {
         <Title>{test?.testName}</Title>
         <Space h="lg" />
       </Center>
+      <Space h="lg"></Space>
 
       {test && (
         <Table withBorder fontSize={15}>

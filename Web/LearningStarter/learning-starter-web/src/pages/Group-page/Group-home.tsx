@@ -229,7 +229,7 @@ export const GroupHome = () => {
       </Title>
 
       {/* Tabs */}
-      <Tabs orientation = "horizontal" color="teal" defaultValue="Chat">
+      <Tabs orientation = "horizontal" color="yellow" defaultValue="Chat">
       <Tabs.List grow>
           <Tabs.Tab value="Chat">Chat</Tabs.Tab>
           <Tabs.Tab value="Tests">Tests</Tabs.Tab>
@@ -261,6 +261,7 @@ export const GroupHome = () => {
       >
         {test.testName}
       </Button>
+
 
       {user.id === test.userId && (
         <UpdateDeleteButton
@@ -315,7 +316,7 @@ export const GroupHome = () => {
         <Button
           variant="outline"
           color="red"
-          size="sm"
+          size="xs"
           radius="xs"
           onClick={() => handleRemoveUser(groupUser.id)}
         >
@@ -326,6 +327,7 @@ export const GroupHome = () => {
   ))}
 
   {/* Add User Button */}
+
   <Button
     variant="subtle"
     color="gray"
@@ -337,15 +339,17 @@ export const GroupHome = () => {
   >
     Add User
   </Button>
+  <Space></Space>
   <Button
             variant="subtle"
-            color="gray"
+            color="red"
             size="sm"
             radius="xs"
             onClick={() => {handleLeaveGroup(user.id); navigate(routes.home);}}
           >
             Leave Group
           </Button>
+          
 </Tabs.Panel>
 <Tabs.Panel value="Flashcard Sets">
   {/* Flashcard Sets Content */}
@@ -470,7 +474,7 @@ export const GroupHome = () => {
             style={{ borderColor: theme.colors.teal[6], color: theme.black }}
           />
           <Space h={8}></Space>
-          <Button variant="filled" color="teal" onClick={handleSendMessage}>
+          <Button variant="filled" color="yellow" onClick={handleSendMessage}>
             Send
           </Button>
         </div>

@@ -104,6 +104,7 @@ export const AssignmentListing = () => {
   
       {!userHasPostedGrade() && (
         <Button
+        color = "yellow"
           onClick={() => {
             navigate(routes.AssignmentGradeCreate.replace(":id", `${assignment?.id}`));
           }}
@@ -118,43 +119,46 @@ export const AssignmentListing = () => {
           <Title>{assignment?.assignmentName}</Title>
           <Space h="lg" />
         </Center>
+        
       )}
+      <Space h="lg"></Space>
+
   
       {assignment && (
         <Flex>
-          <Table withBorder fontSize={15} style={{ width: '100%' }}>
-            <thead>
-              <tr>
-                <th> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Grades</th>
-                <th style={{ paddingLeft: '400px' }}>User</th>
-                <th style={{ paddingLeft: '20px' }}></th>
-              </tr>
-            </thead>
-            <tbody>
-              {assignment.grades.map((grade) => (
-                <tr key={grade.id}>
-                  <td style={{ display: 'flex', alignItems: 'center' }}>
-                    <div style={{ marginLeft: '8px' }}>
-                      {grade.grades}
-                    </div>
-                  </td>
-                  <td style={{ paddingLeft: '400px' }}>
-                    <div>{grade.userName}</div>
-                  </td>
-                  <td style={{ paddingLeft: '20px' }}>
-                    {grade.userId === user.id && (
-                      <UpdateDeleteButton
-                        onUpdate={() => {
-                          navigate(routes.AssignmentGradeUpdate.replace(":id", `${grade.id}`));
-                        }}
-                        onDelete={() => handleGradeDelete(grade.id)}
-                      />
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
+<Table withBorder fontSize={15} style={{ width: '600px' }}>
+  <thead>
+    <tr>
+      <th style={{ width: '50%' }}>Grades</th>
+      <th style={{ width: '25%' }}>User</th>
+      <th style={{ width: '25%' }}></th>
+    </tr>
+  </thead>
+  <tbody>
+    {assignment.grades.map((grade) => (
+      <tr key={grade.id}>
+        <td style={{ width: '25%', verticalAlign: 'middle' }}>
+          <div style={{ marginLeft: '8px', marginRight: '8px' }}>
+            {grade.grades}
+          </div>
+        </td>
+        <td style={{ width: '25%', verticalAlign: 'middle' }}>
+          <div>{grade.userName}</div>
+        </td>
+        <td style={{ width: '25%', verticalAlign: 'middle', alignItems: 'center' }}>
+          {grade.userId === user.id && (
+            <UpdateDeleteButton
+              onUpdate={() => {
+                navigate(routes.AssignmentGradeUpdate.replace(":id", `${grade.id}`));
+              }}
+              onDelete={() => handleGradeDelete(grade.id)}
+            />
+          )}
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</Table>
   
           <Space h="lg" />
   

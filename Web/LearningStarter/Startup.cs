@@ -176,6 +176,7 @@ public class Startup
         {
             GroupName = "CMPS 285",
             Description = "Group for students in CMPS 285",
+            CreatorId = 1
             
         };
 

@@ -93,6 +93,7 @@ const DesktopNavigation = () => {
                     <Menu.Target>
                       <Button
                         size="md"
+                        
                         className={classes.paddedMenuItem}
                         variant="subtle"
                         key={i}

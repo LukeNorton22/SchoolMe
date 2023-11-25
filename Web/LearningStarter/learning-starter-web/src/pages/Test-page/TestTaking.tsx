@@ -179,7 +179,7 @@ export const TestQuestionsDisplay = () => {
                 <div
                   style={{
                     display: 'flex',
-                    backgroundColor: 'black',
+                    backgroundColor: 'orange',
                     float: 'right',
                     padding: '16px',
                     borderRadius: '8px',
@@ -210,6 +210,7 @@ export const TestQuestionsDisplay = () => {
   </Text>
 )}
     <Button
+    color = "yellow"
       onClick={checkAnswers}
       style={{
         display: 'block',
