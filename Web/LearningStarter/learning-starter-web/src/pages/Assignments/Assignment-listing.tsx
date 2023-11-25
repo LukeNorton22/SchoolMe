@@ -133,17 +133,19 @@ export const AssignmentListing = () => {
               {assignment.grades.map((grade) => (
                 <tr key={grade.id}>
                   <td style={{ display: 'flex', alignItems: 'center' }}>
-                    <>
-                      <UpdateDeleteButton
-                        onUpdate={() => {
-                          navigate(routes.AssignmentGradeUpdate.replace(":id", `${grade.id}`));
-                        }}
-                        onDelete={() => handleGradeDelete(grade.id)}
-                      />
-                      <div style={{ marginLeft: '8px' }}>
-                        {grade.grades}
-                      </div>
-                    </>
+                    {grade.userId === user.id && (
+                      <>
+                        <UpdateDeleteButton
+                          onUpdate={() => {
+                            navigate(routes.AssignmentGradeUpdate.replace(":id", `${grade.id}`));
+                          }}
+                          onDelete={() => handleGradeDelete(grade.id)}
+                        />
+                        <div style={{ marginLeft: '8px' }}>
+                          {grade.grades}
+                        </div>
+                      </>
+                    )}
                   </td>
                   <td style={{ paddingLeft: '400px' }}>
                     <div>{grade.userName}</div>
@@ -189,6 +191,10 @@ export const AssignmentListing = () => {
       )}
     </Container>
   );
+  
+  
+  // ...
+  
 
   function userHasPostedGrade() {
     // Check if the user has already posted a grade for the assignment
