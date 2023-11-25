@@ -52,7 +52,7 @@ export const GroupUpdate = () => {
 
         if(response.data.data){
             showNotification({message: "Group successfully updated", color: "green"});
-            navigate(routes.GroupListing);
+            navigate(routes.home);
         }
 
     };
@@ -75,7 +75,7 @@ export const GroupUpdate = () => {
                 <Flex direction={"row"}>
                     <Button type="submit">Submit</Button>
                     <Space w={10} />
-                    <Button type="button" onClick={ () => {navigate(routes.GroupListing);
+                    <Button type="button" onClick={ () => {navigate(routes.home);
                     }}
                     >
                     Cancel

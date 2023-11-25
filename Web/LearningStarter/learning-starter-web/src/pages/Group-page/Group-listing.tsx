@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+
 import { useNavigate } from "react-router-dom";
 import { Container, Flex, Button, createStyles, Title } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
@@ -9,6 +9,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import { UpdateDeleteButton } from "./three-dots";
 import { useUser } from "../../authentication/use-auth";
+import { useEffect, useState } from "react";
+
 
 
 
@@ -32,10 +34,12 @@ const Card = ({ group, navigate, handleGroupDelete }) => {
             }}
           />
         </div>
-        <Title order={2} style={{ marginBottom: '8px' }}>
+        <Title order={2} style={{ margin: 0 }}>
           {group.groupName}
         </Title>
-        <p>{group.description}</p>
+        <p style={{ margin: 0, textAlign: 'center', fontSize: `17px`,fontWeight: 'bold' , padding: `16px 5px 0px`}}>{`Members: ${group.users.length}`}</p>
+        <p style={{padding: `0 10px 100px`,textAlign: 'center', fontSize: `15px` }}>{group.description}</p>
+
       </div>
     </div>
   );
@@ -49,12 +53,12 @@ const useStyles = createStyles(() => {
     groupCard: {
       position: 'relative',
       width: '280px',
-      height: '300px',
+      height: '250px',
       boxSizing: 'border-box',
       marginBottom: '20px',
-      padding: '16px',
+      padding: '16px 5px 0px',
       display: 'flex',
-      flexDirection: 'column',
+      flexDirection: 'column', 
       alignItems: 'center',
       justifyContent: 'space-between',
       backgroundColor: cardBackgroundColor,
@@ -74,6 +78,9 @@ const useStyles = createStyles(() => {
       width: 'calc(33.33% - 20px)',
       boxSizing: 'border-box',
       marginBottom: '20px',
+      alignItems: `center`,
+      marginLeft: 'auto',
+  marginRight: 'auto',
     },
 
     groupActions: {
@@ -103,6 +110,7 @@ const GroupListing = () => {
   const { classes } = useStyles();
   const user = useUser();
 
+ 
   async function fetchGroup() {
     try {
       const response = await api.get<ApiResponse<GroupGetDto[]>>(`/api/Groups/ByUserId/${user.id}`);
@@ -131,15 +139,17 @@ const GroupListing = () => {
   }, []);
 
   return (
-    <Container style={{ overflow: 'hidden', maxHeight: '100vh' }}>
+    <Container style={{maxHeight: '100vh' }}>
       <Flex direction="column" align="center" style={{ marginBottom: '20px' }}>
-        <Title order={2} style={{ marginBottom: '18px' }}>Your Groups</Title>
+        <Title order={2} style={{fontSize: '40px', marginBottom: `15px` }}>Hi {user.firstName}, welcome to SchoolMe!</Title>
+        <Title order ={4} style={{marginBottom: `40px`, fontSize: `15px`}}>To get started, select a group you're already in or create your own group.</Title>
+        <Title order={2} style={{ marginBottom: '18px', fontSize: `35px` }}>Your Groups</Title>
         <Button
           onClick={() => {
             navigate(routes.groupCreate);
           }}
         >
-          <FontAwesomeIcon icon={faPlus}/> &nbsp;&nbsp;Add Group
+          <FontAwesomeIcon icon={faPlus}/> &nbsp;&nbsp;Create Group
         </Button>
       </Flex>
 

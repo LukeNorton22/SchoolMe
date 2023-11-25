@@ -41,7 +41,7 @@ export const GroupCreate = () => {
           message: "Group successfully created and user added",
           color: "green",
         });
-        navigate(routes.GroupListing);
+        navigate(routes.home);
       }
     } catch (error) {
       console.error("Error creating group:", error);
@@ -68,7 +68,7 @@ export const GroupCreate = () => {
           <Button
             type="button"
             onClick={() => {
-              navigate(routes.GroupListing);
+              navigate(routes.home);
             }}
           >
             Cancel

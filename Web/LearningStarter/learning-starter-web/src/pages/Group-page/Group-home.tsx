@@ -93,6 +93,7 @@ export const GroupHome = () => {
       });
     }
   };
+  
 
   const handleDeleteAndNavigate = async (
     itemId: number,
@@ -112,8 +113,7 @@ export const GroupHome = () => {
       case "fcSet":
         await handleFcSetDelete(itemId, groupId);
         break;
-      default:
-        return;
+       
     }
 
     fetchGroup(); // Ensure that the group is updated after deletion
@@ -178,7 +178,7 @@ export const GroupHome = () => {
     {/* Back Button */}
       <Button
         onClick={() => {
-          navigate(routes.GroupListing);
+          navigate(routes.home);
         }}
         style={{
           backgroundColor: "transparent",
@@ -276,7 +276,7 @@ export const GroupHome = () => {
         color="gray"
         size="sm"
         radius="xs"
-        onClick={() => navigate(routes.TestingPage.replace(":id", `${user.id}`))}
+       
       >
         {user.userName}
       </Button>

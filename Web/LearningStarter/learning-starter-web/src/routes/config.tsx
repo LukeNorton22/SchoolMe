@@ -10,7 +10,7 @@ import {   GradePage } from "../pages/assignmentgrade-page/assignmentgrade-listi
 import { AssignmentGradeUpdate } from "../pages/assignmentgrade-page/assignmentgrade-update";
 import { MessageListing } from "../pages/message-page/message-listing";
 import { MessageUpdate} from "../pages/message-page/message-update";
-import { GroupListing } from "../pages/Group-page/Group-listing";
+
 import { GroupUpdate } from "../pages/Group-page/Group-update";
 import { TestUpdate } from "../pages/Test-page/Test-update";
 import { GroupCreate } from "../pages/Group-page/Group-create";
@@ -30,6 +30,7 @@ import {TestQuestionsDisplay} from "../pages/Test-page/TestTaking";
 import { FlashCardListing } from "../pages/flashcard-page/FlashCardSet-listing";
 import { GroupUserPage } from "../pages/GroupUser-listing";
 import { AddUserToGroup } from "../pages/user-page/GroupUser-create";
+import { GroupListing } from "../pages/Group-page/Group-listing";
 
 
 //This is where you will tell React Router what to render when the path matches the route specified.
@@ -42,7 +43,7 @@ export const Routes = () => {
       <PageWrapper user={user}>
         <Switch>
           {/* When path === / render LandingPage */}
-          <Route path={routes.home} element={<LandingPage />} />
+         
           {/* When path === /iser render UserPage */}
           <Route path={routes.user} element={<UserPage />} />
 
@@ -62,7 +63,7 @@ export const Routes = () => {
           <Route path={routes.FCUpdate} element={< FCUpdate/>} /> 
 
 
-          <Route path={routes.GroupListing} element = {<GroupListing/>} />
+          <Route path={routes.home} element = {<GroupListing/>} />
           <Route path={routes.GroupUpdate} element = {<GroupUpdate/>} />
           <Route path={routes.GroupHome} element = {<GroupHome/>} />
           <Route path={routes.groupCreate} element = {<GroupCreate/>} />

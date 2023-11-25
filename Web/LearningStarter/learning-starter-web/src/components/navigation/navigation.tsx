@@ -56,27 +56,15 @@ export type NavigationItemForceNav = {
 };
 
 const navigation: NavigationItem[] = [
-  {
-    text: "Home",
-    hide: false,
-    nav: {
-      to: routes.home,
-    },
-  },
-  {
-    text: "User",
-    hide: false,
-    nav: {
-      to: routes.user,
-    },
-  },
+ 
+
  
  
    {
-    text: "Group",
+    text: "Home",
     hide: false,
     nav: {
-      to:routes.GroupListing,
+      to:routes.home,
     },
   },
   
