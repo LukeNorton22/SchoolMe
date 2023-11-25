@@ -40,6 +40,23 @@ export const GroupHome = () => {
     }
   };
 
+  const handleRemoveUser = async (userId: number) => {
+    try {
+      await api.delete(`/api/Groups/${id}/users/${userId}`);
+      showNotification({ message: `User has left the group` });
+    } catch (error) {
+      console.error("Error deleting user from group:", error);
+      showNotification({
+        title: "Error",
+        message: "Failed to delete the user from the group",
+      });
+    }
+    fetchGroup(); // Refresh the group after a user is deleted
+  };
+  
+  
+  
+
   const handleTestDelete = async (testId: number, groupId: number) => {
     try {
       await api.delete(`/api/Tests/${testId}`);
@@ -93,6 +110,8 @@ export const GroupHome = () => {
       });
     }
   };
+
+  
   
 
   const handleDeleteAndNavigate = async (
@@ -258,17 +277,17 @@ export const GroupHome = () => {
 </Tabs.Panel>
 
 
-        <Tabs.Panel value="GroupUser">
+<Tabs.Panel value="GroupUser">
   {/* Users List */}
-  {group?.users.map((user) => (
+  {group?.users.map((groupUser) => (
     <div
-      key={user.id} // Make sure to provide a unique key for each item in the list
+      key={groupUser.id}
       style={{
         whiteSpace: "nowrap",
         cursor: "pointer",
         display: "flex",
         alignItems: "center",
-        marginBottom: 8, // Add some spacing between users
+        marginBottom: 8,
       }}
     >
       <Button
@@ -276,10 +295,21 @@ export const GroupHome = () => {
         color="gray"
         size="sm"
         radius="xs"
-       
       >
-        {user.userName}
+        {groupUser.userName}
       </Button>
+
+      {group?.creatorId === user.id && groupUser.id !== user.id && (
+        <Button
+          variant="outline"
+          color="red"
+          size="sm"
+          radius="xs"
+          onClick={() => handleRemoveUser(groupUser.id)}
+        >
+          Remove
+        </Button>
+      )}
     </div>
   ))}
 

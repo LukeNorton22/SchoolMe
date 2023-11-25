@@ -475,4 +475,58 @@ public class GroupController : ControllerBase
 
     }
 
+    [HttpDelete("{groupId}/users/{userId}")]
+    public IActionResult DeleteUserFromGroup(int groupId, int userId)
+    {
+        var response = new Response();
+
+        try
+        {
+            var group = _dataContext.Set<Group>()
+                .Include(g => g.Users)
+                .FirstOrDefault(g => g.Id == groupId);
+
+            if (group == null)
+            {
+                response.AddError("groupId", "Group not found.");
+                return BadRequest(response);
+            }
+
+            var groupUser = group.Users.FirstOrDefault(u => u.UserId == userId);
+
+            if (groupUser == null)
+            {
+                response.AddError("userId", "User not found in the group.");
+                return BadRequest(response);
+            }
+
+           
+
+            _dataContext.Set<GroupUser>().Remove(groupUser);
+            _dataContext.SaveChanges();
+
+            response.Data = new GroupGetDto
+            {
+                Id = groupId,
+                GroupName = group.GroupName,
+                Description = group.Description,
+                Users = group.Users.Where(u => u.User != null).Select(x => new GroupUserGetDto
+                {
+                    Id = x.User.Id,
+                    FirstName = x.User.FirstName,
+                    LastName = x.User.LastName,
+                    UserName = x.User.UserName,
+                }).ToList()
+            };
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            response.AddError("error", $"An error occurred: {ex.Message}");
+            return BadRequest(response);
+        }
+    }
+
+
 }
