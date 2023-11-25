@@ -127,7 +127,7 @@ export const AssignmentListing = () => {
               <tr>
                 <th> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Grades</th>
                 <th style={{ paddingLeft: '400px' }}>User</th>
-                <th style={{ paddingLeft: '20px' }}>Actions</th>
+                <th style={{ paddingLeft: '20px' }}></th>
               </tr>
             </thead>
             <tbody>
