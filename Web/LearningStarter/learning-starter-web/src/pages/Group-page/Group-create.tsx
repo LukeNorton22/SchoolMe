@@ -1,12 +1,12 @@
+import React from "react";
 import { FormErrors, useForm } from "@mantine/form";
-import { ApiResponse, GroupGetDto, GroupUpdateDto, GroupUserUpdateDto } from "../../constants/types";
+import { ApiResponse, GroupGetDto, GroupUpdateDto } from "../../constants/types";
 import { Button, Container, Flex, Space, TextInput } from "@mantine/core";
 import { routes } from "../../routes";
 import { useNavigate } from "react-router-dom";
 import { showNotification } from "@mantine/notifications";
 import api from "../../config/axios";
 import { useUser } from "../../authentication/use-auth";
-import { useEffect, useState } from "react";
 
 export const GroupCreate = () => {
   const navigate = useNavigate();
@@ -24,7 +24,10 @@ export const GroupCreate = () => {
       // Use the new endpoint for creating a group and adding the user
       const response = await api.post<ApiResponse<GroupGetDto>>(
         `/api/Groups/CreateAndAddUser?userId=${user.id}`, // Pass the user ID as a query parameter
-        values
+        {
+          ...values,
+          creatorId: user.id, // Include the creator ID in the request payload
+        }
       );
 
       if (response.data.hasErrors) {

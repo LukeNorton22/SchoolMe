@@ -154,13 +154,14 @@ public class GroupController : ControllerBase
                 Id = group.Id,
                 GroupName = group.GroupName,
                 Description = group.Description,
+                CreatorId   = group.CreatorId,
                 Users = group.Users.Select(x => new GroupUserGetDto
                 {
                     Id = x.User.Id,
                     FirstName = x.User.FirstName,
                     LastName = x.User.LastName,
                     UserName = x.User.UserName,
-                    
+                    CreatorId  = x.CreatorId
 
                 }).ToList(),
                 Tests = group.Test.Select(test => new TestsGetDto
@@ -207,7 +208,6 @@ public class GroupController : ControllerBase
 
         return Ok(response);
     }
-
     [HttpPost("CreateAndAddUser")]
     public IActionResult CreateAndAddUser([FromBody] GroupCreateDto createDto, [FromQuery] int userId)
     {
@@ -216,10 +216,6 @@ public class GroupController : ControllerBase
         if (string.IsNullOrEmpty(createDto.GroupName))
         {
             response.AddError(nameof(createDto.GroupName), "Group name can't be empty");
-        }
-
-        if (response.HasErrors)
-        {
             return BadRequest(response);
         }
 
@@ -232,11 +228,11 @@ public class GroupController : ControllerBase
         _dataContext.Set<Group>().Add(groupToCreate);
         _dataContext.SaveChanges();
 
-        // Get the created group with the added user
-        var groupWithUser = _dataContext
-            .Set<Group>()
-            .Include(g => g.Users)
-            .FirstOrDefault(g => g.Id == groupToCreate.Id);
+        // Use the currently authenticated user's ID as the creatorId
+        var creatorId = userId; // Implement this method based on your authentication mechanism
+
+        groupToCreate.CreatorId = creatorId; // Set the creatorId for the group
+        _dataContext.SaveChanges();
 
         var user = _dataContext.Set<User>().FirstOrDefault(u => u.Id == userId);
 
@@ -245,6 +241,12 @@ public class GroupController : ControllerBase
             response.AddError("userId", "User not found.");
             return BadRequest(response);
         }
+
+        // Get the created group with the added user
+        var groupWithUser = _dataContext
+            .Set<Group>()
+            .Include(g => g.Users)
+            .FirstOrDefault(g => g.Id == groupToCreate.Id);
 
         if (groupWithUser == null)
         {
@@ -255,7 +257,8 @@ public class GroupController : ControllerBase
         var groupUser = new GroupUser
         {
             Group = groupWithUser,
-            User = user
+            User = user,
+            CreatorId = creatorId,
         };
 
         _dataContext.Set<GroupUser>().Add(groupUser);
@@ -266,19 +269,22 @@ public class GroupController : ControllerBase
             Id = groupWithUser.Id,
             GroupName = groupWithUser.GroupName,
             Description = groupWithUser.Description,
+            CreatorId = creatorId,
             Users = groupWithUser.Users.Where(u => u.User != null).Select(x => new GroupUserGetDto
             {
                 Id = x.User.Id,
                 FirstName = x.User.FirstName,
                 LastName = x.User.LastName,
                 UserName = x.User.UserName,
-            }).ToList()
+                CreatorId = x.CreatorId,
+            }).ToList(),
         };
 
         response.Data = groupToReturn;
 
         return Created("", response);
     }
+
 
 
     [HttpGet("ByUserId/{userId}")]
@@ -293,12 +299,14 @@ public class GroupController : ControllerBase
                 Id = group.Id,
                 GroupName = group.GroupName,
                 Description = group.Description,
+                CreatorId = group.CreatorId,
                 Users = group.Users.Select(x => new GroupUserGetDto
                 {
                     Id = x.User.Id,
                     FirstName = x.User.FirstName,
                     LastName = x.User.LastName,
                     UserName = x.User.UserName,
+                    CreatorId=x.CreatorId,
                 }).ToList(),
                 Tests = group.Test.Select(test => new TestsGetDto
                 {
@@ -350,12 +358,15 @@ public class GroupController : ControllerBase
                 Id = group.Id,
                 GroupName = group.GroupName,
                 Description = group.Description,
+                CreatorId = group.CreatorId,
                 Users = group.Users.Select(x=> new GroupUserGetDto
                 {
                     Id = x.User.Id,
                     FirstName = x.User.FirstName,
                     LastName = x.User.LastName,
                     UserName = x.User.UserName,
+                    CreatorId = x.CreatorId
+                    
 
 
                 }).ToList(),

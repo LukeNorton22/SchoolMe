@@ -85,6 +85,7 @@ export type GroupGetDto = {
   id: number;
   groupName: string;
   description: string;
+  creatorId: number;
   users: GroupUserGetDto[];
   messages: MessagesGetDto[];
   tests: TestsGetDto[];
@@ -98,6 +99,7 @@ export type GroupUserGetDto ={
   firstName: string;
   lastName: string;
   userName: string;
+  creatorId: string;
 }
 
 export type GroupUserUpdateDto ={

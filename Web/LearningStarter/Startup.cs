@@ -193,7 +193,7 @@ public class Startup
         {
             GroupId = 1,
             UserId = 1,
-            
+            CreatorId = 1,
 
         };
 

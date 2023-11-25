@@ -16,35 +16,39 @@ import { useEffect, useState } from "react";
 
 const Card = ({ group, navigate, handleGroupDelete }) => {
   const { classes } = useStyles();
+  const user = useUser();
+
 
   const handleCardClick = () => {
     navigate(routes.GroupHome.replace(":id", `${group.id}`));
   };
 
+  const isCurrentUserCreator = group.creatorId === user.id;
+
   return (
     <div className={classes.groupContainer}>
       <div className={classes.groupCard} onClick={handleCardClick}>
         <div className={classes.groupActions}>
-          <UpdateDeleteButton
-            onUpdate={() => {
-              navigate(routes.GroupUpdate.replace(":id", `${group.id}`));
-            }}
-            onDelete={() => {
-              handleGroupDelete(group.id);
-            }}
-          />
+          {isCurrentUserCreator && (
+            <UpdateDeleteButton
+              onUpdate={() => {
+                navigate(routes.GroupUpdate.replace(":id", `${group.id}`));
+              }}
+              onDelete={() => {
+                handleGroupDelete(group.id);
+              }}
+            />
+          )}
         </div>
         <Title order={2} style={{ margin: 0 }}>
           {group.groupName}
         </Title>
-        <p style={{ margin: 0, textAlign: 'center', fontSize: `17px`,fontWeight: 'bold' , padding: `16px 5px 0px`}}>{`Members: ${group.users.length}`}</p>
-        <p style={{padding: `0 10px 100px`,textAlign: 'center', fontSize: `15px` }}>{group.description}</p>
-
+        <p style={{ margin: 0, textAlign: 'center', fontSize: `17px`, fontWeight: 'bold', padding: `16px 5px 0px` }}>{`Members: ${group.users.length}`}</p>
+        <p style={{ padding: `0 10px 100px`, textAlign: 'center', fontSize: `15px` }}>{group.description}</p>
       </div>
     </div>
   );
 };
-
 const useStyles = createStyles(() => {
   const cardBackgroundColor = '#333'; // Change this to the desired card background color
   const buttonColor = '#3498db'; // Change this to the desired button color
@@ -161,6 +165,7 @@ const GroupListing = () => {
               group={group}
               navigate={navigate}
               handleGroupDelete={handleGroupDelete}
+
             />
           ))}
         </Flex>

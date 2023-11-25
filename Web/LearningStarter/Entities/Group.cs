@@ -12,6 +12,7 @@ public class Group
     public int Id { get; set; }
     public string GroupName { get; set; }    
     public string Description { get; set; }
+    public int CreatorId { get; set; }
 
     [JsonIgnore]
     public List<GroupUser> Users { get; set; }
@@ -23,6 +24,8 @@ public class Group
     public List<FlashCardSets> FlashCardSets { get; set; }
     
     public List<Tests> Test { get; set; }
+
+   
 }
 
 public class GroupCreateDto
@@ -45,7 +48,7 @@ public class GroupGetDto
     public int Id { get; set; }
     public string GroupName { get; set; }
     public string Description { get; set; }
-
+    public int CreatorId { get; set; }
     public List<GroupUserGetDto> Users { get; set; }
 
     public List<MessagesGetDto> Messages { get; set; }
@@ -64,10 +67,10 @@ public class GroupEntityTypeConfiguration : IEntityTypeConfiguration<Group>
     {
         builder.ToTable("Groups");
 
-        builder.HasMany(x => x.Test).WithOne(x => x.Group);
+        builder.HasMany(x => x.Test);
         builder.HasMany(x => x.Messages);
-        builder.HasMany(x => x.FlashCardSets).WithOne(x => x.Group);
-        builder.HasMany(x=>x.Assignments).WithOne(x => x.Group);
+        builder.HasMany(x => x.FlashCardSets);
+        builder.HasMany(x => x.Assignments);
 
     }
 }

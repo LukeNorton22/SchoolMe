@@ -4,12 +4,16 @@ import { Title } from "@mantine/core";
 import { routes } from "../../routes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { UpdateDeleteButton } from "./three-dots";
+import { useUser } from "../../authentication/use-auth";
 
-const Card = ({ group, navigate, handleGroupDelete }) => {
+const Card = ({ group, navigate, handleGroupDelete, currentUser }) => {
+  const user = useUser();
+
   const handleCardClick = () => {
     navigate(routes.GroupHome.replace(":id", `${group.id}`));
   };
-
+  console.log('Creator ID:', group.creatorId);
+  console.log('User ID:', user.id);
   return (
     <div className="group-container">
       <div className="group-card" onClick={handleCardClick}>
@@ -18,10 +22,14 @@ const Card = ({ group, navigate, handleGroupDelete }) => {
         </Title>
         <p>{group.description}</p>
       </div>
-      <div className="group-actions">
-        <UpdateDeleteButton onUpdate={() => navigate(routes.GroupUpdate.replace(":id", `${group.id}`))}
-          onDelete={() => handleGroupDelete(group.id)} />
-      </div>
+      {user.id === group.creatorId && (
+        <div className="group-actions">
+          <UpdateDeleteButton
+            onUpdate={() => navigate(routes.GroupUpdate.replace(":id", `${group.id}`))}
+            onDelete={() => handleGroupDelete(group.id)}
+          />
+        </div>
+      )}
     </div>
   );
 };
