@@ -101,8 +101,8 @@ export const AssignmentListing = () => {
       >
         <FontAwesomeIcon icon={faArrowLeft} size="xl" />
       </Button>
-
-      {assignment &&  (
+  
+      {!userHasPostedGrade() && (
         <Button
           onClick={() => {
             navigate(routes.AssignmentGradeCreate.replace(":id", `${assignment?.id}`));
@@ -112,14 +112,14 @@ export const AssignmentListing = () => {
           Add Grade
         </Button>
       )}
-
+  
       {assignment && (
         <Center>
           <Title>{assignment?.assignmentName}</Title>
           <Space h="lg" />
         </Center>
       )}
-
+  
       {assignment && (
         <Flex>
           <Table withBorder fontSize={15} style={{ width: '100%' }}>
@@ -130,33 +130,31 @@ export const AssignmentListing = () => {
               </tr>
             </thead>
             <tbody>
-  {assignment.grades.map((grade) => (
-    <tr key={grade.id}>
-      <td style={{ display: 'flex', alignItems: 'center' }}>
-        {grade.userId === user.id && (
-          <>
-            <UpdateDeleteButton
-              onUpdate={() => {
-                navigate(routes.AssignmentGradeUpdate.replace(":id", `${grade.id}`));
-              }}
-              onDelete={() => handleGradeDelete(grade.id)}
-            />
-            <div style={{ marginLeft: '8px' }}>
-              {grade.grades}
-            </div>
-          </>
-        )}
-      </td>
-      <td style={{ paddingLeft: '400px' }}>
-        <div>{grade.userName}</div>
-      </td>
-    </tr>
-  ))}
-</tbody>
+              {assignment.grades.map((grade) => (
+                <tr key={grade.id}>
+                  <td style={{ display: 'flex', alignItems: 'center' }}>
+                    <>
+                      <UpdateDeleteButton
+                        onUpdate={() => {
+                          navigate(routes.AssignmentGradeUpdate.replace(":id", `${grade.id}`));
+                        }}
+                        onDelete={() => handleGradeDelete(grade.id)}
+                      />
+                      <div style={{ marginLeft: '8px' }}>
+                        {grade.grades}
+                      </div>
+                    </>
+                  </td>
+                  <td style={{ paddingLeft: '400px' }}>
+                    <div>{grade.userName}</div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
           </Table>
-
+  
           <Space h="lg" />
-
+  
           <Card
             shadow="sm"
             className="custom-card"
@@ -191,7 +189,14 @@ export const AssignmentListing = () => {
       )}
     </Container>
   );
+
+  function userHasPostedGrade() {
+    // Check if the user has already posted a grade for the assignment
+    return assignment && assignment.grades.some(grade => grade.userId === user.id);
+  }
+  
 };
+
 
 const calculateLetterGrade = (averageGrade) => {
   if (averageGrade >= 97 && averageGrade <= 100) {

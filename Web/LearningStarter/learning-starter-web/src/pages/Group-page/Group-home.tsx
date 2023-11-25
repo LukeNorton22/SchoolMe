@@ -53,8 +53,20 @@ export const GroupHome = () => {
     }
     fetchGroup(); // Refresh the group after a user is deleted
   };
-  
-  
+
+  const handleLeaveGroup = async (userId: number) => {
+    try {
+      await api.delete(`/api/Groups/${id}/users/${user.id}`);
+      showNotification({ message: `User has left the group` });
+    } catch (error) {
+      console.error("Error deleting user from group:", error);
+      showNotification({
+        title: "Error",
+        message: "Failed to delete the user from the group",
+      });
+    }
+    fetchGroup(); // Refresh the group after a user is deleted
+  };
   
 
   const handleTestDelete = async (testId: number, groupId: number) => {
@@ -325,6 +337,15 @@ export const GroupHome = () => {
   >
     Add User
   </Button>
+  <Button
+            variant="subtle"
+            color="gray"
+            size="sm"
+            radius="xs"
+            onClick={() => {handleLeaveGroup(user.id); navigate(routes.home);}}
+          >
+            Leave Group
+          </Button>
 </Tabs.Panel>
 <Tabs.Panel value="Flashcard Sets">
   {/* Flashcard Sets Content */}

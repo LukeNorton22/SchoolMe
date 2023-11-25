@@ -8,6 +8,7 @@ import { showNotification } from "@mantine/notifications";
 import api from "../../config/axios";
 import { useUser } from "../../authentication/use-auth";
 
+
 export const GroupCreate = () => {
   const navigate = useNavigate();
   const user = useUser();
@@ -58,11 +59,14 @@ export const GroupCreate = () => {
           {...mantineForm.getInputProps("groupName")}
           label="Name"
           withAsterisk
+          maxLength={15} 
         />
         <TextInput
           {...mantineForm.getInputProps("description")}
           label="Description"
           withAsterisk
+          maxLength={185} 
+          maxRows={5}
         />
         <Space h={18} />
         <Flex direction={"row"}>
