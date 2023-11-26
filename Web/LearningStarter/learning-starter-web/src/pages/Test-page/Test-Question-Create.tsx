@@ -55,9 +55,10 @@ export const QuestionCreate = () => {
 
         <Space h={18} />
         <Flex direction={"row"}>
-          <Button type="submit">Submit</Button>
+          <Button color = "yellow" type="submit">Submit</Button>
           <Space w={10} />
           <Button
+          color = "yellow"
             type="button"
             onClick={() => {
               navigate(routes.TestingPage.replace(":id", `${id}`));

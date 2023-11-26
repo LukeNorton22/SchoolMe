@@ -176,6 +176,7 @@ public class Startup
         {
             GroupName = "CMPS 285",
             Description = "Group for students in CMPS 285",
+            CreatorId = 1
             
         };
 
@@ -193,7 +194,7 @@ public class Startup
         {
             GroupId = 1,
             UserId = 1,
-            
+            CreatorId = 1,
 
         };
 
@@ -234,7 +235,7 @@ public class Startup
         {
             SetName = "Midterm study material",
             GroupId = 1,
-           
+            UserId = 1
         };
 
         dataContext.Set<FlashCardSets>().Add(seededFlashCardSet1);
@@ -270,6 +271,7 @@ public class Startup
         {
             TestName = "Midterm Material",
             GroupId = 1,
+            UserId= 1
         };
 
         dataContext.Set<Tests>().Add(seededTest1);
@@ -305,6 +307,9 @@ public class Startup
         {
             GroupId = 1,
             AssignmentName = "Midterm Presentations",
+            UserId = 1,
+           
+            
         };
 
         dataContext.Set<Assignments>().Add(seededAssignment1);
@@ -321,7 +326,9 @@ public class Startup
         var seededAssignmentGrade1 = new AssignmentGrade
         {
             AssignmentId = 1,
-            Grades = 100
+            Grades = 100,
+            userId=1,
+            userName="admin",
         };
 
         dataContext.Set<AssignmentGrade>().Add(seededAssignmentGrade1);

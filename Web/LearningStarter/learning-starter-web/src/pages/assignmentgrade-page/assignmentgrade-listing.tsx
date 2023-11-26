@@ -47,6 +47,7 @@ export const GradePage = () => {
       </Button>
       <Flex direction="row" justify="space-between">
         <Button
+        color = "yellow"
           onClick={() => navigate(routes.AssignmentGradeCreate.replace(":id", `${assignment?.id}`))}
         >
           <FontAwesomeIcon icon={faPlus} /> <Space w={8} />

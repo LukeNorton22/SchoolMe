@@ -44,20 +44,23 @@ export const FCQuestionCreate = () => {
       <form onSubmit={mantineForm.onSubmit(submitQuestion)}>
         <TextInput
           {...mantineForm.getInputProps("question")}
+          maxLength={50} 
           label="Question"
           withAsterisk
         />
         <TextInput
           {...mantineForm.getInputProps("answer")}
+          maxLength={50} 
           label="Answer"
           withAsterisk
         />
 
         <Space h={18} />
         <Flex direction={"row"}>
-          <Button type="submit">Submit</Button>
+          <Button color = "yellow" type="submit">Submit</Button>
           <Space w={10} />
           <Button
+          color = "yellow"
             type="button"
             onClick={() => {
               navigate(routes.FlashCardSetListing.replace(":id", `${id}`));

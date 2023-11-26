@@ -21,45 +21,65 @@ namespace LearningStarter.Controllers
             _dataContext = dataContext;
         }
 
-        [HttpPost("{groupId}")]
-        public IActionResult Create(int groupId, [FromBody] TestsCreateDto createDto)
+     
+        [HttpPost("{groupId}/{userId}")]
+        public IActionResult Create(int groupId, int userId, [FromBody] TestsCreateDto createDto)
         {
             var response = new Response();
 
-            if (string.IsNullOrEmpty(createDto.TestName))
-            {
-                response.AddError(nameof(createDto.TestName), "Test Name cannot be empty");
-                return BadRequest(response); // Return a 400 response with validation errors
-            }
-
             var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
-
             if (group == null)
             {
-                response.AddError("GroupId", "Group not found.");
-                return BadRequest(response);
+                return NotFound("Group not found.");
             }
 
-            var TestsToCreate = new Tests
+            var user = _dataContext.Set<User>().FirstOrDefault(x => x.Id == userId);
+            if (user == null)
+            {
+                response.AddError("UserId", "User not found.");
+                return UnprocessableEntity(response);
+            }
+
+            if (string.IsNullOrEmpty(createDto.TestName))
+            {
+                response.AddError(nameof(createDto.TestName), "TestName can not be empty");
+                return UnprocessableEntity(response);
+            }
+
+            var testToCreate = new Tests
             {
                 GroupId = group.Id,
-                TestName = createDto.TestName
+                UserId = user.Id,
+                TestName = createDto.TestName,
             };
 
-            _dataContext.Set<Tests>().Add(TestsToCreate);
+            _dataContext.Set<Tests>().Add(testToCreate);
             _dataContext.SaveChanges();
 
-            var TestsToReturn = new TestsGetDto
+            // Include associated flashcards in the response
+            var questions = _dataContext.Set<TestQuestions>()
+                .Where(x => x.TestId == testToCreate.Id)
+                .Select(x => new TestQuestionsGetDto
+                {
+                    Id = x.Id,
+                    TestId = x.TestId,
+                    Question = x.Question,
+                    Answer = x.Answer,
+                })
+                .ToList();
+
+            var testToReturn = new TestsGetDto
             {
-                Id = TestsToCreate.Id,
-                GroupId = TestsToCreate.GroupId,
-                TestName = TestsToCreate.TestName,
+                Id = testToCreate.Id,
+                GroupId = testToCreate.GroupId,
+                TestName = testToCreate.TestName,
+                Questions = questions,
+                UserId = user.Id,
             };
 
-            response.Data = TestsToReturn;
+            response.Data = testToReturn;
             return Created("", response);
         }
-
 
         [HttpGet]
         public IActionResult GetAll()
@@ -73,6 +93,7 @@ namespace LearningStarter.Controllers
                     Id = Tests.Id,
                     GroupId = Tests.GroupId,
                     TestName = Tests.TestName,
+                    UserId = Tests.UserId,
                     Questions = Tests.Questions.Select(x => new TestQuestionsGetDto
                     {
                         Id = x.Id,
@@ -102,6 +123,7 @@ namespace LearningStarter.Controllers
                     Id = test.Id,
                     GroupId = test.GroupId,
                     TestName = test.TestName,
+                    UserId = test.UserId,
                     Questions = test.Questions.Select(x => new TestQuestionsGetDto
                     {
                         Id = x.Id,

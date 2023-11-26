@@ -14,6 +14,9 @@ import { GroupGetDto, ApiResponse, MessagesGetDto } from "../../constants/types"
 import { routes } from "../../routes";
 import { createStyles } from "@mantine/core";
 import { useUser } from "../../authentication/use-auth";
+import { UpdateDeleteButton } from './three-dots'; // Import the UpdateDeleteButton component
+import {  faChevronDown } from '@fortawesome/free-solid-svg-icons';
+
 
 
 export const GroupHome = () => {
@@ -36,6 +39,35 @@ export const GroupHome = () => {
       console.error("Error fetching group:", error);
     }
   };
+
+  const handleRemoveUser = async (userId: number) => {
+    try {
+      await api.delete(`/api/Groups/${id}/users/${userId}`);
+      showNotification({ message: `User has left the group` });
+    } catch (error) {
+      console.error("Error deleting user from group:", error);
+      showNotification({
+        title: "Error",
+        message: "Failed to delete the user from the group",
+      });
+    }
+    fetchGroup(); // Refresh the group after a user is deleted
+  };
+
+  const handleLeaveGroup = async (userId: number) => {
+    try {
+      await api.delete(`/api/Groups/${id}/users/${user.id}`);
+      showNotification({ message: `User has left the group` });
+    } catch (error) {
+      console.error("Error deleting user from group:", error);
+      showNotification({
+        title: "Error",
+        message: "Failed to delete the user from the group",
+      });
+    }
+    fetchGroup(); // Refresh the group after a user is deleted
+  };
+  
 
   const handleTestDelete = async (testId: number, groupId: number) => {
     try {
@@ -91,6 +123,9 @@ export const GroupHome = () => {
     }
   };
 
+  
+  
+
   const handleDeleteAndNavigate = async (
     itemId: number,
     groupId: number,
@@ -109,8 +144,7 @@ export const GroupHome = () => {
       case "fcSet":
         await handleFcSetDelete(itemId, groupId);
         break;
-      default:
-        return;
+       
     }
 
     fetchGroup(); // Ensure that the group is updated after deletion
@@ -150,6 +184,8 @@ export const GroupHome = () => {
 
   };
 
+
+
   useEffect(() => {
     fetchGroup();
   }, [id]);
@@ -173,7 +209,7 @@ export const GroupHome = () => {
     {/* Back Button */}
       <Button
         onClick={() => {
-          navigate(routes.GroupListing);
+          navigate(routes.home);
         }}
         style={{
           backgroundColor: "transparent",
@@ -193,7 +229,7 @@ export const GroupHome = () => {
       </Title>
 
       {/* Tabs */}
-      <Tabs orientation = "horizontal" color="teal" defaultValue="Chat">
+      <Tabs orientation = "horizontal" color="yellow" defaultValue="Chat">
       <Tabs.List grow>
           <Tabs.Tab value="Chat">Chat</Tabs.Tab>
           <Tabs.Tab value="Tests">Tests</Tabs.Tab>
@@ -202,72 +238,69 @@ export const GroupHome = () => {
           <Tabs.Tab value="GroupUser">Group Members</Tabs.Tab>
         </Tabs.List>
 
-        <Tabs.Panel value="Tests">
-          {/* Tests Content */}
-
-          {group?.tests.map((test) => (
-            <div
-              style={{
-                whiteSpace: "nowrap",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <Button
-                variant="subtle"
-                color="gray"
-                size="sm"
-                radius="xs"
-                onClick={() =>
-                  navigate(routes.TestingPage.replace(":id", `${test.id}`))
-                }
-              >
-                {test.testName}
-              </Button>
-
-              <FontAwesomeIcon
-                className={classes.iconButton}
-                icon={faPen}
-                onClick={() =>
-                  navigate(routes.TestUpdate.replace(":id", `${test.id}`))
-                }
-              />
-              <FontAwesomeIcon
-                className={classes.iconButton}
-                icon={faTrash}
-                color="red"
-                size="sm"
-                onClick={() =>
-                  handleDeleteAndNavigate(test.id, test.groupId, "test")
-                }
-                style={{ cursor: "pointer", marginLeft: "8px" }}
-              />
-            </div>
-          ))}
-          <Button
-            variant="subtle"
-            color="gray"
-            size="sm"
-            radius="xs"
-            onClick={() =>
-              navigate(routes.TestCreate.replace(":id", `${group?.id}`))
-            }
-          >
-            Create Test
-          </Button>
-        </Tabs.Panel>
-        <Tabs.Panel value="GroupUser">
-  {/* Users List */}
-  {group?.users.map((user) => (
+  <Tabs.Panel value="Tests">
+  {/* Tests Content */}
+  {group?.tests.map((test) => (
     <div
-      key={user.id} // Make sure to provide a unique key for each item in the list
       style={{
         whiteSpace: "nowrap",
         cursor: "pointer",
         display: "flex",
         alignItems: "center",
-        marginBottom: 8, // Add some spacing between users
+      }}
+      key={test.id}
+    >
+      <Button
+        variant="subtle"
+        color="gray"
+        size="sm"
+        radius="xs"
+        onClick={() =>
+          navigate(routes.TestingPage.replace(":id", `${test.id}`))
+        }
+      >
+        {test.testName}
+      </Button>
+
+
+      {user.id === test.userId && (
+        <UpdateDeleteButton
+          onUpdate={() =>
+            navigate(routes.TestUpdate.replace(":id", `${test.id}`))
+          }
+          onDelete={() =>
+            handleDeleteAndNavigate(test.id, test.groupId, "test")
+          }
+        />
+      )}
+    </div>
+  ))}
+
+  <Button
+    variant="subtle"
+    color="gray"
+    size="sm"
+    radius="xs"
+    onClick={() =>
+      navigate(routes.TestCreate.replace(":id", `${group?.id}`))
+    }
+  >
+    Create Test
+  </Button>
+</Tabs.Panel>
+
+
+<Tabs.Panel value="GroupUser">
+  {/* Users List */}
+  {group?.users.map((groupUser) => (
+    <div
+      key={groupUser.id}
+      style={{
+        whiteSpace: "nowrap",
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+        marginBottom: 8,
       }}
     >
       <Button
@@ -275,14 +308,26 @@ export const GroupHome = () => {
         color="gray"
         size="sm"
         radius="xs"
-        onClick={() => navigate(routes.TestingPage.replace(":id", `${user.id}`))}
       >
-        {user.userName}
+        {groupUser.userName}
       </Button>
+
+      {group?.creatorId === user.id && groupUser.id !== user.id && (
+        <Button
+          variant="outline"
+          color="red"
+          size="xs"
+          radius="xs"
+          onClick={() => handleRemoveUser(groupUser.id)}
+        >
+          Remove
+        </Button>
+      )}
     </div>
   ))}
 
   {/* Add User Button */}
+
   <Button
     variant="subtle"
     color="gray"
@@ -294,204 +339,178 @@ export const GroupHome = () => {
   >
     Add User
   </Button>
+  <Space></Space>
+  <Button
+            variant="subtle"
+            color="red"
+            size="sm"
+            radius="xs"
+            onClick={() => {handleLeaveGroup(user.id); navigate(routes.home);}}
+          >
+            Leave Group
+          </Button>
+          
 </Tabs.Panel>
-        <Tabs.Panel value="Flashcard Sets">
-          {/* Flashcard Sets Content */}
-          {group?.flashCardSets.map((flashCardSet) => (
-            <div
-              style={{
-                whiteSpace: "nowrap",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <Button
-                variant="subtle"
-                color="gray"
-                size="sm"
-                radius="xs"
-                onClick={() =>
-                  navigate(
-                    routes.FlashCardSetListing.replace(":id", `${flashCardSet.id}`)
-                  )
-                }
-              >
-                {flashCardSet.setName}
-              </Button>
+<Tabs.Panel value="Flashcard Sets">
+  {/* Flashcard Sets Content */}
+  {group?.flashCardSets.map((flashCardSet) => (
+    <div
+      key={flashCardSet.id}
+      style={{
+        whiteSpace: "nowrap",
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+      }}
+    >
+      <Button
+        variant="subtle"
+        color="gray"
+        size="sm"
+        radius="xs"
+        onClick={() =>
+          navigate(routes.FlashCardSetListing.replace(":id", `${flashCardSet.id}`))
+        }
+      >
+        {flashCardSet.setName}
+      </Button>
 
-              <span style={{ marginRight: "8px" }}></span>
-              <FontAwesomeIcon
-                className={classes.iconButton}
-                icon={faPen}
-                onClick={() =>
-                  navigate(
-                    routes.FlashCardSetUpdate.replace(
-                      ":id",
-                      `${flashCardSet.id}`
-                    )
-                  )
-                }
-              />
-              <FontAwesomeIcon
-                className={classes.iconButton}
-                icon={faTrash}
-                color="red"
-                size="sm"
-                onClick={() =>
-                  handleDeleteAndNavigate(
-                    flashCardSet.id,
-                    flashCardSet.groupId,
-                    "fcSet"
-                  )
-                }
-                style={{ cursor: "pointer", marginLeft: "8px" }}
-              />
-            </div>
-          ))}
-          <Button
-            variant="subtle"
-            color="gray"
-            size="sm"
-            radius="xs"
-            onClick={() =>
-              navigate(routes.FCSetCreate.replace(":id", `${group?.id}`))
-            }
-          >
-            Create Set
-          </Button>
-        </Tabs.Panel>
+      <span style={{ marginRight: "8px" }}></span>
 
-        <Tabs.Panel value="Assignments">
-          {/* Assignments Content */}
-          {group?.assignments.map((assignment) => (
-            <div
-              style={{
-                whiteSpace: "nowrap",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <Button
-                variant="subtle"
-                color="gray"
-                size="sm"
-                radius="xs"
-                onClick={() =>
-                  navigate(
-                    routes.AssignmentListing.replace(
-                      ":id",
-                      `${assignment.id}`
-                    )
-                  )
-                }
-              >
-                {assignment.assignmentName}
-              </Button>
+      {user.id === flashCardSet.userId && (
+        <UpdateDeleteButton
+          onUpdate={() =>
+            navigate(routes.FlashCardSetUpdate.replace(":id", `${flashCardSet.id}`))
+          }
+          onDelete={() =>
+            handleDeleteAndNavigate(flashCardSet.id, flashCardSet.groupId, "fcSet")
+          }
+        />
+      )}
+    </div>
+  ))}
 
-              <FontAwesomeIcon
-                className={classes.iconButton}
-                icon={faPen}
-                onClick={() =>
-                  navigate(
-                    routes.AssignmentUpdate.replace(":id", `${assignment.id}`)
-                  )
-                }
-              />
-              <FontAwesomeIcon
-                className={classes.iconButton}
-                icon={faTrash}
-                color="red"
-                size="sm"
-                onClick={() =>
-                  handleDeleteAndNavigate(
-                    assignment.id,
-                    assignment.groupId,
-                    "assignment"
-                  )
-                }
-                style={{ cursor: "pointer", marginLeft: "8px" }}
-              />
-            </div>
-          ))}
-          <Button
-            variant="subtle"
-            color="gray"
-            size="sm"
-            radius="xs"
-            onClick={() =>
-              navigate(routes.AssignmentCreatee.replace(":id", `${group?.id}`))
-            }
-          >
-            Create Assignment
-          </Button>
-        </Tabs.Panel>
+  <Button
+    variant="subtle"
+    color="gray"
+    size="sm"
+    radius="xs"
+    onClick={() =>
+      navigate(routes.FCSetCreate.replace(":id", `${group?.id}`))
+    }
+  >
+    Create Set
+  </Button>
+</Tabs.Panel>
+
+
+<Tabs.Panel value="Assignments">
+  {/* Assignments Content */}
+  {group?.assignments.map((assignment) => (
+    <div
+      style={{
+        whiteSpace: "nowrap",
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+      }}
+      key={assignment.id}
+    >
+      <Button
+        variant="subtle"
+        color="gray"
+        size="sm"
+        radius="xs"
+        onClick={() =>
+          navigate(
+            routes.AssignmentListing.replace(":id", `${assignment.id}`)
+          )
+        }
+      >
+        {assignment.assignmentName}
+      </Button>
+
+      {user.id === assignment.userId && (
+        <UpdateDeleteButton
+          onUpdate={() =>
+            navigate(
+              routes.AssignmentUpdate.replace(":id", `${assignment.id}`)
+            )
+          }
+          onDelete={() =>
+            handleDeleteAndNavigate(
+              assignment.id,
+              assignment.groupId,
+              "assignment"
+            )
+          }
+        />
+      )}
+    </div>
+  ))}
+
+  <Button
+    variant="subtle"
+    color="gray"
+    size="sm"
+    radius="xs"
+    onClick={() =>
+      navigate(routes.AssignmentCreatee.replace(":id", `${group?.id}`))
+    }
+  >
+    Create Assignment
+  </Button>
+</Tabs.Panel>
+
      
         <Tabs.Panel value="Chat">
+      {group && (
+        <div style={{ position: 'fixed', bottom: 70, left: 170, right: 170, padding: '0px', backgroundColor: '' }}>
+          <Input
+            size="md"
+            placeholder="Type your message..."
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            style={{ borderColor: theme.colors.teal[6], color: theme.black }}
+          />
+          <Space h={8}></Space>
+          <Button variant="filled" color="yellow" onClick={handleSendMessage}>
+            Send
+          </Button>
+        </div>
+      )}
+
+      <div style={{ left: "120", right: "120", maxHeight: "385px", overflowY: "auto", width: "100%" }} ref={tableRef}>
+        {/* Set your desired max height */}
         {group && (
-          <div style={{ position: 'fixed', bottom: 70, left: 170, right: 170, padding: '0px', backgroundColor: '' }}>
-            <Input
-              size="md"
-              placeholder="Type your message..."
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              style={{ borderColor: theme.colors.teal[6], color: theme.black }}
-
-            />
-            <Space h={8}></Space>
-            <Button variant="filled" color="teal" onClick={handleSendMessage}>
-              Send
-            </Button>
-          </div>
-        )}
-
-        <div style={{left: "120", right: "120", maxHeight: "385px",  overflowY: "auto", width: "100%"}} ref={tableRef}> {/* Set your desired max height */}
-          {group && (
-            <Table style={{ borderColor: theme.colors.teal[6], width: "100%", tableLayout: "fixed" }}>
+          <Table style={{ borderColor: theme.colors.teal[6], width: "100%", tableLayout: "fixed" }}>
             <colgroup>
-              <col style={{ width: "10%" }} /> {/* Adjust the width of the first column as needed */}
-              <col style={{ width: "90%" }} /> {/* Adjust the width of the second column as needed */}
+              <col style={{ width: "90%" }} /> {/* Move the first column style to the right */}
+              <col style={{ width: "10%" }} /> {/* Move the second column style to the left */}
             </colgroup>
             <tbody>
-            {group.messages.map((message) => (
-                  <tr key={message.id}>
-                    <td style={{ textAlign: 'left' }}>
-                      {user.id === message.userId && ( // Check if the current user is the sender
-                        <>
-                          <FontAwesomeIcon
-                            className={classes.iconButton}
-                            icon={faPencil}
-                            onClick={() => {
-                              navigate(
-                                routes.MessageUpdate.replace(":id", `${message.id}`)
-                              );
-                            }}
-                          />
-                          <FontAwesomeIcon
-                            className={classes.iconButton}
-                            icon={faTrash}
-                            color="red"
-                            size="sm"
-                            onClick={() =>
-                              handleDeleteAndNavigate(message.id, message.groupId, "message")
-                            }
-                            style={{ cursor: "pointer", marginLeft: "8px" }}
-                          />
-                        </>
-                      )}
-                    </td>
-                    <td style={{ textAlign: 'left' }}>
-                      <strong style={{ fontSize: '1.2em' }}>{message.userName}</strong>
-                      <Space></Space>{message.content}<Space></Space>{message.createdAt}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          )}
-        </div>
-      </Tabs.Panel>
+              {group.messages.map((message) => (
+                <tr key={message.id}>
+                  <td style={{ textAlign: 'left', wordWrap: 'break-word' }}>
+                    <strong style={{ fontSize: '1.2em' }}>{message.userName}</strong>
+                    <Space></Space>{message.content}<Space></Space>{message.createdAt}
+                  </td>
+                  <td style={{ textAlign: 'right' }}>
+                    {user.id === message.userId && ( // Check if the current user is the sender
+                      <UpdateDeleteButton
+                        onUpdate={() => navigate(routes.MessageUpdate.replace(":id", `${message.id}`))}
+                        onDelete={() => handleDeleteAndNavigate(message.id, message.groupId, "message")}
+                      />
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        )}
+      </div>
+    </Tabs.Panel>
+
       </Tabs>
     </Container>
    

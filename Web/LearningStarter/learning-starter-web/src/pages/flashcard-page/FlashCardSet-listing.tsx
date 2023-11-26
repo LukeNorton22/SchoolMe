@@ -1,13 +1,29 @@
 import React, { useEffect, useState } from "react";
-import { Button, Container, createStyles, Space, Table } from "@mantine/core";
+import {
+  Button,
+  Container,
+  createStyles,
+  Space,
+  Table,
+} from "@mantine/core";
 import { useNavigate, useParams } from "react-router-dom";
-import { FlashCardSetGetDto, ApiResponse } from "../../constants/types";
+import {
+  FlashCardSetGetDto,
+  ApiResponse,
+} from "../../constants/types";
 import api from "../../config/axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faPen, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowLeft,
+  faPen,
+  faPlus,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { routes } from "../../routes";
 import "./FlashCardListing.css"; 
 import Flashcard from "../../components/FlashCards/Flashcard";
+import { useUser } from "../../authentication/use-auth";
+import { UpdateDeleteButton } from "../Group-page/three-dots";
 
 export const FlashCardListing: React.FC = () => {
   const { id } = useParams();
@@ -16,6 +32,7 @@ export const FlashCardListing: React.FC = () => {
   const [fcset, setFCSet] = useState<FlashCardSetGetDto | null>(null);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
+  const user = useUser();
 
   async function fetchSet() {
     try {
@@ -61,7 +78,7 @@ export const FlashCardListing: React.FC = () => {
   return (
     <Container>
       {fcset && (
-        <>
+        <div>
           <Button
             onClick={() => navigate(routes.GroupHome.replace(":id", `${fcset.groupId}`))}
             style={{
@@ -72,15 +89,17 @@ export const FlashCardListing: React.FC = () => {
           >
             <FontAwesomeIcon icon={faArrowLeft} size="xl" />
           </Button>
-          <Button
-            onClick={() => {
-              navigate(routes.FCQuestionCreate.replace(":id", `${fcset.id}`));
-            }}
-          >
-            <FontAwesomeIcon icon={faPlus} /> Add Flashcard
-          </Button>
-          <Space h = {18} />
-          {fcset.flashCards.length > 0 && (
+          {user.id === fcset.userId && (
+            <Button
+              onClick={() => {
+                navigate(routes.FCQuestionCreate.replace(":id", `${fcset.id}`));
+              }}
+            >
+              <FontAwesomeIcon icon={faPlus} /> Add Flashcard
+            </Button>
+          )}
+          <Space h={18} />
+          {fcset && (
             <div
               style={{
                 textAlign: "center",
@@ -88,51 +107,65 @@ export const FlashCardListing: React.FC = () => {
                 perspective: "1000px",
               }}
             >
-              <div
-                className={`flashcard ${isFlipped ? "flipped" : ""}`}
-                onClick={() => setIsFlipped(!isFlipped)}
-              >
-              <div className="front">
-                  <Flashcard
-                    question={fcset.flashCards[currentCardIndex].question}
-                    isFlipped={isFlipped}
-                    onClick={() => setIsFlipped(!isFlipped)} answer={""}/>
-              </div>
-              <div className="back">
-                  <Flashcard
-      
-                    answer={fcset.flashCards[currentCardIndex].answer}
-                    isFlipped={isFlipped}
-                    onClick={() => setIsFlipped(!isFlipped)} question={""}/>
-              </div>
-              <Space h = {18} />
-              </div>
-              <Button
-                onClick={() => {
-                setCurrentCardIndex((prevIndex) =>
-                prevIndex > 0 ? prevIndex - 1 : prevIndex
-               );
-              }}
-              className={classes.iconButton}
-              style={{ background: "transparent", border: "none" }}
-              >
-               {"<"}
-              </Button>
-              <span style={{ margin: "0 16px", fontSize: "18px" }}>
-                Card {currentCardIndex + 1} of {fcset.flashCards.length}
-              </span>
-              <Button
-                onClick={() => {
-                  setCurrentCardIndex((prevIndex) =>
-                    prevIndex < fcset.flashCards.length - 1 ? prevIndex + 1 : prevIndex
-                  );
-                }}
-                className={classes.iconButton}
-                style={{ background: "transparent", border: "none" }}
-              >
-                {">"}
-              </Button>
-              <Space h = {18} />
+             {fcset.flashCards.length > 0 && (
+  <div
+    style={{
+      textAlign: "center",
+      position: "relative",
+      perspective: "1000px",
+    }}
+  >
+    <div
+      className={`flashcard ${isFlipped ? "flipped" : ""}`}
+      onClick={() => setIsFlipped(!isFlipped)}
+    >
+      <div className="front">
+        <Flashcard
+          question={fcset.flashCards[currentCardIndex].question}
+          isFlipped={isFlipped}
+          onClick={() => setIsFlipped(!isFlipped)}
+          answer={""}
+        />
+      </div>
+      <div className="back">
+        <Flashcard
+          answer={fcset.flashCards[currentCardIndex].answer}
+          isFlipped={isFlipped}
+          onClick={() => setIsFlipped(!isFlipped)}
+          question={""}
+        />
+      </div>
+      <Space h={18} />
+    </div>
+    <Button
+      onClick={() => {
+        setCurrentCardIndex((prevIndex) =>
+          prevIndex > 0 ? prevIndex - 1 : prevIndex
+        );
+      }}
+      className={classes.iconButton}
+      style={{ background: "transparent", border: "none" }}
+    >
+      {"<"}
+    </Button>
+    <span style={{ margin: "0 16px", fontSize: "18px" }}>
+      Card {currentCardIndex + 1} of {fcset.flashCards.length}
+    </span>
+    <Button
+      onClick={() => {
+        setCurrentCardIndex((prevIndex) =>
+          prevIndex < fcset.flashCards.length - 1 ? prevIndex + 1 : prevIndex
+        );
+      }}
+      className={classes.iconButton}
+      style={{ background: "transparent", border: "none" }}
+    >
+      {">"}
+    </Button>
+    <Space h={18} />
+  </div>
+)}
+
             </div>
           )}
           {fcset && (
@@ -145,39 +178,27 @@ export const FlashCardListing: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {fcset.flashCards.map((flashcard, index) => (
-                  <tr key={index}>
-                    <td>
-                      {/* Edit Icon */}
-                      <FontAwesomeIcon
-                        className={classes.iconButton}
-                        icon={faPen}
-                        onClick={() => {
-                          navigate(
-                            routes.FCUpdate.replace(":id", `${flashcard.id}`)
-                          );
-                        }}
-                        style={{ cursor: "pointer", marginRight: "8px" }}
-                      />
+              {fcset.flashCards.map((flashcard, index) => (
+  <tr key={index}>
+    <td>
+      {user.id === fcset.userId && (
+        <UpdateDeleteButton
+          onUpdate={() => {
+            navigate(routes.FCUpdate.replace(":id", `${flashcard.id}`));
+          }}
+          onDelete={() => handleFlashCardDelete(flashcard.id)}
+        />
+      )}
+    </td>
+    <td>{flashcard.question}</td>
+    <td>{flashcard.answer}</td>
+  </tr>
+))}
 
-                      {/* Delete Icon */}
-                      <FontAwesomeIcon
-                        className={classes.iconButton}
-                        icon={faTrash}
-                        color="red"
-                        size="sm"
-                        onClick={() => handleFlashCardDelete(flashcard.id)}
-                        style={{ cursor: "pointer" }}
-                      />
-                    </td>
-                    <td>{flashcard.question}</td>
-                    <td>{flashcard.answer}</td>
-                  </tr>
-                ))}
               </tbody>
             </Table>
           )}
-        </>
+        </div>
       )}
     </Container>
   );

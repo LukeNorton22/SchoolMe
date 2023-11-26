@@ -13,6 +13,8 @@ import {
   Space,
   Table,
   createStyles,
+  Popover,
+  Text,
 } from "@mantine/core";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -26,7 +28,8 @@ export const TestQuestionsDisplay = () => {
   const [test, setTest] = useState<TestsGetDto | null>(null);
   const [userAnswers, setUserAnswers] = useState<{ [key: number]: string }>({});
   const [result, setResult] = useState<{ [key: number]: boolean }>({});
-
+  const [popoverState, setPopoverState] = useState<{ target: HTMLElement | null; questionId: number } | null>(null);
+  const [userHasSubmitted, setUserHasSubmitted] = useState(false);
   async function fetchTests() {
     try {
       const response = await api.get<ApiResponse<TestsGetDto>>(`/api/Tests/${id}`);
@@ -89,6 +92,7 @@ export const TestQuestionsDisplay = () => {
       }
     });
     setResult(newResult);
+    setUserHasSubmitted(true); 
   };
 
   useEffect(() => {
@@ -109,42 +113,114 @@ export const TestQuestionsDisplay = () => {
       >
         <FontAwesomeIcon icon={faArrowLeft} size="xl" />
       </Button>
-      <Space h = {8}></Space>
+      <Space h={8}></Space>
 
       {test && (
-        <>
-          <Table withBorder fontSize={15}>
-            <thead>
-              <tr>
-                <th>Questions</th>
-                <th>Your Answer</th>
-                <th>Result</th>
-              </tr>
-            </thead>
-            <tbody>
-              {test.questions.map((question) => (
-                <tr key={question.id}>
-                  <td>{question.question}</td>
-                  <td>
-                    <Input
-                      placeholder="Answer"
-                      onChange={(event) =>
-                        handleInputChange(
-                          question.id,
-                          event.currentTarget.value
-                        )
-                      }
-                    />
-                  </td>
-                  <td>{result[question.id] ? "✅" : result[question.id] !== undefined ? "❌" : ""}</td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-          <Space h ={18}></Space>
-          <Button onClick={checkAnswers}>Check Answers</Button>
-        </>
-      )}
+  <>
+    <Table withBorder fontSize={15} style={{ width: '80%', margin: '0 auto', float: `left` }}>
+      <thead>
+        <tr>
+          <th>Questions</th>
+          <th>Your Answer</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        {test.questions.map((question) => (
+          <tr key={question.id}>
+            <td>{question.question}</td>
+            <td>
+              <Input
+                placeholder="Answer"
+                onChange={(event) =>
+                  handleInputChange(question.id, event.currentTarget.value)
+                }
+              />
+            </td>
+            <td>
+              {result[question.id] ? '✅' : result[question.id] !== undefined ? (
+                <div
+                  id={`popover-${question.id}`}
+                  style={{ color: 'red', cursor: 'pointer'}}
+                  onMouseEnter={() =>
+                    setPopoverState({
+                      target: document.getElementById(`popover-${question.id}`),
+                      questionId: question.id,
+                    })
+                  }
+                  onMouseLeave={() => setPopoverState(null)}
+                >
+                  ❌
+                </div>
+              ) : (
+                ''
+              )}
+            </td>
+            {popoverState?.questionId === question.id && (
+              <Popover
+                position="right"
+                opened={!!popoverState}
+                onClose={() => setPopoverState(null)}
+                withArrow
+                styles={{
+                  dropdown: {
+                    position: 'absolute',
+                    top: '50%',
+                    left: '100%',
+                    transform: 'translateY(-50%)',
+                    width: 'fit-content',
+                    zIndex: 1000,
+                  },
+                  arrow: {
+                    backgroundColor: 'white',
+                  },
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    backgroundColor: 'orange',
+                    float: 'right',
+                    padding: '16px',
+                    borderRadius: '8px',
+                    textAlign: `left`,
+                    position: 'fixed',
+                    right: '50px',
+                    whiteSpace: 'normal',
+                    width: '270px',
+                    height: 'auto',
+                  }}
+                >
+                  <Text style={{fontSize: `15px`}}>
+                    <span style={{ fontWeight: 'bold' }}>Correct Answer:</span>{' '}
+                    {question.answer}
+                  </Text>
+                </div>
+              </Popover>
+            )}
+          </tr>
+        ))}
+      </tbody>
+    </Table>
+    <Space h={18}></Space>
+    <div style={{ clear: 'both' }}></div> {/* Add this div to clear the float */}
+    {userHasSubmitted && (
+  <Text style={{ fontSize: '14px' }}>
+    *Hover over ❌'s to view correct answers
+  </Text>
+)}
+    <Button
+    color = "yellow"
+      onClick={checkAnswers}
+      style={{
+        display: 'block',
+        marginTop: '16px',
+      }}
+    >
+      Check Answers
+    </Button>
+  </>
+)}
     </Container>
   );
 };

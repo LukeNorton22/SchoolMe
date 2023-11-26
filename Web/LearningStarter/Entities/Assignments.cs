@@ -13,7 +13,8 @@ namespace LearningStarter.Entities;
     public string AssignmentName { get; set; }
     public int GroupId { get; set; }
     public Group Group { get; set; }
-    
+    public int UserId { get; set; }
+    public User User { get; set; }
     public List<AssignmentGrade> Grades { get; set; }
     }
 public class AssignmentsCreateDto
@@ -27,6 +28,7 @@ public class AssignmentsGetDto
     public int Id { get; set; }
     public int GroupId { get; set; }
     public string AssignmentName { get; set; }
+    public int UserId { get; set; }
     public List<AssignmentGradeGetDto> Grades { get; set; }
 }
 
@@ -41,9 +43,16 @@ public class AssignmentEntityTypeConfiguration : IEntityTypeConfiguration<Assign
     public void Configure(EntityTypeBuilder<Assignments> builder)
     {
         builder.ToTable("Assignments");
+        builder.HasOne(x => x.Group)
+          .WithMany(x => x.Assignments)
+          .HasForeignKey(x => x.GroupId)
+          .OnDelete(DeleteBehavior.Cascade); // Specify the desired cascade action
 
-        builder.HasOne(x => x.Group).WithMany(x => x.Assignments);
-        builder.HasMany(x => x.Grades).WithOne(x => x.Assignments);
+        builder.HasMany(x => x.Grades)
+            .WithOne(x => x.Assignments)
+            .HasForeignKey(x => x.AssignmentId)
+            .OnDelete(DeleteBehavior.Cascade);
+
 
     }
 }

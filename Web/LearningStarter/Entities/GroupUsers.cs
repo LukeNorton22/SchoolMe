@@ -9,6 +9,7 @@ namespace LearningStarter.Entities
         public int GroupId { get; set; }
         public Group Group { get; set; }
         public int UserId { get; set; }
+        public int CreatorId { get; set; }
         public User User { get; set; }
 
 
@@ -25,6 +26,7 @@ namespace LearningStarter.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string UserName { get; set; }
+        public int CreatorId { get; set; }
     }
 
     public class GroupUserEntityTypeConfiguration : IEntityTypeConfiguration<GroupUser>

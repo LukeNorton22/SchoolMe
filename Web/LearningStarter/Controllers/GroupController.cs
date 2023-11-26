@@ -154,13 +154,14 @@ public class GroupController : ControllerBase
                 Id = group.Id,
                 GroupName = group.GroupName,
                 Description = group.Description,
+                CreatorId   = group.CreatorId,
                 Users = group.Users.Select(x => new GroupUserGetDto
                 {
                     Id = x.User.Id,
                     FirstName = x.User.FirstName,
                     LastName = x.User.LastName,
                     UserName = x.User.UserName,
-                    
+                    CreatorId  = x.CreatorId
 
                 }).ToList(),
                 Tests = group.Test.Select(test => new TestsGetDto
@@ -168,6 +169,7 @@ public class GroupController : ControllerBase
                     Id = test.Id,
                     GroupId = test.GroupId,
                     TestName = test.TestName,
+                    UserId = test.UserId,
                     // Add other test properties as needed
                 }).ToList(),
 
@@ -187,13 +189,16 @@ public class GroupController : ControllerBase
                     Id = flashcardset.Id,
                     GroupId = flashcardset.GroupId,
                     SetName = flashcardset.SetName,
+                    UserId= flashcardset.UserId,
 
                 }).ToList(),
                 Assignments = group.Assignments.Select(assignments => new AssignmentsGetDto
                 {
                     Id = assignments.Id,
                     GroupId = assignments.GroupId,
-                    AssignmentName = assignments.AssignmentName
+                    AssignmentName = assignments.AssignmentName,
+                    UserId = assignments.UserId,
+                    
 
                 }).ToList()
 
@@ -203,6 +208,144 @@ public class GroupController : ControllerBase
 
         return Ok(response);
     }
+    [HttpPost("CreateAndAddUser")]
+    public IActionResult CreateAndAddUser([FromBody] GroupCreateDto createDto, [FromQuery] int userId)
+    {
+        var response = new Response();
+
+        if (string.IsNullOrEmpty(createDto.GroupName))
+        {
+            response.AddError(nameof(createDto.GroupName), "Group name can't be empty");
+            return BadRequest(response);
+        }
+
+        var groupToCreate = new Group
+        {
+            GroupName = createDto.GroupName,
+            Description = createDto.Description,
+        };
+
+        _dataContext.Set<Group>().Add(groupToCreate);
+        _dataContext.SaveChanges();
+
+        // Use the currently authenticated user's ID as the creatorId
+        var creatorId = userId; // Implement this method based on your authentication mechanism
+
+        groupToCreate.CreatorId = creatorId; // Set the creatorId for the group
+        _dataContext.SaveChanges();
+
+        var user = _dataContext.Set<User>().FirstOrDefault(u => u.Id == userId);
+
+        if (user == null)
+        {
+            response.AddError("userId", "User not found.");
+            return BadRequest(response);
+        }
+
+        // Get the created group with the added user
+        var groupWithUser = _dataContext
+            .Set<Group>()
+            .Include(g => g.Users)
+            .FirstOrDefault(g => g.Id == groupToCreate.Id);
+
+        if (groupWithUser == null)
+        {
+            response.AddError("groupId", "Group not found.");
+            return BadRequest(response);
+        }
+
+        var groupUser = new GroupUser
+        {
+            Group = groupWithUser,
+            User = user,
+            CreatorId = creatorId,
+        };
+
+        _dataContext.Set<GroupUser>().Add(groupUser);
+        _dataContext.SaveChanges();
+
+        var groupToReturn = new GroupGetDto
+        {
+            Id = groupWithUser.Id,
+            GroupName = groupWithUser.GroupName,
+            Description = groupWithUser.Description,
+            CreatorId = creatorId,
+            Users = groupWithUser.Users.Where(u => u.User != null).Select(x => new GroupUserGetDto
+            {
+                Id = x.User.Id,
+                FirstName = x.User.FirstName,
+                LastName = x.User.LastName,
+                UserName = x.User.UserName,
+                CreatorId = x.CreatorId,
+            }).ToList(),
+        };
+
+        response.Data = groupToReturn;
+
+        return Created("", response);
+    }
+
+
+
+    [HttpGet("ByUserId/{userId}")]
+    public IActionResult GetGroupsByUserId(int userId)
+    {
+        var response = new Response();
+
+        var groups = _dataContext.Set<Group>()
+            .Where(g => g.Users.Any(u => u.User != null && u.User.Id == userId))
+            .Select(group => new GroupGetDto
+            {
+                Id = group.Id,
+                GroupName = group.GroupName,
+                Description = group.Description,
+                CreatorId = group.CreatorId,
+                Users = group.Users.Select(x => new GroupUserGetDto
+                {
+                    Id = x.User.Id,
+                    FirstName = x.User.FirstName,
+                    LastName = x.User.LastName,
+                    UserName = x.User.UserName,
+                    CreatorId=x.CreatorId,
+                }).ToList(),
+                Tests = group.Test.Select(test => new TestsGetDto
+                {
+                    Id = test.Id,
+                    GroupId = test.Group.Id,
+                    TestName = test.TestName,
+                    UserId = test.User.Id,
+                }).ToList(),
+                Messages = group.Messages.Select(Messages => new MessagesGetDto
+                {
+                    Id = Messages.Id,
+                    Content = Messages.Content,
+                    GroupId = Messages.Group.Id,
+                    CreatedAt = Messages.CreatedAt,
+                    UserName = Messages.User.UserName,
+                    UserId = Messages.User.Id,
+                }).ToList(),
+                FlashCardSets = group.FlashCardSets.Select(flashcardset => new FlashCardSetsGetDto
+                {
+                    Id = flashcardset.Id,
+                    GroupId = flashcardset.Group.Id,
+                    SetName = flashcardset.SetName,
+                    UserId = flashcardset.UserId,
+                }).ToList(),
+                Assignments = group.Assignments.Select(assignments => new AssignmentsGetDto
+                {
+                    Id = assignments.Id,
+                    GroupId = assignments.Group.Id,
+                    AssignmentName = assignments.AssignmentName,
+                    UserId = assignments.UserId,
+                }).ToList()
+            })
+            .ToList();
+
+        response.Data = groups;
+
+        return Ok(response);
+    }
+
 
     [HttpGet ("{id}")]
     public IActionResult GetById(int id)
@@ -215,12 +358,15 @@ public class GroupController : ControllerBase
                 Id = group.Id,
                 GroupName = group.GroupName,
                 Description = group.Description,
+                CreatorId = group.CreatorId,
                 Users = group.Users.Select(x=> new GroupUserGetDto
                 {
                     Id = x.User.Id,
                     FirstName = x.User.FirstName,
                     LastName = x.User.LastName,
                     UserName = x.User.UserName,
+                    CreatorId = x.CreatorId
+                    
 
 
                 }).ToList(),
@@ -229,6 +375,7 @@ public class GroupController : ControllerBase
                     Id = test.Id,
                     GroupId = test.Group.Id,
                     TestName = test.TestName,
+                    UserId = test.User.Id,
 
                 }).ToList(),
                 Messages = group.Messages.Select(Messages => new MessagesGetDto
@@ -245,13 +392,15 @@ public class GroupController : ControllerBase
                     Id = flashcardset.Id,
                     GroupId =flashcardset.Group.Id,
                     SetName = flashcardset.SetName,
+                    UserId =flashcardset.User.Id,
 
                 }).ToList(),
                 Assignments = group.Assignments.Select(assignments => new AssignmentsGetDto 
                 { 
                     Id =assignments.Id,
                     GroupId = assignments.Group.Id,
-                    AssignmentName = assignments.AssignmentName
+                    AssignmentName = assignments.AssignmentName,
+                    UserId=assignments.User.Id,
 
                 }).ToList()
 
@@ -261,7 +410,10 @@ public class GroupController : ControllerBase
         response.Data = data;
 
         return Ok(response);
-    }  
+    }
+
+    
+
 
     [HttpPut("{id}")]
     public IActionResult Update([FromBody] GroupUpdateDto updateDto, int id)
@@ -297,7 +449,7 @@ public class GroupController : ControllerBase
         return Ok(response);
     }
 
-    [HttpDelete("id")]
+    [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
         var response = new Response();
@@ -322,5 +474,59 @@ public class GroupController : ControllerBase
         return Ok(response);
 
     }
+
+    [HttpDelete("{groupId}/users/{userId}")]
+    public IActionResult DeleteUserFromGroup(int groupId, int userId)
+    {
+        var response = new Response();
+
+        try
+        {
+            var group = _dataContext.Set<Group>()
+                .Include(g => g.Users)
+                .FirstOrDefault(g => g.Id == groupId);
+
+            if (group == null)
+            {
+                response.AddError("groupId", "Group not found.");
+                return BadRequest(response);
+            }
+
+            var groupUser = group.Users.FirstOrDefault(u => u.UserId == userId);
+
+            if (groupUser == null)
+            {
+                response.AddError("userId", "User not found in the group.");
+                return BadRequest(response);
+            }
+
+           
+
+            _dataContext.Set<GroupUser>().Remove(groupUser);
+            _dataContext.SaveChanges();
+
+            response.Data = new GroupGetDto
+            {
+                Id = groupId,
+                GroupName = group.GroupName,
+                Description = group.Description,
+                Users = group.Users.Where(u => u.User != null).Select(x => new GroupUserGetDto
+                {
+                    Id = x.User.Id,
+                    FirstName = x.User.FirstName,
+                    LastName = x.User.LastName,
+                    UserName = x.User.UserName,
+                }).ToList()
+            };
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            response.AddError("error", $"An error occurred: {ex.Message}");
+            return BadRequest(response);
+        }
+    }
+
 
 }

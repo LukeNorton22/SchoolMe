@@ -52,7 +52,7 @@ export const GroupUpdate = () => {
 
         if(response.data.data){
             showNotification({message: "Group successfully updated", color: "green"});
-            navigate(routes.GroupListing);
+            navigate(routes.home);
         }
 
     };
@@ -64,18 +64,21 @@ export const GroupUpdate = () => {
                 <TextInput 
                     {...mantineForm.getInputProps("groupName")} 
                     label = "Name"
+                    maxLength={15} 
                     withAsterisk
                 />
                 <TextInput 
                     {...mantineForm.getInputProps("description")} 
                     label = "Description"
+                    maxLength={185} 
+
                     withAsterisk
                 />
                 <Space h = {18} />
                 <Flex direction={"row"}>
-                    <Button type="submit">Submit</Button>
+                    <Button color = "yellow" type="submit">Submit</Button>
                     <Space w={10} />
-                    <Button type="button" onClick={ () => {navigate(routes.GroupListing);
+                    <Button color = "yellow" type="button" onClick={ () => {navigate(routes.home);
                     }}
                     >
                     Cancel

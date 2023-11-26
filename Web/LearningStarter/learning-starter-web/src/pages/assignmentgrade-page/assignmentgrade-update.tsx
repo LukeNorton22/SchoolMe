@@ -74,9 +74,9 @@ export const AssignmentGradeUpdate = () => {
                 
                 <Space h = {18} />
                 <Flex direction={"row"}>
-                    <Button type="submit">Submit</Button>
+                    <Button color = "yellow" type="submit">Submit</Button>
                     <Space w={10} />
-                    <Button type="button" onClick={ () => navigate(routes.AssignmentListing.replace(":id", `${assignmentGrade.assignmentId}`))}
+                    <Button color = "yellow" type="button" onClick={ () => navigate(routes.AssignmentListing.replace(":id", `${assignmentGrade.assignmentId}`))}
                     >
                     Cancel
                     </Button>

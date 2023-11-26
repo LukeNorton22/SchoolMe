@@ -1,7 +1,7 @@
 //This is where you will declare all of your routes (the ones that show up in the search bar)
 export const routes = {
   root: `/`,
-  home: `/home`,
+  
   user: `/user`,
 
   AssignmentListing: "/assignments/:id",
@@ -20,7 +20,7 @@ export const routes = {
   FlashCardListing: "/flashcards/:id",
   FCUpdate: "/flashcard/update/:id",
 
-  GroupListing: "/group",
+  home: "/group",
   GroupUpdate: "/group/:id",
   groupCreate: `/group/create`,
   GroupHome: "/GroupHome/:id",

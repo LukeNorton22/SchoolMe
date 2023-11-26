@@ -31,6 +31,7 @@ export type FlashCardsGetDto = {
   flashCardSetId: number;
   question: string;
   answer: string;
+  
 };
 
 
@@ -39,6 +40,9 @@ export type AssignmentGradeGetDto = {
   assignmentId: number;
   id: number;
   grades: number;
+  userId: number;
+  userName: string;
+
 };
 
 export type MessagesGetDto = {
@@ -52,6 +56,7 @@ export type MessagesGetDto = {
 
 export type UserGetDto = {
   userName: string;
+  groups: string[];
 };
 
 
@@ -60,16 +65,17 @@ export type AssignmentGetDto = {
   id: number;
   groupId: number;
   assignmentName: string;
+  userId: number;
   grades: AssignmentGradeGetDto[];
 
 };
 
 export type AssignmentUpdateDto = {
   assignmentName: string;
+  userId: number;
 };
 
 export type AssignmentGradeUpdateDto = {
-  
   
   grades: number;
 
@@ -79,6 +85,7 @@ export type GroupGetDto = {
   id: number;
   groupName: string;
   description: string;
+  creatorId: number;
   users: GroupUserGetDto[];
   messages: MessagesGetDto[];
   tests: TestsGetDto[];
@@ -92,6 +99,7 @@ export type GroupUserGetDto ={
   firstName: string;
   lastName: string;
   userName: string;
+  creatorId: string;
 }
 
 export type GroupUserUpdateDto ={
@@ -116,22 +124,27 @@ export type TestsGetDto = {
   id: number;
   groupId: number;
   testName: string;
+  userId: number;
   questions: QuestionGetDto[];
   
 };
 
 export type TestUpdateDto = {
   testName: string;
+  userId: number;
 };
 
 export type FlashCardSetGetDto = {
   id: number;
   groupId: number;
   setName: string;
+  userId: number;
   flashCards: FlashCardsGetDto[];
 };
 export type FlashCardSetUpdateDto = {
+  
   setName: string;
+  userId: number;
 };
 
 

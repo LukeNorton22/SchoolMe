@@ -5,22 +5,32 @@ import { routes } from "../../routes";
 import { useNavigate, useParams } from "react-router-dom";
 import { showNotification } from "@mantine/notifications";
 import api from "../../config/axios";
+import { useUser } from "../../authentication/use-auth";
+import { useState } from "react";
+
 
 export const FCSetCreate = () => {
   const navigate = useNavigate();
-  const {  id } = useParams();
+  const {  id, userId } = useParams();
+  const user = useUser();
+  
+
+
   const mantineForm = useForm<FlashCardSetUpdateDto>({
     initialValues: {
       setName: "",
+      userId: user.id,
     },
   });
 
+  
   const submitSet = async (values: FlashCardSetUpdateDto) => {
     const response = await api.post<ApiResponse<FlashCardSetUpdateDto>>(
-      `/api/FCSets/${id}`, 
+      `/api/FCSets/${id}/${user.id}`, 
       values
     );
-
+      console.log(user.id)
+  
     if (response.data.hasErrors) {
       const formErrors: FormErrors = response.data.errors.reduce(
         (prev, curr) => {
@@ -42,14 +52,16 @@ export const FCSetCreate = () => {
       <form onSubmit={mantineForm.onSubmit(submitSet)}>
         <TextInput
           {...mantineForm.getInputProps("setName")}
+          maxLength={25} 
           label="Set Name"
           withAsterisk
         />
         <Space h={18} />
         <Flex direction={"row"}>
-          <Button type="submit">Submit</Button>
+          <Button color = "yellow" type="submit">Submit</Button>
           <Space w={10} />
           <Button
+          color = "yellow"
             type="button"
             onClick={() => {
               navigate(routes.GroupHome.replace(":id", `${id}`));

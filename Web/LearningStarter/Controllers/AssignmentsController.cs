@@ -20,43 +20,64 @@ namespace LearningStarter.Controllers
             _dataContext = dataContext;
         }
 
-        [HttpPost("{groupId}")]
-        public IActionResult Create(int groupId, [FromBody] AssignmentsCreateDto createDto)
+
+        [HttpPost("{groupId}/{userId}")]
+        public IActionResult Create(int groupId, int userId, [FromBody] AssignmentsCreateDto createDto)
         {
             var response = new Response();
 
-            if (string.IsNullOrEmpty(createDto.AssignmentName))
-            {
-                response.AddError(nameof(createDto.AssignmentName), "Assignment Name cannot be empty");
-                return BadRequest(response); // Return a 400 response with validation errors
-            }
-
             var group = _dataContext.Set<Group>().FirstOrDefault(x => x.Id == groupId);
-
             if (group == null)
             {
-                response.AddError("GroupId", "Group not found.");
-                return BadRequest(response);
+                return NotFound("Group not found.");
             }
 
-            var AssignmentsToCreate = new Assignments
+            var user = _dataContext.Set<User>().FirstOrDefault(x => x.Id == userId);
+            if (user == null)
+            {
+                response.AddError("UserId", "User not found.");
+                return UnprocessableEntity(response);
+            }
+
+            if (string.IsNullOrEmpty(createDto.AssignmentName))
+            {
+                response.AddError(nameof(createDto.AssignmentName), "SetName can not be empty");
+                return UnprocessableEntity(response);
+            }
+
+            var AssignmentToCreate = new Assignments
             {
                 GroupId = group.Id,
-                AssignmentName = createDto.AssignmentName,
-                
+                UserId = user.Id,
+                AssignmentName= createDto.AssignmentName,
             };
 
-            _dataContext.Set<Assignments>().Add(AssignmentsToCreate);
+            _dataContext.Set<Assignments>().Add(AssignmentToCreate);
             _dataContext.SaveChanges();
 
-            var AssignmentsToReturn = new AssignmentsGetDto
+            var grades = _dataContext.Set<AssignmentGrade>()
+                .Where(x => x.AssignmentId == AssignmentToCreate.Id)
+                .Select(x => new AssignmentGradeGetDto
+                {
+                    Id = x.Id,
+                    AssignmentId = x.AssignmentId,
+                    Grades = x.Grades,
+                    userId = x.userId,
+                    userName = x.userName,
+                })
+                .ToList();
+
+            var AssignmentToReturn = new AssignmentsGetDto
             {
-                Id = AssignmentsToCreate.Id,
-                GroupId = AssignmentsToCreate.GroupId,
-                AssignmentName = AssignmentsToCreate.AssignmentName,
+                Id = AssignmentToCreate.Id,
+                GroupId = AssignmentToCreate.GroupId,
+                AssignmentName = AssignmentToCreate.AssignmentName,
+                Grades = grades,
+               
+                UserId = user.Id,
             };
 
-            response.Data = AssignmentsToReturn;
+            response.Data = AssignmentToReturn;
             return Created("", response);
         }
 
@@ -76,7 +97,9 @@ namespace LearningStarter.Controllers
                     {
                         Id=x.Id,
                         AssignmentId=x.Id,
-                        Grades = x.Grades   
+                        Grades = x.Grades , 
+                        userId=x.userId,
+                        userName=x.userName,
 
                     }).ToList(),
                 })
@@ -103,7 +126,10 @@ namespace LearningStarter.Controllers
                         Id = x.Id,
                         AssignmentId = x.AssignmentId,
                         Grades = x.Grades,
-                        
+                        userId = x.userId,
+                        userName = x.userName,
+
+
                     }).ToList(),
                 })
                 .SingleOrDefault(); 

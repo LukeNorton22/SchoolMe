@@ -27,12 +27,16 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { routes } from "../../routes";
 import { showNotification } from "@mantine/notifications";
+import { useUser } from "../../authentication/use-auth";
+import { UpdateDeleteButton } from "../Group-page/three-dots";
+
 
 export const TestingPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { classes } = useStyles();
   const [test, setTest] = useState<TestsGetDto | null>(null);
+  const user = useUser(); // Assuming you have access to the user object
 
   async function fetchTests() {
     try {
@@ -85,31 +89,37 @@ export const TestingPage = () => {
           >
             <FontAwesomeIcon icon={faArrowLeft} size="xl" />
           </Button>
-          <Button
-            onClick={() => {
-              navigate(routes.QuestionCreate.replace(":id", `${test?.id}`));
-            }}
-          >
-            <FontAwesomeIcon icon={faPlus} /> <Space w={8} />
-            Add Question
-          </Button>
+
+          {/* Conditionally render "Add Question" button */}
+          {user.id === test?.userId && (
+            <Button
+              onClick={() => {
+                navigate(routes.QuestionCreate.replace(":id", `${test?.id}`));
+              }}
+            >
+              <FontAwesomeIcon icon={faPlus} /> <Space w={8} />
+              Add Question
+            </Button>
+          )}
         </Flex>
         <Flex>
           <Button
+          color = "yellow"
             onClick={() => {
               navigate(routes.TestTaking.replace(":id", `${test?.id}`));
-            }} 
+            }}
           >
             Take Test
           </Button>
         </Flex>
       </Flex>
-  
+
       <Center>
         <Title>{test?.testName}</Title>
         <Space h="lg" />
       </Center>
-  
+      <Space h="lg"></Space>
+
       {test && (
         <Table withBorder fontSize={15}>
           <thead>
@@ -120,39 +130,28 @@ export const TestingPage = () => {
             </tr>
           </thead>
           <tbody>
-            {test.questions.map((question, index) => (
-              <tr key={index}>
-                <td>
-                  {/* Edit Icon */}
-                  <FontAwesomeIcon
-                    className={classes.iconButton}
-                    icon={faPen}
-                    onClick={() => {
-                      navigate(routes.QuestionUpdate.replace(":id", `${question.id}`));
-                    }}
-                    style={{ cursor: 'pointer', marginRight: '8px' }}
-                  />
-
-                  {/* Delete Icon */}
-                  <FontAwesomeIcon
-                    className={classes.iconButton}
-                    icon={faTrash}
-                    color="red"
-                    size="sm"
-                    onClick={() => handleQuestionDelete(question.id)}
-                    style={{ cursor: 'pointer' }}
-                  />
-                </td>
-                <td>{question.question}</td>
-                <td>{question.answer}</td>
-              </tr>
-            ))}
+          {test.questions.map((question, index) => (
+  <tr key={index}>
+    <td>
+      {/* Conditionally render delete/update icons */}
+      {user.id === test.userId && (
+        <UpdateDeleteButton
+          onUpdate={() => {
+            navigate(routes.QuestionUpdate.replace(":id", `${question.id}`));
+          }}
+          onDelete={() => handleQuestionDelete(question.id)}
+        />
+      )}
+    </td>
+    <td>{question.question}</td>
+    <td>{question.answer}</td>
+  </tr>
+))}
           </tbody>
         </Table>
       )}
     </Container>
   );
-  
 };
 
 const useStyles = createStyles(() => {
@@ -162,3 +161,4 @@ const useStyles = createStyles(() => {
     },
   };
 });
+

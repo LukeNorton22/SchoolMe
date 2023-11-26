@@ -63,15 +63,16 @@ export const AssignmentUpdate = () => {
             <form onSubmit={mantineForm.onSubmit(submitAssignment)}>
                 <TextInput 
                     {...mantineForm.getInputProps("assignmentName")} 
+                    maxLength={25} 
                     label = "Name"
                     withAsterisk
                 />
                
                 <Space h = {18} />
                 <Flex direction={"row"}>
-                    <Button type="submit">Submit</Button>
+                    <Button color = "yellow" type="submit">Submit</Button>
                     <Space w={10} />
-                    <Button type="button" onClick={ () => navigate(routes.GroupHome.replace(":id", `${assignment.groupId}`))}
+                    <Button color = "yellow" type="button" onClick={ () => navigate(routes.GroupHome.replace(":id", `${assignment.groupId}`))}
 
                     >
                     Cancel

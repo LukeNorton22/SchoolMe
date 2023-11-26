@@ -9,6 +9,9 @@ import api from "../../config/axios";
 import "./Card.css";
 import { faArrowLeft, faPen, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { GradeCreate } from "../assignmentgrade-page/grade-create";
+import { useUser } from "../../authentication/use-auth";
+import { UpdateDeleteButton } from "../Group-page/three-dots";
+
 
 export const AssignmentListing = () => {
   const { id, gradeId } = useParams();
@@ -17,6 +20,8 @@ export const AssignmentListing = () => {
   const [assignment, setAssignment] = useState<AssignmentGetDto | null>(null);
   const [grade, setGrade] = useState<AssignmentGradeGetDto | null>(null);
   const [loading, setLoading] = useState(true);
+  const user = useUser();
+
 
   async function fetchAssignment() {
     try {
@@ -51,6 +56,7 @@ export const AssignmentListing = () => {
     }
 
     const totalGrades = assignment.grades.reduce((sum, grade) => sum + Number(grade.grades), 0);
+    
     const average = totalGrades / assignment.grades.length;
     return average.toFixed(2);
   };
@@ -74,7 +80,9 @@ export const AssignmentListing = () => {
     fetchGrades();
     fetchAssignment();
   }, [id]);
-
+  console.log("User ID:", user.id);
+  console.log("Assignment User ID:", assignment?.userId);
+  
   if (loading) {
     return <div>Loading...</div>; // Render a loading indicator
   }
@@ -93,57 +101,67 @@ export const AssignmentListing = () => {
       >
         <FontAwesomeIcon icon={faArrowLeft} size="xl" />
       </Button>
-      <Button
-        onClick={() => {
-          
-          navigate(routes.AssignmentGradeCreate.replace(":id", `${assignment?.id}`));
-        }}
-      >
-        <FontAwesomeIcon icon={faPlus} /> <Space w={8} />
-        Add Grade
-      </Button>
-      <Center>
-        <Title>{assignment?.assignmentName}</Title>
-        <Space h="lg" />
-      </Center>
+  
+      {!userHasPostedGrade() && (
+        <Button
+        color = "yellow"
+          onClick={() => {
+            navigate(routes.AssignmentGradeCreate.replace(":id", `${assignment?.id}`));
+          }}
+        >
+          <FontAwesomeIcon icon={faPlus} /> <Space w={8} />
+          Add Grade
+        </Button>
+      )}
+  
+      {assignment && (
+        <Center>
+          <Title>{assignment?.assignmentName}</Title>
+          <Space h="lg" />
+        </Center>
+        
+      )}
+      <Space h="lg"></Space>
 
+  
       {assignment && (
         <Flex>
-          <Table withBorder fontSize={15}>
-            <thead>
-              <tr>
-                <th>Grades</th>
-              </tr>
-            </thead>
-            <tbody>
-              {assignment.grades.map((grade) => (
-                <tr key={grade.id}>
-                  <td>
-                    <FontAwesomeIcon
-                      className={classes.iconButton}
-                      icon={faPen}
-                      onClick={() => {
-                        navigate(routes.AssignmentGradeUpdate.replace(":id", `${grade.id}`));
-                      }}
-                      style={{ cursor: 'pointer', marginRight: '8px' }}
-                    />
-                    <FontAwesomeIcon
-                      className={classes.iconButton}
-                      icon={faTrash}
-                      color="red"
-                      size="sm"
-                      onClick={() => handleGradeDelete(grade.id)}
-                      style={{ cursor: 'pointer' }}
-                    />
-                    {grade.grades}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-
+<Table withBorder fontSize={15} style={{ width: '600px' }}>
+  <thead>
+    <tr>
+      <th style={{ width: '50%' }}>Grades</th>
+      <th style={{ width: '25%' }}>User</th>
+      <th style={{ width: '25%' }}></th>
+    </tr>
+  </thead>
+  <tbody>
+    {assignment.grades.map((grade) => (
+      <tr key={grade.id}>
+        <td style={{ width: '25%', verticalAlign: 'middle' }}>
+          <div style={{ marginLeft: '8px', marginRight: '8px' }}>
+            {grade.grades}
+          </div>
+        </td>
+        <td style={{ width: '25%', verticalAlign: 'middle' }}>
+          <div>{grade.userName}</div>
+        </td>
+        <td style={{ width: '25%', verticalAlign: 'middle', alignItems: 'center' }}>
+          {grade.userId === user.id && (
+            <UpdateDeleteButton
+              onUpdate={() => {
+                navigate(routes.AssignmentGradeUpdate.replace(":id", `${grade.id}`));
+              }}
+              onDelete={() => handleGradeDelete(grade.id)}
+            />
+          )}
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</Table>
+  
           <Space h="lg" />
-
+  
           <Card
             shadow="sm"
             className="custom-card"
@@ -178,7 +196,19 @@ export const AssignmentListing = () => {
       )}
     </Container>
   );
+  
+  
+  
+  // ...
+  
+
+  function userHasPostedGrade() {
+    // Check if the user has already posted a grade for the assignment
+    return assignment && assignment.grades.some(grade => grade.userId === user.id);
+  }
+  
 };
+
 
 const calculateLetterGrade = (averageGrade) => {
   if (averageGrade >= 97 && averageGrade <= 100) {

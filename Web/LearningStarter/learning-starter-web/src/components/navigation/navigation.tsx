@@ -56,27 +56,15 @@ export type NavigationItemForceNav = {
 };
 
 const navigation: NavigationItem[] = [
-  {
-    text: "Home",
-    hide: false,
-    nav: {
-      to: routes.home,
-    },
-  },
-  {
-    text: "User",
-    hide: false,
-    nav: {
-      to: routes.user,
-    },
-  },
+ 
+
  
  
    {
-    text: "Group",
+    text: "Home",
     hide: false,
     nav: {
-      to:routes.GroupListing,
+      to:routes.home,
     },
   },
   
@@ -105,6 +93,7 @@ const DesktopNavigation = () => {
                     <Menu.Target>
                       <Button
                         size="md"
+                        
                         className={classes.paddedMenuItem}
                         variant="subtle"
                         key={i}
