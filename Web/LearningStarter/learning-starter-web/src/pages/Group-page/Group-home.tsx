@@ -474,7 +474,7 @@ export const GroupHome = () => {
             style={{ borderColor: theme.colors.teal[6], color: theme.black }}
           />
           <Space h={8}></Space>
-          <Button variant="filled" color="yellow" onClick={handleSendMessage}>
+          <Button variant="filled" style={{backgroundColor:  `#F9E925`, color: `black`}} onClick={handleSendMessage}>
             Send
           </Button>
         </div>

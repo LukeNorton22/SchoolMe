@@ -65,13 +65,14 @@ export const AddUserToGroup = () => {
         />
         <Space h={18} />
         <Flex direction={"row"}>
-          <Button type="submit">Submit</Button>
+          <Button type="submit" style={{backgroundColor:  `#F9E925`, color: `black`}}>Submit</Button>
           <Space w={10} />
           <Button
             type="button"
             onClick={() => {
               navigate(routes.GroupHome.replace(":id", `${groupId}`));
             }}
+            style={{backgroundColor:  `#F9E925`, color: `black`}}
           >
             Cancel
           </Button>

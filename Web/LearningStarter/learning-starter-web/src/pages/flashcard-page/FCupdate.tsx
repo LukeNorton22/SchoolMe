@@ -76,9 +76,9 @@ export const FCUpdate = () => {
                 />
                 <Space h = {18} />
                 <Flex direction={"row"}>
-                    <Button color = "yellow" type="submit">Submit</Button>
+                    <Button style={{backgroundColor:  `#F9E925`, color: `black`}} type="submit">Submit</Button>
                     <Space w={10} />
-                    <Button color = "yellow" type="button" onClick={ () => navigate(routes.FlashCardListing.replace(":id", `${flashcard.flashCardSetId}`))}
+                    <Button style={{backgroundColor:  `#F9E925`, color: `black`}} type="button" onClick={ () => navigate(routes.FlashCardListing.replace(":id", `${flashcard.flashCardSetId}`))}
                     >
                     Cancel
                     </Button>

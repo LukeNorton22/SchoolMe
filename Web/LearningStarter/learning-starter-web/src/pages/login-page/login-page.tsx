@@ -95,7 +95,7 @@ export const LoginPage = ({
               </Container>
 
               <Container px={0}>
-                <Button className={classes.loginButton} type="submit">
+                <Button className={classes.loginButton} type="submit" style={{backgroundColor:  `#F9E925`, color: `black`}}>
                   Login
                 </Button>
               </Container>
