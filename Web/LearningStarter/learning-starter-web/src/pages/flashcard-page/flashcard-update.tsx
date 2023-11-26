@@ -64,6 +64,7 @@ export const FlashCardSetUpdate = () => {
                 <TextInput 
                     {...mantineForm.getInputProps("setName")} 
                     label = "Name"
+                    maxLength={25} 
                     withAsterisk
                 />
                

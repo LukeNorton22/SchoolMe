@@ -44,11 +44,13 @@ export const FCQuestionCreate = () => {
       <form onSubmit={mantineForm.onSubmit(submitQuestion)}>
         <TextInput
           {...mantineForm.getInputProps("question")}
+          maxLength={50} 
           label="Question"
           withAsterisk
         />
         <TextInput
           {...mantineForm.getInputProps("answer")}
+          maxLength={50} 
           label="Answer"
           withAsterisk
         />

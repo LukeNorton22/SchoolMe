@@ -48,6 +48,7 @@ export const AssignmentCreatee = () => {
       <form onSubmit={mantineForm.onSubmit(submitAssignment)}>
         <TextInput
           {...mantineForm.getInputProps("assignmentName")}
+          maxLength={25} 
           label="Assignment Name"
           withAsterisk
         />

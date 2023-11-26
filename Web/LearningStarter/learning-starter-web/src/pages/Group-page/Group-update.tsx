@@ -64,11 +64,14 @@ export const GroupUpdate = () => {
                 <TextInput 
                     {...mantineForm.getInputProps("groupName")} 
                     label = "Name"
+                    maxLength={15} 
                     withAsterisk
                 />
                 <TextInput 
                     {...mantineForm.getInputProps("description")} 
                     label = "Description"
+                    maxLength={185} 
+
                     withAsterisk
                 />
                 <Space h = {18} />

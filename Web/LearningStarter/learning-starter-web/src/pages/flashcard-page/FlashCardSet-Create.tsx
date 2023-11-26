@@ -52,6 +52,7 @@ export const FCSetCreate = () => {
       <form onSubmit={mantineForm.onSubmit(submitSet)}>
         <TextInput
           {...mantineForm.getInputProps("setName")}
+          maxLength={25} 
           label="Set Name"
           withAsterisk
         />

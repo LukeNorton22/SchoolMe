@@ -59,6 +59,7 @@ export const TestCreate = () => {
       <form onSubmit={mantineForm.onSubmit(submitTest)}>
         <TextInput
           {...mantineForm.getInputProps("testName")}
+          maxLength={25} 
           label="Test Name"
           withAsterisk
         />

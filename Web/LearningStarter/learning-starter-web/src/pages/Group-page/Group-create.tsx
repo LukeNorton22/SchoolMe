@@ -64,7 +64,6 @@ export const GroupCreate = () => {
         <TextInput
           {...mantineForm.getInputProps("description")}
           label="Description"
-          withAsterisk
           maxLength={185} 
           maxRows={5}
         />
