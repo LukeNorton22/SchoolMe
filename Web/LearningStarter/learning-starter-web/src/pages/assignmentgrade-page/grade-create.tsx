@@ -67,18 +67,27 @@ export const GradeCreate = () => {
   return (
     <Container>
       <form onSubmit={mantineForm.onSubmit(submitGrade)}>
-        <TextInput
-          {...mantineForm.getInputProps("grades")}
-          label="Grade"
-          withAsterisk
-        />
+        {/* Grade input with number type and min/max attributes */}
+        <Flex align="center">
+          <TextInput
+            {...mantineForm.getInputProps("grades")}
+            label="Grade"
+            type="number"
+            min={0}
+            max={100}
+          />
+        </Flex>
 
         <Space h={18} />
+
+        {/* Form submission and cancellation buttons */}
         <Flex direction={"row"}>
-          <Button color = "yellow" type="submit">Submit</Button>
+          <Button color="yellow" type="submit">
+            Submit
+          </Button>
           <Space w={10} />
           <Button
-          color = "yellow"
+            color="yellow"
             type="button"
             onClick={() => {
               navigate(routes.AssignmentListing.replace(":id", `${id}`));
