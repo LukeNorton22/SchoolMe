@@ -96,6 +96,7 @@ export const TestingPage = () => {
               onClick={() => {
                 navigate(routes.QuestionCreate.replace(":id", `${test?.id}`));
               }}
+              style={{backgroundColor:  `#F9E925`, color: `black`}}
             >
               <FontAwesomeIcon icon={faPlus} /> <Space w={8} />
               Add Question
@@ -104,7 +105,7 @@ export const TestingPage = () => {
         </Flex>
         <Flex>
           <Button
-          color = "yellow"
+          style={{backgroundColor:  `#F9E925`, color: `black`}}
             onClick={() => {
               navigate(routes.TestTaking.replace(":id", `${test?.id}`));
             }}

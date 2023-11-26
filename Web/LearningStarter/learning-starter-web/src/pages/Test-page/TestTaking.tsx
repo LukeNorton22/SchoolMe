@@ -179,7 +179,7 @@ export const TestQuestionsDisplay = () => {
                 <div
                   style={{
                     display: 'flex',
-                    backgroundColor: 'orange',
+                    backgroundColor: `#F9E925`,
                     float: 'right',
                     padding: '16px',
                     borderRadius: '8px',
@@ -191,7 +191,7 @@ export const TestQuestionsDisplay = () => {
                     height: 'auto',
                   }}
                 >
-                  <Text style={{fontSize: `15px`}}>
+                  <Text style={{fontSize: `15px`, color: `black`}}>
                     <span style={{ fontWeight: 'bold' }}>Correct Answer:</span>{' '}
                     {question.answer}
                   </Text>
@@ -210,11 +210,12 @@ export const TestQuestionsDisplay = () => {
   </Text>
 )}
     <Button
-    color = "yellow"
+    
       onClick={checkAnswers}
       style={{
         display: 'block',
         marginTop: '16px',
+        backgroundColor:  `#F9E925`, color: `black`
       }}
     >
       Check Answers

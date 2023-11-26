@@ -104,7 +104,7 @@ export const AssignmentListing = () => {
   
       {!userHasPostedGrade() && (
         <Button
-        color = "yellow"
+        style={{backgroundColor:  `#F9E925`, color: `black`}}
           onClick={() => {
             navigate(routes.AssignmentGradeCreate.replace(":id", `${assignment?.id}`));
           }}
