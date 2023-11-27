@@ -28,6 +28,10 @@ export const GroupHome = () => {
   const tableRef = useRef<HTMLDivElement | null>(null);
   const {  theme } = useStyles();
   const user = useUser();
+  const customYellow = {
+
+    color: "black", // Set the text color to ensure visibility
+  };
 
   const fetchGroup = async () => {
     try {
@@ -203,6 +207,10 @@ export const GroupHome = () => {
   console.log("Group messages:", group?.messages);
   console.log("user:", user);
 
+  const [activeTab, setActiveTab] = useState('Chat');
+  const handleTabChange = (value) => {
+    setActiveTab(value);
+  };
 
   return (
     <Container style={{ width: "220%" }}>
@@ -216,7 +224,7 @@ export const GroupHome = () => {
           border: "none",
           cursor: "pointer",
           position: "absolute",
-          top: "80px",
+          top: "120px",
           left: "80px",
         }}
       >
@@ -229,13 +237,35 @@ export const GroupHome = () => {
       </Title>
 
       {/* Tabs */}
-      <Tabs orientation = "horizontal" color="yellow" defaultValue="Chat">
+      <Tabs orientation = "horizontal"  defaultValue="Chat">
       <Tabs.List grow>
-          <Tabs.Tab value="Chat">Chat</Tabs.Tab>
-          <Tabs.Tab value="Tests">Tests</Tabs.Tab>
-          <Tabs.Tab value="Flashcard Sets">Flashcard Sets</Tabs.Tab>
-          <Tabs.Tab value="Assignments">Assignments</Tabs.Tab>
-          <Tabs.Tab value="GroupUser">Group Members</Tabs.Tab>
+      <Tabs.Tab
+              value="Chat"
+              style={{
+                borderBottom: activeTab === 'Chat' ? '2px solid #FFD700' : '2px solid transparent',
+              }}
+              onClick={() => handleTabChange('Chat')}
+            >
+              Chat
+            </Tabs.Tab>
+            <Tabs.Tab
+              value="Tests"
+              style={{
+                borderBottom: activeTab === 'Tests' ? '2px solid #FFD700' : '2px solid transparent',
+              }}
+              onClick={() => handleTabChange('Tests')}
+            >
+              Tests
+            </Tabs.Tab>
+          <Tabs.Tab value="Flashcard Sets" style={{ borderBottom: activeTab === `Flashcard Sets`? '2px solid #FFD700' : '2px solid transparent',}}
+          onClick={() => handleTabChange('Flashcard Sets')}
+          >Flashcard Sets</Tabs.Tab>
+          <Tabs.Tab value="Assignments"style={{ borderBottom: activeTab === `Assignments`? '2px solid #FFD700' : '2px solid transparent',}}
+          onClick={() => handleTabChange('Assignments')}
+          >Assignments</Tabs.Tab>
+          <Tabs.Tab value="GroupUser" style={{ borderBottom: activeTab === `GroupUser`? '2px solid #FFD700' : '2px solid transparent',}}
+          onClick={() => handleTabChange('GroupUser')}
+          >Group Members</Tabs.Tab>
         </Tabs.List>
 
   <Tabs.Panel value="Tests">
@@ -471,7 +501,7 @@ export const GroupHome = () => {
             placeholder="Type your message..."
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
-            style={{ borderColor: theme.colors.teal[6], color: theme.black }}
+           
           />
           <Space h={8}></Space>
           <Button variant="filled" style={{backgroundColor:  `#F9E925`, color: `black`}} onClick={handleSendMessage}>
@@ -521,6 +551,9 @@ const useStyles = createStyles((theme) => {
   return {
     iconButton: {
       cursor: "pointer",
+    },
+    customActiveTab: {
+      borderBottom: `2px solid ${theme.colorScheme === 'dark' ? theme.colors.blue[5] : theme.colors.yellow[7]}`, // Change the color as needed
     },
   };
 });

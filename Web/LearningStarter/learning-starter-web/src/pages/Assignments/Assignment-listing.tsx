@@ -211,13 +211,13 @@ export const AssignmentListing = () => {
 
 
 const calculateLetterGrade = (averageGrade) => {
-  if (averageGrade >= 97 && averageGrade <= 100) {
+  if (averageGrade >= 96 && averageGrade <= 100) {
     return "A+";
   } 
-  if (averageGrade >= 93 && averageGrade <= 96) {
+  if (averageGrade >= 92 && averageGrade < 96) {
     return "A";
   }
-  if (averageGrade >= 90 && averageGrade <= 92) {
+  if (averageGrade >= 90 && averageGrade < 92) {
     return "A-";
   }else if (averageGrade >= 87 && averageGrade < 90) {
     return "B+";

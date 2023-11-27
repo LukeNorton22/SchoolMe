@@ -128,6 +128,7 @@ const DesktopNavigation = () => {
                 <Button
                   size="md"
                   component={NavLink}
+                  style={{color: `black`, backgroundColor: `#F9E925`}}
                   to={x.nav.to}
                   className={cx(classes.paddedMenuItem, {
                     [classes.linkActive]: active === x.nav.to,
@@ -161,8 +162,8 @@ export const PrimaryNavigation: React.FC<PrimaryNavigationProps> = ({
               <NavLink to={routes.root}>
                 <Image
                   className={classes.logo}
-                  width={60}
-                  height={50}
+                  width={100}
+                  height={100}
                   radius="sm"
                   withPlaceholder
                   src={logo}
@@ -204,7 +205,7 @@ const useStyles = createStyles((theme) => {
     logo: {
       cursor: "pointer",
       marginRight: "5px",
-      paddingTop: "5px",
+      top: 0,
       height: NAVBAR_HEIGHT,
     },
     paddedMenuItem: {
