@@ -47,12 +47,14 @@ export const FCQuestionCreate = () => {
           maxLength={50} 
           label="Question"
           withAsterisk
+          required
         />
         <TextInput
           {...mantineForm.getInputProps("answer")}
           maxLength={50} 
           label="Answer"
           withAsterisk
+          required
         />
 
         <Space h={18} />

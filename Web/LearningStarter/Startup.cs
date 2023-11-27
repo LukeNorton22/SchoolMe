@@ -228,13 +228,13 @@ public class Startup
 
         };
         //add RobertTurner to group 2
-        var seededGroupUser4 = new GroupUser
-        {
-            GroupId = 2,
-            UserId = 3,
-            CreatorId = 3,
+       // var seededGroupUser4 = new GroupUser
+       // {
+          //  GroupId = 2,
+          //  UserId = 3,
+         //   CreatorId = 3,
 
-        };
+        //};
         //seed LukeNorton to group 3
         var seededGroupUser5 = new GroupUser
         {
@@ -348,7 +348,7 @@ public class Startup
         dataContext.Set<GroupUser>().Add(seededGroupUser1);
         dataContext.Set<GroupUser>().Add(seededGroupUser2); 
         dataContext.Set<GroupUser>().Add(seededGroupUser3);
-        dataContext.Set<GroupUser>().Add(seededGroupUser4);
+       // dataContext.Set<GroupUser>().Add(seededGroupUser4);
         dataContext.Set<GroupUser>().Add(seededGroupUser5);
         dataContext.Set<GroupUser>().Add(seededGroupUser6);
         dataContext.Set<GroupUser>().Add(seededGroupUser7);
@@ -686,7 +686,7 @@ public class Startup
             AssignmentId = 1,
             Grades = 100,
             userId=1,
-            userName="admin",
+            userName= "LoganStewart",
         };
         var seededAssignmentGrade2 = new AssignmentGrade
         {
@@ -781,7 +781,7 @@ public class Startup
             {
                 FirstName = "Logan",
                 LastName = "Stewart",
-                UserName = "admin",
+                UserName = "LoganStewart",
                 
             };
 

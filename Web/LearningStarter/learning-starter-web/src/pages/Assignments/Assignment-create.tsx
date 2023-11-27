@@ -51,6 +51,7 @@ export const AssignmentCreatee = () => {
           maxLength={25} 
           label="Assignment Name"
           withAsterisk
+          required
         />
         <Space h={18} />
         <Flex direction={"row"}>

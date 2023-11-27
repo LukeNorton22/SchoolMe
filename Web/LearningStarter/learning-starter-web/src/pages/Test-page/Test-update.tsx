@@ -65,6 +65,9 @@ export const TestUpdate = () => {
                     {...mantineForm.getInputProps("testName")} 
                     label = "Name"
                     withAsterisk
+                    maxLength={25}
+                    minLength={1}
+                    required
                 />
                
                 <Space h = {18} />

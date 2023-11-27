@@ -45,12 +45,16 @@ export const QuestionCreate = () => {
         <TextInput
           {...mantineForm.getInputProps("question")}
           label="Question"
+          minLength={1}
           withAsterisk
+          required
         />
         <TextInput
           {...mantineForm.getInputProps("answer")}
           label="Answer"
+          minLength={1}
           withAsterisk
+          required
         />
 
         <Space h={18} />

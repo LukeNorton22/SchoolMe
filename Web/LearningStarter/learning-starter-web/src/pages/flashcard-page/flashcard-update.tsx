@@ -66,6 +66,7 @@ export const FlashCardSetUpdate = () => {
                     label = "Name"
                     maxLength={25} 
                     withAsterisk
+                    required
                 />
                
                 <Space h = {18} />
