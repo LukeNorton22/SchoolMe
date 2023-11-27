@@ -66,6 +66,7 @@ export const GroupUpdate = () => {
                     label = "Name"
                     maxLength={15} 
                     withAsterisk
+                    required
                 />
                 <TextInput 
                     {...mantineForm.getInputProps("description")} 

@@ -68,11 +68,13 @@ export const FCUpdate = () => {
                     {...mantineForm.getInputProps("question")} 
                     label = "Question"
                     withAsterisk
+                    required
                 />
                  <TextInput 
                     {...mantineForm.getInputProps("answer")} 
                     label = "Answer"
                     withAsterisk
+                    required
                 />
                 <Space h = {18} />
                 <Flex direction={"row"}>

@@ -55,6 +55,7 @@ export const FCSetCreate = () => {
           maxLength={25} 
           label="Set Name"
           withAsterisk
+          required
         />
         <Space h={18} />
         <Flex direction={"row"}>

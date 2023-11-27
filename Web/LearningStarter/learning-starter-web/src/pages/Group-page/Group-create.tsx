@@ -60,6 +60,7 @@ export const GroupCreate = () => {
           label="Name"
           withAsterisk
           maxLength={15} 
+          required
         />
         <TextInput
           {...mantineForm.getInputProps("description")}

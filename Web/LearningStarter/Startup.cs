@@ -686,7 +686,7 @@ public class Startup
             AssignmentId = 1,
             Grades = 100,
             userId=1,
-            userName="admin",
+            userName= "LoganStewart",
         };
         var seededAssignmentGrade2 = new AssignmentGrade
         {
@@ -781,7 +781,7 @@ public class Startup
             {
                 FirstName = "Logan",
                 LastName = "Stewart",
-                UserName = "admin",
+                UserName = "LoganStewart",
                 
             };
 

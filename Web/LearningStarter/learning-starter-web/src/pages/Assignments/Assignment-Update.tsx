@@ -63,9 +63,11 @@ export const AssignmentUpdate = () => {
             <form onSubmit={mantineForm.onSubmit(submitAssignment)}>
                 <TextInput 
                     {...mantineForm.getInputProps("assignmentName")} 
+                    minLength={1}
                     maxLength={25} 
                     label = "Name"
                     withAsterisk
+                    required
                 />
                
                 <Space h = {18} />

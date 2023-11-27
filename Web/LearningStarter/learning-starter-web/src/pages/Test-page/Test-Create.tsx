@@ -60,8 +60,10 @@ export const TestCreate = () => {
         <TextInput
           {...mantineForm.getInputProps("testName")}
           maxLength={25} 
+          minLength={1}
           label="Test Name"
           withAsterisk
+          required
         />
         <Space h={18} />
         <Flex direction={"row"}>

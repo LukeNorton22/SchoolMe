@@ -65,6 +65,7 @@ export const MessageUpdate = () => {
                     {...mantineForm.getInputProps("content")} 
                     label = "Message"
                     withAsterisk
+                    required
                 />
                
                 <Space h = {18} />
