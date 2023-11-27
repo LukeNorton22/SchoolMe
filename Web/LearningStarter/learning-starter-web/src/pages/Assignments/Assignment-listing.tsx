@@ -251,9 +251,9 @@ const calculateLetterGradeColor = (averageGrade) => {
     return "lightgreen"; // Set your desired color for grade B
   } else if (averageGrade >= 70 && averageGrade < 80) {
     return "yellow"; // Set your desired color for grade C
-  } else if (averageGrade >= 60 && averageGrade < 70) {
+  } else if (averageGrade >= 65 && averageGrade < 70) {
     return "orange"; // Set your desired color for grade D
-  } else if (averageGrade < 60) {
+  } else if (averageGrade < 65) {
     return "red"; // Set your desired color for grade F
   }
 
