@@ -510,7 +510,7 @@ export const GroupHome = () => {
         </div>
       )}
 
-      <div style={{ left: "120", right: "120", maxHeight: "385px", overflowY: "auto", width: "100%" }} ref={tableRef}>
+      <div style={{ left: "120", right: "120", maxHeight: "345px", overflowY: "auto", width: "100%" }} ref={tableRef}>
         {/* Set your desired max height */}
         {group && (
           <Table style={{ borderColor: theme.colors.teal[6], width: "100%", tableLayout: "fixed" }}>
